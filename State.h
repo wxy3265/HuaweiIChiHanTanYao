@@ -15,8 +15,18 @@ public:
 
 class RobotState {
 public:
-    static const int RECOVERING = 0;
-    static const int RUNNING = 1;
+    static const int FREE = 0;
+    static const int MISSION_GET = 1;
+    static const int MISSION_PULL = 2;
+    static const int MISSION_MOVE = 3;
+};
+
+class Direction {
+public:
+    static const int RIGHT = 0;
+    static const int LEFT = 1;
+    static const int UP = 2;
+    static const int DOWN = 3;
 };
 
 class BerthState {
