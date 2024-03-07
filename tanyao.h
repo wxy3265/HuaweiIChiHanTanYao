@@ -14,4 +14,6 @@
 #include <map>
 #include <queue>
 #include <stack>
+
+using namespace std;
 #endif //HUAWEIICHIHANTANYAO_TANYAO_H
