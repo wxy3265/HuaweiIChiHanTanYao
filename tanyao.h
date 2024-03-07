@@ -17,4 +17,7 @@
 #include <map>
 
 using namespace std;
+
+static char maze[300][300];
+
 #endif //HUAWEIICHIHANTANYAO_TANYAO_H

@@ -12,7 +12,14 @@ add_executable(HuaweiIChiHanTanYao main.cpp
         Goods.h
         Berth.h
         Ship.h
-        Robot.h
         values.h
         RobotTest.cpp
+        Robot.cpp
+        Robot.h
+        Map.cpp
+        values.cpp
+        Berth.cpp
+        Goods.cpp
+        path.cpp
+        Path.cpp
 )

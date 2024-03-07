@@ -18,15 +18,11 @@ public:
     int distance;
     int velocity;
 
-    void pushGoods(Goods gd) {
-        goods.push_back(gd);
-    }
-    vector<Goods> getGoods() {return goods;}
+    void pushGoods(Goods gd);
+    vector<Goods> getGoods();
 
-    void setShip(int st) {
-        shipState = st;
-    }
-    int getShip() {return shipState;}
+    void setShip(int st);
+    int getShip();
 };
 
 

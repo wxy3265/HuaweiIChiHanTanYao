@@ -11,6 +11,7 @@
 
 class Ship {
 private:
+    int mission;
     Berth target;
     vector<Goods> goods;
     int state;
@@ -19,6 +20,7 @@ public:
 
     void setMission(Berth berth) {
         target = berth;
+        mission = ShipState::MISSION_GET;
     }
     void pushGoods(Goods goods1) {
         goods.push_back(goods1);
@@ -26,6 +28,10 @@ public:
 
     int getState() {return state;}
     vector<Goods> getGoods() {return goods;}
+
+    void update(int _state) {
+        state = _state;
+    }
 };
 
 

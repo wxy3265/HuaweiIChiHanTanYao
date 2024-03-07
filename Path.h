@@ -5,8 +5,6 @@
 #ifndef HUAWEIICHIHANTANYAO_PATH_H
 #define HUAWEIICHIHANTANYAO_PATH_H
 #include "tanyao.h"
-#include "values.h"
-//#include "Map.h"
 const int fx[4] = {0, 0, 1, -1};
 const int fy[4] = {1, -1, 0, 0};
 
@@ -14,9 +12,7 @@ class Path {
     vector<Point> points;
     int length, step;
 public:
-    Path() {
-
-    }
+    Path() {}
     Path(Point start, Point end) {
         step = 0, length = 0;
         queue<Point> q;
