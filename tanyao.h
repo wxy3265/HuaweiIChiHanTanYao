@@ -4,21 +4,17 @@
 
 #ifndef HUAWEIICHIHANTANYAO_TANYAO_H
 #define HUAWEIICHIHANTANYAO_TANYAO_H
-#include <map>
-#include <queue>
-#include <stack>
-#include <cmath>
+#include <algorithm>
+#include <iostream>
+#include <cstring>
+#include <cstdlib>
 #include <cstdio>
 #include <string>
 #include <vector>
-#include <cstring>
-#include <cstdlib>
-#include <iostream>
-#include <algorithm>
+#include <queue>
+#include <cmath>
+#include <stack>
+#include <map>
 
 using namespace std;
-Robot rob[12];
-Berth ber[12];
-int frame, totalMoney;
-
 #endif //HUAWEIICHIHANTANYAO_TANYAO_H
