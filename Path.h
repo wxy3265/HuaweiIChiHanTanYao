@@ -13,7 +13,7 @@ class Path {
     int length, step;
 public:
     Path() {}
-    Path(Point start, Point end) {
+    Path(Point start, Point end, int id) {
         step = 0, length = 0;
         queue<Point> q;
         q.push(start);
@@ -59,10 +59,15 @@ public:
         }
         repath.push((Point){nx, ny});
         length++;
+        cerr << "start:" << start.x << ',' << start.y << '\n';
+        cerr << "id:" << id << "path:";
         while (!repath.empty()) {
             points.push_back(repath.top());
+            cerr << repath.top().x << ',' << repath.top().y << ' ';
             repath.pop();
         }
+        cerr << '\n';
+//        while(!id) ;
     }
     Point getNextPoint() {
         if (step == length) return Point(-1, -1);

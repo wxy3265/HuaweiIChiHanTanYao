@@ -15,30 +15,33 @@ void Robot::pull() {
 }
 int Robot::getState() {return state;}
 vector<Goods> Robot::getGoods() {return goods;}
-    void Robot::setMission(Point _goodsToGet, Point _target) {
+void Robot::setMission(Point _goodsToGet, Point _target) {
     goodsToGet = _goodsToGet;
     target = _target;
     mission = RobotState::MISSION_GET;
-    path = Path(position, goodsToGet);
+    state = RobotState::MISSION_MOVE;
+    path = Path(position, goodsToGet, id);
+    nextPoint = position;
 }
 void Robot::update(Point _position, bool _enable) {
     position = _position;
     enable = _enable;
-    /*if (state == RobotState::MISSION_MOVE) {
-        Point nextPoint = path.getNextPoint();
+    if (true) cerr << "pos:" << position.x << ' ' << position.y << " state:" << state << "next:" << nextPoint.x << ',' << nextPoint.y << '\n';
+//    while (position == nextPoint) ;
+    if (state == RobotState::MISSION_MOVE) {
+        if (position == nextPoint) nextPoint = path.getNextPoint();
         if (nextPoint == Point(-1, -1)) {
             state = mission;
-        } else {
-            move(position.getDirection(nextPoint));
+            return;
         }
+        move(position.getDirection(nextPoint));
     } else if (state == RobotState::MISSION_GET) {
         get();
-        path = Path(position, target);
+        path = Path(position, target, id);
         state = RobotState::MISSION_MOVE;
         mission = RobotState::MISSION_PULL;
     } else if (state == RobotState::MISSION_PULL) {
         pull();
         mission = state = RobotState::FREE;
-    }*/
-    move(Direction::LEFT);
+    }
 }

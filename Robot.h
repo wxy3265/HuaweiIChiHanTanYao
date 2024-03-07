@@ -14,6 +14,7 @@
 class Robot {
 private:
     vector<Goods> goods;
+    Point nextPoint;
     Point goodsToGet, target;
     int mission;
     Path path;
