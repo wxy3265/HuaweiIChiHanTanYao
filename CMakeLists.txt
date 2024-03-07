@@ -7,4 +7,10 @@ add_executable(HuaweiIChiHanTanYao main.cpp
         tanyao.h
         Map.h
         Path.h
+        Point.h
+        State.h
+        Goods.h
+        Berth.h
+        Ship.h
+        Robot.h
 )
