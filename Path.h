@@ -5,17 +5,20 @@
 #ifndef HUAWEIICHIHANTANYAO_PATH_H
 #define HUAWEIICHIHANTANYAO_PATH_H
 #include "tanyao.h"
+#include "values.h"
+//#include "Map.h"
 const int fx[4] = {0, 0, 1, -1};
 const int fy[4] = {1, -1, 0, 0};
 
 class Path {
-    vector points;
-    int lengths, step;
+    vector<Point> points;
+    int length, step;
+public:
     Path() {
 
     }
     Path(Point start, Point end) {
-        step = 0, lengths = 0;
+        step = 0, length = 0;
         queue<Point> q;
         q.push(start);
         int ffind[300][300], steps[300][300];
@@ -33,7 +36,7 @@ class Path {
                 int ex = p.x + fx[i], ey = p.y + fy[i];
                 if (ex < 0 || ex > 199 || ey < 0 || ey > 199) continue;
                 if (ffind[ex][ey]) continue;
-                if (maze[ex][ey] != '*' && maze[ex][ey] != '#') {
+                if (maze[ex][ey] != PointState::OCEAN && maze[ex][ey] != PointState::BLOCK) {
                     q.push((Point){ex, ey});
                     ffind[ex][ey] = 1;
                     steps[ex][ey] = i;
@@ -52,14 +55,15 @@ class Path {
             int lastx = nx, lasty = ny;
             nx -= fx[steps[lastx][lasty]];
             ny -= fy[steps[lastx][lasty]];
-            lengths++;
+            length++;
         }
-        while (!repath.empth()) {
-            points.push(repath.top());
+        while (!repath.empty()) {
+            points.push_back(repath.top());
             repath.pop();
         }
     }
     Point getNextPoint() {
+        if (step == length) return Point(-1, -1);
         return points[++step];
     }
 };

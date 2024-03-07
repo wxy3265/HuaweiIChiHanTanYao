@@ -15,7 +15,6 @@ private:
     vector<Goods> goods;
     int state;
 public:
-    static int capacity;
     int id;
 
     void setMission(Berth berth) {

@@ -13,4 +13,5 @@ add_executable(HuaweiIChiHanTanYao main.cpp
         Berth.h
         Ship.h
         Robot.h
+        values.h
 )

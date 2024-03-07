@@ -5,17 +5,18 @@
 #ifndef HUAWEIICHIHANTANYAO_MAP_H
 #define HUAWEIICHIHANTANYAO_MAP_H
 #include "tanyao.h"
+#include "values.h"
+#include "Ship.h"
 
 class Map {
-    char maze[300][300];
-
-    void init() {
+public:
+    static void init() {
         int cnt = 0;
         for (int i = 0; i < 200; i++)
             for (int j = 0; j < 200; j++){
                 cin >> maze[i][j];
                 if (maze[i][j] == 'A') {
-                    rob[cnt].ID = cnt;
+                    rob[cnt].id = cnt;
                     rob[cnt].position.x = i;
                     rob[cnt].position.y = j;
                 }
@@ -23,14 +24,14 @@ class Map {
             }
         for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
             scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
-            ber[id].ID = id, ber[id].x = x, ber[id].y = y, ber[id].time = time, ber[id].velocity = vel;
+            ber[id].id = id, ber[id].position.x = x, ber[id].position.y = y, ber[id].distance = time, ber[id].velocity = vel;
         }
-        scanf("%d", &Ship.capacity);
-        string s;
-        cin >> s;
-        cout << s << "\n";
+        scanf("%d", capacity);
+        string thisisOK;
+        cin >> thisisOK;
+        cout << thisisOK << "\n";
     }
-    void update() {
+    static void update() {
         scanf("%d%d", &frame, &totalMoney);
         int k;
         scanf("%d", &k);
@@ -51,6 +52,9 @@ class Map {
 
         cout << thisisOK << "\n";
     }
+//    int getPointState(Point p) {
+//        return maze[p.x][p.y];
+//    }
 };
 
 
