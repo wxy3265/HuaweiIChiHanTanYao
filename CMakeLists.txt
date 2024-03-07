@@ -19,7 +19,4 @@ add_executable(HuaweiIChiHanTanYao main.cpp
         Map.cpp
         values.cpp
         Berth.cpp
-        Goods.cpp
-        path.cpp
-        Path.cpp
 )
