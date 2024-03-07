@@ -48,15 +48,21 @@ public:
             }
             if (flag) break;
         }
+        if (!flag) {
+            length = 10000000;
+            return;
+        }
         int nx = end.x, ny = end.y;
         stack<Point> repath;
-        while (nx != start.x && ny != start.y) {
+        while (nx != start.x || ny != start.y) {
             repath.push((Point){nx, ny});
             int lastx = nx, lasty = ny;
             nx -= fx[steps[lastx][lasty]];
             ny -= fy[steps[lastx][lasty]];
             length++;
         }
+        repath.push((Point){nx, ny});
+        length++;
         while (!repath.empty()) {
             points.push_back(repath.top());
             repath.pop();
