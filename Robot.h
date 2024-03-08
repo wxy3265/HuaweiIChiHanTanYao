@@ -10,12 +10,14 @@
 #include "Point.h"
 #include "State.h"
 #include "Path.h"
+#include "Berth.h"
 
 class Robot {
 private:
     vector<Goods> goods;
     Point nextPoint;
-    Point goodsToGet, target;
+    Goods goodsToGet;
+    Berth target;
     int mission;
     Path path;
     int state = RobotState::FREE;
@@ -28,7 +30,7 @@ public:
     Point position;
     int getState();
     vector<Goods> getGoods();
-    void setMission(Point _goodsToGet, Point _target);
+    void setMission(Goods _goodsToGet, Berth _target);
     void update(Point _position, bool _enable);
 };
 

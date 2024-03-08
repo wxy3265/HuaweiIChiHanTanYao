@@ -15,12 +15,12 @@ void Robot::pull() {
 }
 int Robot::getState() {return state;}
 vector<Goods> Robot::getGoods() {return goods;}
-void Robot::setMission(Point _goodsToGet, Point _target) {
+void Robot::setMission(Goods _goodsToGet, Berth _target) {
     goodsToGet = _goodsToGet;
     target = _target;
     mission = RobotState::MISSION_GET;
     state = RobotState::MISSION_MOVE;
-    path = Path(position, goodsToGet, id);
+    path = Path(position, goodsToGet.position, id);
     nextPoint = position;
 }
 void Robot::update(Point _position, bool _enable) {
@@ -38,11 +38,13 @@ void Robot::update(Point _position, bool _enable) {
         move(position.getDirection(nextPoint));
     } else if (state == RobotState::MISSION_GET) {
         get();
-        path = Path(position, target, id);
+        goods.push_back(goodsToGet);
+        path = Path(position, target.position, id);
         state = RobotState::MISSION_MOVE;
         mission = RobotState::MISSION_PULL;
     } else if (state == RobotState::MISSION_PULL) {
         pull();
+        goods.pop_back();
         mission = state = RobotState::FREE;
     }
 }
