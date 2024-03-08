@@ -21,12 +21,12 @@ add_executable(main main.cpp
         Berth.h
         Ship.h
         values.h
-        RobotTest.cpp
+#        RobotTest.cpp
         Robot.cpp
         Robot.h
         Map.cpp
         values.cpp
         Berth.cpp
-        pathTest.cpp
+#        pathTest.cpp
         tanyao.cpp
 )
