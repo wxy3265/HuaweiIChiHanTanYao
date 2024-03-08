@@ -4,9 +4,9 @@
 
 #include "Ship.h"
 
-void Ship::get(int berthId) {
-    cerr << "ship! get" << id << ' ' << berthId << '\n';
-    cout << "ship " << id << ' ' << berthId << '\n';
+void Ship::get(Berth &berth) {
+    cerr << "ship! get" << id << ' ' << berth.id << '\n';
+    cout << "ship " << id << ' ' << berth.id << '\n';
 }
 
 void Ship::sell() {
@@ -14,13 +14,11 @@ void Ship::sell() {
     cout << "go " << id << '\n';
 }
 
-void Ship::setMission(int berthId) {
-    if (berthId == -1) sell();
-    else get(berthId);
-//    while (true) cerr << "ShipSetMission:" << id << ' ' << berth.id << '\n';
-//    target = berth;
-//    mission = ShipState::MISSION_GET;
-//    get(berth);
+void Ship::setMission(Berth &berth) {
+    get(berth);
+    target = &berth;
+    mission = ShipState::MISSION_MOVE;
+    endCompleteTime = frame + berth.distance + 3;
 }
 
 void Ship::pushGoods(Goods goods1) {
@@ -32,14 +30,20 @@ vector<Goods> Ship::getGoods() {return goods;}
 
 void Ship::update(int _state) {
     state = _state;
-    if (mission == ShipState::MISSION_GET && state == ShipState::PERFORMING) {
-//        if ()
-        mission = ShipState::MISSION_PULL;
-//        sell();
-    }
-    if (mission == ShipState::MISSION_PULL && state == ShipState::PERFORMING) {
-//        cerr << "Free\n";
-//        mission = ShipState::FREE;
+    if (mission == ShipState::MISSION_MOVE) {
+        if (frame >= endCompleteTime) {
+            mission = ShipState::MISSION_GET;
+        }
+    } else if (mission == ShipState::MISSION_GET) {
+        if (target->empty()) {
+            sell();
+            endCompleteTime = frame + target->distance + 3;
+            mission = ShipState::MISSION_PULL;
+        } else {
+            goods.push_back(target->fetchGoods());
+        }
+    } else if (mission == ShipState::MISSION_PULL) {
+        mission = ShipState::FREE;
     }
 }
 

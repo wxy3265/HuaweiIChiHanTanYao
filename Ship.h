@@ -10,17 +10,17 @@
 class Ship {
 private:
     int mission = ShipState::FREE;
-    Berth target;
+    Berth *target;
     vector<Goods> goods;
     int state = ShipState::FREE;
-    int loadTime;
-    void get(int berthId);
+    int endCompleteTime;
+    void get(Berth &berth);
     void sell();
 
 public:
     int id;
 
-    void setMission(int berthId);
+    void setMission(Berth &berth);
     void pushGoods(Goods goods1);
     bool isFree();
     int getState();

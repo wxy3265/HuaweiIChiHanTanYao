@@ -33,7 +33,6 @@ void Map::init() {
     string thisisOK;
     cin >> thisisOK;
     cout << thisisOK << "\n";
-    cout.flush();
 }
 
 void Map::update() {

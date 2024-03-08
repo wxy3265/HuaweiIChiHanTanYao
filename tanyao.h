@@ -17,6 +17,8 @@
 #include <map>
 
 extern char maze[300][300];
+extern int frame, totalMoney;
+extern int capacity;
 
 using namespace std;
 

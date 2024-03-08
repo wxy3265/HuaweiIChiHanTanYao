@@ -32,7 +32,7 @@ void allocateHome(){
         for(int j = 0; j <= 9; j++){
             to_berth_distance[++cnt].robotId = i;
             to_berth_distance[cnt].berthId = j;
-            to_berth_distance[cnt].distance = Path(robot[i].position, berth[j].position, 0).length;
+            to_berth_distance[cnt].distance = Path(robot[i].position, berth[j].position, -1).length;
         }
     }
     sort(to_berth_distance + 1,to_berth_distance + cnt + 1,cmp);
@@ -43,7 +43,7 @@ void allocateHome(){
         robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
         berthRobot[to_berth_distance[i].berthId] = to_berth_distance[i].robotId;
     }
-
+    cout.flush();
 }
 
 void makeMap(vector<Point> points) {
@@ -139,7 +139,7 @@ void getPath1(int id, Point end) {
 
 void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
-        int dis = Path(newGoods[i].position, berth[start].position, 0).length;
+        int dis = Path(newGoods[i].position, berth[start].position, -1).length;
         double efficiency = 1.0 * newGoods[i].value / (dis * 2.0);
         operation[start].push((Operation){newGoods[i], berth[start], dis * 2, efficiency});
     }
@@ -151,6 +151,7 @@ int main() {
     allocateHome();
     while (frame < 15000){
         Map::update();
+//        while (true) cerr << "init";
         for(int i = 0; i <= 9; i++)
             calcEfficiency(i);
         while(newGoods.size())newGoods.pop_back();
@@ -159,11 +160,12 @@ int main() {
                 while(operation[robotHome[i]].size()){
                     int dis = operation[robotHome[i]].top().totalDistance / 2;
                     int time = operation[robotHome[i]].top().targetGoods.time;
-                    if((frame + dis < time + 1000) && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0) && (dis > 50000))break;
+                    if((frame + dis < time + 1000) && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0) && (Path(robot[i].position, operation[robotHome[i]].top().targetGoods.position, -1).length < 50000))break;
                     operation[robotHome[i]].pop();
                 }
                 if(operation[robotHome[i]].empty())continue;
                 robot[i].setMission(operation[robotHome[i]].top().targetGoods, operation[robotHome[i]].top().targetBerth);
+//                while (true) cerr << "FREE";
                 visitGoods[operation[robotHome[i]].top().targetGoods.id] = 1;
                 operation[robotHome[i]].pop();
             }

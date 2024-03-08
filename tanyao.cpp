@@ -4,3 +4,6 @@
 
 #include "tanyao.h"
 char maze[300][300];
+int frame, totalMoney;
+int capacity;
+

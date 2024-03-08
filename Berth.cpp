@@ -5,11 +5,13 @@
 #include "Berth.h"
 
 void Berth::pushGoods(Goods gd) {
-    goods.push_back(gd);
+    goods.push(gd);
 }
 
-vector<Goods> Berth::getGoods() {
-    return goods;
+Goods Berth::fetchGoods() {
+    Goods goods1 = goods.front();
+    goods.pop();
+    return goods1;
 }
 
 void Berth::setShip(int st) {
@@ -19,3 +21,13 @@ void Berth::setShip(int st) {
 int Berth::getShip() {
     return shipState;
 }
+
+bool Berth::empty() {
+    return goods.empty();
+}
+
+int Berth::getGoodsNum() {
+    return (int)goods.size();
+}
+
+

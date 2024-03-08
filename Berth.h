@@ -11,7 +11,7 @@
 class Berth {
 private:
     int shipState;
-    vector<Goods> goods;
+    queue<Goods> goods;
 public:
     int id;
     Point position;
@@ -19,10 +19,12 @@ public:
     int velocity;
 
     void pushGoods(Goods gd);
-    vector<Goods> getGoods();
+    Goods fetchGoods();
 
     void setShip(int st);
     int getShip();
+    bool empty();
+    int getGoodsNum();
 };
 
 

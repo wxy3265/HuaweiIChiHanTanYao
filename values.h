@@ -12,7 +12,5 @@ extern Robot robot[12];
 extern Berth berth[12];
 extern Ship ship[7];
 extern vector<Goods> newGoods;
-extern int frame, totalMoney;
-extern int capacity;
 
 #endif //HUAWEIICHIHANTANYAO_VALUES_H
