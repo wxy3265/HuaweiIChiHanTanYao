@@ -52,7 +52,7 @@ void calcEfficiency(int start){
     }
 }
 
-int main() {
+int _main() {
     Map::init();
     allocateHome();
     while (true){

@@ -22,13 +22,10 @@ public:
         for (int i = 0; i < 210; i++)
             for (int j = 0; j < 210; j++)
                 ffind[i][j] = steps[i][j] = 0;
-//        ffind[start.x][start.y] = 0;
         int flag = 0;
         while (!q.empty()) {
             Point p = q.front();
             q.pop();
-//            if (ffind[p.x][p.y]) continue;
-//            ffind[p.x][p.y] = 1;
             for (int i = 0; i < 4; i++) {
                 int ex = p.x + fx[i], ey = p.y + fy[i];
                 if (ex < 0 || ex > 199 || ey < 0 || ey > 199) continue;
@@ -60,7 +57,7 @@ public:
         }
         repath.push((Point){nx, ny});
         length++;
-        cerr << "start:" << start.x << ',' << start.y << '\n';
+        cerr << "start:" << start.x << ',' << start.y << ' ' << "end:" << end.x << ',' << end.y << '\n';
         cerr << "id:" << id << "path:";
         while (!repath.empty()) {
             points.push_back(repath.top());
