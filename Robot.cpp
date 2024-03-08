@@ -26,19 +26,18 @@ void Robot::setMission(Goods _goodsToGet, Berth _target) {
     path = Path(position, goodsToGet.position, id);
     nextPoint = position;
 }
+
+//更新机器人状态
 void Robot::update(Point _position, bool _enable, bool _carrying) {
-    if (id == 0)
-        cerr << "robot" << id << "target:" << target.position.x << ',' << target.position.y << "pos:"
-             << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
-             << "path:" << path.step << ' ' << path.length << ';' << "gtg:" << goodsToGet.position.x << ','
-             << goodsToGet.position.y << '\n';
+//    if (id == 0)
+//        cerr << "robot" << id << "target:" << target.position.x << ',' << target.position.y << "pos:"
+//             << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
+//             << "path:" << path.step << ' ' << path.length << ';' << "gtg:" << goodsToGet.position.x << ','
+//             << goodsToGet.position.y << '\n';
     position = _position;
     enable = _enable;
     carrying = _carrying;
-//    if (true) cerr << "pos:" << position.x << ' ' << position.y << " state:" << state << "next:" << nextPoint.x << ',' << nextPoint.y << '\n';
-//    while (position == nextPoint) cerr << '!';
     if (state == RobotState::MISSION_MOVE) {
-//        while (id == 4) cerr << "getNext" << path.step << ',' << path.length;
         if (position == nextPoint) nextPoint = path.getNextPoint();
         if (nextPoint == Point(-1, -1) || nextPoint == Point(0, 0) || path.length == path.step) {
             state = mission;
@@ -55,7 +54,6 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         mission = RobotState::MISSION_PULL;
     } else if (state == RobotState::MISSION_PULL) {
         pull();
-//        while(true);
         goods.pop_back();
         mission = state = RobotState::FREE;
     }

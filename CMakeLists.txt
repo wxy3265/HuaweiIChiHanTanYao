@@ -20,7 +20,7 @@ ADD_EXECUTABLE(main ${src})
 #        Point.h
 #        State.h
 #        Goods.h
-#        Berth.h
+#        Berth.h cre
 #        Ship.h
 #        values.h
 ##        RobotTest.cpp
