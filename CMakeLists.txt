@@ -9,24 +9,24 @@ if (!WIN32)
 endif (!WIN32)
 
 AUX_SOURCE_DIRECTORY(. src)
-#ADD_EXECUTABLE(main ${src})
+ADD_EXECUTABLE(main ${src})
 
-add_executable(main main.cpp
-        tanyao.h
-        Map.h
-        Path.h
-        Point.h
-        State.h
-        Goods.h
-        Berth.h
-        Ship.h
-        values.h
-#        RobotTest.cpp
-        Robot.cpp
-        Robot.h
-        Map.cpp
-        values.cpp
-        Berth.cpp
-        tanyao.cpp
-        Ship.cpp
-)
+#add_executable(main main.cpp
+#        tanyao.h
+#        Map.h
+#        Path.h
+#        Point.h
+#        State.h
+#        Goods.h
+#        Berth.h
+#        Ship.h
+#        values.h
+##        RobotTest.cpp
+#        Robot.cpp
+#        Robot.h
+#        Map.cpp
+#        values.cpp
+#        Berth.cpp
+#        tanyao.cpp
+#        Ship.cpp
+# )
