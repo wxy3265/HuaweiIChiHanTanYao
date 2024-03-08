@@ -20,7 +20,6 @@ private:
     Goods goodsToGet;
     Berth target;
     int mission;
-    Path path;
     int state = RobotState::FREE;
     bool enable;
     void move(int direction);
@@ -29,6 +28,7 @@ private:
 public:
     int id;
     Point position;
+    Path path;
     int getState();
     vector<Goods> getGoods();
     void setMission(Goods _goodsToGet, Berth _target);
