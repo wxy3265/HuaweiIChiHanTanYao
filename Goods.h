@@ -17,6 +17,8 @@ public:
     Point position;
     Goods(const Point &position, int value, int time) : position(position), value(value), time(time) {}
 
+    Goods() {}
+
     void setState(int state) {
         goodsState = state;
     }

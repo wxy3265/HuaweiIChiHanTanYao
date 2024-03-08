@@ -10,7 +10,7 @@ class ShipState {
 public:
     static const int MOVING = 0;
     static const int PERFORMING = 1;
-    static const int WAITING = 2;
+    static const int FREE = 2;
     static const int MISSION_GET = 3;
     static const int MISSION_PULL = 4;
     static const int MISSION_MOVE = 5;

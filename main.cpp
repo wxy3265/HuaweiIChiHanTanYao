@@ -3,7 +3,7 @@
 #include "Path.h"
 #include "Point.h"
 
-int main() {
+int _main() {
     Map::init();
     Point start;
     start.x = 1;

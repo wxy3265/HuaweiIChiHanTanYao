@@ -11,27 +11,23 @@
 
 class Ship {
 private:
-    int mission;
+    int mission = ShipState::FREE;
     Berth target;
     vector<Goods> goods;
-    int state;
+    int state = ShipState::FREE;
+    int loadTime;
+    void get(Berth berth);
+    void sell();
+
 public:
     int id;
 
-    void setMission(Berth berth) {
-        target = berth;
-        mission = ShipState::MISSION_GET;
-    }
-    void pushGoods(Goods goods1) {
-        goods.push_back(goods1);
-    }
-
-    int getState() {return state;}
-    vector<Goods> getGoods() {return goods;}
-
-    void update(int _state) {
-        state = _state;
-    }
+    void setMission(Berth berth);
+    void pushGoods(Goods goods1);
+    bool isFree();
+    int getState();
+    vector<Goods> getGoods();
+    void update(int _state);
 };
 
 

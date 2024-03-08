@@ -27,6 +27,6 @@ add_executable(main main.cpp
         Map.cpp
         values.cpp
         Berth.cpp
-#        pathTest.cpp
         tanyao.cpp
+        Ship.cpp
 )

@@ -13,8 +13,13 @@
 #include "Berth.h"
 
 class Robot {
+public:
+    explicit Robot(const Berth &target);
+    Robot() {}
+
 private:
     vector<Goods> goods;
+    bool carrying;
     Point nextPoint;
     Goods goodsToGet;
     Berth target;
@@ -31,7 +36,7 @@ public:
     int getState();
     vector<Goods> getGoods();
     void setMission(Goods _goodsToGet, Berth _target);
-    void update(Point _position, bool _enable);
+    void update(Point _position, bool _enable, bool _carrying);
 };
 
 

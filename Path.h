@@ -68,7 +68,7 @@ public:
             repath.pop();
         }
         cerr << '\n';
-//        while(!id) ;
+//        while(!id && start.x == 2) ;
     }
     Point getNextPoint() {
         if (step == length) return {-1, -1};
