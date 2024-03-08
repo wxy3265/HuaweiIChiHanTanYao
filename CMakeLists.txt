@@ -9,9 +9,9 @@ if (!WIN32)
 endif (!WIN32)
 
 AUX_SOURCE_DIRECTORY(. src)
-ADD_EXECUTABLE(main ${src})
+#ADD_EXECUTABLE(main ${src})
 
-add_executable(HuaweiIChiHanTanYao main.cpp
+add_executable(main main.cpp
         tanyao.h
         Map.h
         Path.h
@@ -27,4 +27,6 @@ add_executable(HuaweiIChiHanTanYao main.cpp
         Map.cpp
         values.cpp
         Berth.cpp
+        pathTest.cpp
+        tanyao.cpp
 )

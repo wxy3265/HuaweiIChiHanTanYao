@@ -5,13 +5,14 @@
 #ifndef HUAWEIICHIHANTANYAO_PATH_H
 #define HUAWEIICHIHANTANYAO_PATH_H
 #include "tanyao.h"
+#include "Point.h"
 const int fx[4] = {0, 0, 1, -1};
 const int fy[4] = {1, -1, 0, 0};
 
 class Path {
     vector<Point> points;
-    int length, step;
 public:
+    int length, step;
     Path() {}
     Path(Point start, Point end, int id) {
         step = 0, length = 0;
@@ -70,7 +71,8 @@ public:
 //        while(!id) ;
     }
     Point getNextPoint() {
-        if (step == length) return Point(-1, -1);
+        if (step == length) return {-1, -1};
+//        while (true) cerr << "step:" << step;
         return points[++step];
     }
 };

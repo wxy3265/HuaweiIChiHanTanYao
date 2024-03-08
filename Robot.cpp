@@ -27,8 +27,9 @@ void Robot::update(Point _position, bool _enable) {
     position = _position;
     enable = _enable;
     if (true) cerr << "pos:" << position.x << ' ' << position.y << " state:" << state << "next:" << nextPoint.x << ',' << nextPoint.y << '\n';
-//    while (position == nextPoint) ;
+//    while (position == nextPoint) cerr << '!';
     if (state == RobotState::MISSION_MOVE) {
+//        while (id == 4) cerr << "getNext" << path.step << ',' << path.length;
         if (position == nextPoint) nextPoint = path.getNextPoint();
         if (nextPoint == Point(-1, -1)) {
             state = mission;

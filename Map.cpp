@@ -17,7 +17,7 @@ void Map::init() {
             }
         }
     }
-//    while (true) cerr << robot[0].position.x;
+//    while (true) cerr << "cnt:" << cnt << '\n';
     for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
         scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
         berth[id].id = id, berth[id].position.x = x, berth[id].position.y = y,
@@ -42,8 +42,8 @@ void Map::update() {
     }
     for (int i = 0, state, x, y, goods; i < 10; i++) {
         scanf("%d%d%d%d", &goods, &x, &y, &state);
-//        cerr << "robot:" << i << ' ' << robot[i].position.x << ' ' << robot[i].position.y << '\n';
-        if (robot[i].getState() == RobotState::FREE) robot[i].setMission(Point(137, 117), Point(0, 0));
+        cerr << "robot:" << i << ' ' << robot[i].position.x << ' ' << robot[i].position.y << '\n';
+//        if (robot[i].getState() == RobotState::FREE && i != 4) robot[i].setMission(Point(137, 117), Point(0, 0));
         robot[i].update(Point(x, y), state);
     }
     for (int i = 0, state, id; i < 5; i++) {
@@ -53,5 +53,6 @@ void Map::update() {
     string thisisOK;
     cin >> thisisOK;
     cout << thisisOK << "\n";
+//    while (true) cerr << stdout << '\n';
     cout.flush();
 }

@@ -16,8 +16,8 @@
 #include <stack>
 #include <map>
 
-using namespace std;
+extern char maze[300][300];
 
-static char maze[300][300];
+using namespace std;
 
 #endif //HUAWEIICHIHANTANYAO_TANYAO_H
