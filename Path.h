@@ -14,6 +14,10 @@ class Path {
 public:
     int length, step;
     Path() {}
+    void setPath(vector<Point> ps, int len) {
+        points = ps, length = len;
+//        this.points = ps, this.length = len;
+    }
     Path(Point start, Point end, int id) {
         step = 0, length = 0;
         queue<Point> q;
@@ -71,6 +75,10 @@ public:
         if (step == length) return {-1, -1};
 //        while (true) cerr << "step:" << step;
         return points[++step];
+    }
+    Point getPointbyTime(int nextTime) {
+        if (step + nextTime > length) return {-1, -1};
+        else return points[step + nextTime];
     }
 };
 
