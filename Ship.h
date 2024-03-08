@@ -5,8 +5,6 @@
 #ifndef HUAWEIICHIHANTANYAO_SHIP_H
 #define HUAWEIICHIHANTANYAO_SHIP_H
 
-#include "tanyao.h"
-#include "Goods.h"
 #include "Berth.h"
 
 class Ship {

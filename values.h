@@ -4,10 +4,8 @@
 
 #ifndef HUAWEIICHIHANTANYAO_VALUES_H
 #define HUAWEIICHIHANTANYAO_VALUES_H
-#include "tanyao.h"
+
 #include "Robot.h"
-#include "Point.h"
-#include "Berth.h"
 #include "Ship.h"
 
 extern Robot robot[12];

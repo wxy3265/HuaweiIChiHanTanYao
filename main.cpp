@@ -1,9 +1,7 @@
 //#include "tanyao.h"
 #include "Map.h"
-#include "Path.h"
-#include "Point.h"
 
-int _main() {
+int main() {
     Map::init();
     Point start;
     start.x = 1;

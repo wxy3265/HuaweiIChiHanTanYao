@@ -5,10 +5,6 @@
 #ifndef HUAWEIICHIHANTANYAO_ROBOT_H
 #define HUAWEIICHIHANTANYAO_ROBOT_H
 
-#include "tanyao.h"
-#include "Goods.h"
-#include "Point.h"
-#include "State.h"
 #include "Path.h"
 #include "Berth.h"
 

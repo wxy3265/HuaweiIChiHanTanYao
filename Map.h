@@ -4,12 +4,7 @@
 
 #ifndef HUAWEIICHIHANTANYAO_MAP_H
 #define HUAWEIICHIHANTANYAO_MAP_H
-#include "tanyao.h"
 #include "values.h"
-#include "Ship.h"
-#include "Robot.h"
-#include "Point.h"
-#include "Berth.h"
 
 class Map {
 public:

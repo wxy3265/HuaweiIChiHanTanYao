@@ -6,7 +6,6 @@
 #define HUAWEIICHIHANTANYAO_GOODS_H
 
 #include "Point.h"
-#include "State.h"
 
 class Goods {
 private:
