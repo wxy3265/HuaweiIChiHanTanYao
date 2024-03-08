@@ -4,6 +4,8 @@
 
 #include "Map.h"
 
+static int goodsNumber = 0;
+
 void Map::init() {
     //读入地图
     int cnt = 0;
@@ -42,7 +44,7 @@ void Map::update() {
     scanf("%d", &k);
     for (int i = 1, x, y, m; i <= k; i++) {
         scanf("%d%d%d", &x, &y, &m);
-        newGoods.push_back(Goods(Point(x, y), m, frame));
+        newGoods.push_back(Goods(Point(x, y), m, frame, ++goodsNumber));
     }
     //更新机器人
     for (int i = 0, state, x, y, goods; i < 10; i++) {
@@ -57,6 +59,5 @@ void Map::update() {
     //OK
     string thisisOK;
     cin >> thisisOK;
-    cout << thisisOK << "\n";
-    cout.flush();
+    while(thisisOK != "OK") cin >> thisisOK;
 }

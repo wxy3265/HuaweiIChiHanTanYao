@@ -32,16 +32,18 @@ void allocateHome(){
         for(int j = 0; j <= 9; j++){
             to_berth_distance[++cnt].robotId = i;
             to_berth_distance[cnt].berthId = j;
-            to_berth_distance[cnt].distance = Path(robot[i].position, berth[j].position, 1).length;
+            to_berth_distance[cnt].distance = Path(robot[i].position, berth[j].position, 0).length;
         }
     }
     sort(to_berth_distance + 1,to_berth_distance + cnt + 1,cmp);
-    for(int i = 0; i <= cnt; i++){
+
+    for(int i = 1; i <= cnt; i++){
         if(robotHome[to_berth_distance[i].robotId] != -1)continue;
         if(berthRobot[to_berth_distance[i].berthId] != -1)continue;
         robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
         berthRobot[to_berth_distance[i].berthId] = to_berth_distance[i].robotId;
     }
+
 }
 
 void calcEfficiency(int start){
@@ -52,31 +54,31 @@ void calcEfficiency(int start){
     }
 }
 
-int _main() {
+int main() {
+    freopen("out.txt", "w", stderr);
     Map::init();
     allocateHome();
-    while (true){
+    while (frame < 15000){
         Map::update();
         for(int i = 0; i <= 9; i++)
             calcEfficiency(i);
         while(newGoods.size())newGoods.pop_back();
         for(int i = 0; i <= 9; i++){
             if(robot[i].getState() == RobotState::FREE){
-                while(1){
-                    if (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0)break;
-                    operation[robotHome[i]].pop();
-                }
-                while(1){
+                while(operation[robotHome[i]].size()){
                     int dis = operation[robotHome[i]].top().totalDistance / 2;
                     int time = operation[robotHome[i]].top().targetGoods.time;
-                    if(frame + dis < time + 1000)break;
+                    if((frame + dis < time + 1000) && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0) && (dis > 50000))break;
                     operation[robotHome[i]].pop();
                 }
+                if(operation[robotHome[i]].empty())continue;
                 robot[i].setMission(operation[robotHome[i]].top().targetGoods, operation[robotHome[i]].top().targetBerth);
                 visitGoods[operation[robotHome[i]].top().targetGoods.id] = 1;
                 operation[robotHome[i]].pop();
             }
         }
+        cout << "OK" << endl;
+        cout.flush();
     }
     return 0;
 }

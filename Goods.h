@@ -15,7 +15,7 @@ public:
     int value;
     int time;
     Point position;
-    Goods(const Point &position, int value, int time) : position(position), value(value), time(time) {}
+    Goods(const Point &position, int value, int time, int id) : position(position), value(value), time(time), id(id){}
 
     Goods() {}
 
