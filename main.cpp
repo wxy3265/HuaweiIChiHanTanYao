@@ -3,6 +3,7 @@
 
 int robotHome[12];
 int berthRobot[12];
+bool visitGoods[200007];
 struct Operation{
     Goods targetGoods;
     Berth targetBerth;
@@ -62,12 +63,18 @@ int main() {
         for(int i = 0; i <= 9; i++){
             if(robot[i].getState() == RobotState::FREE){
                 while(1){
+                    if (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0)break;
+                    operation[robotHome[i]].pop();
+                }
+                while(1){
                     int dis = operation[robotHome[i]].top().totalDistance / 2;
                     int time = operation[robotHome[i]].top().targetGoods.time;
                     if(frame + dis < time + 1000)break;
                     operation[robotHome[i]].pop();
                 }
                 robot[i].setMission(operation[robotHome[i]].top().targetGoods, operation[robotHome[i]].top().targetBerth);
+                visitGoods[operation[robotHome[i]].top().targetGoods.id] = 1;
+                operation[robotHome[i]].pop();
             }
         }
     }
