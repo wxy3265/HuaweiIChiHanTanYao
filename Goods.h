@@ -11,10 +11,10 @@
 class Goods {
 private:
     int goodsState = GoodsState::FREE;
-    int time;
 public:
     int id;
     int value;
+    int time;
     Point position;
     Goods(const Point &position, int value, int time) : position(position), value(value), time(time) {}
 
