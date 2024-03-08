@@ -8,6 +8,8 @@ if (!WIN32)
     link_libraries(pthread rt m)
 endif (!WIN32)
 
+set(CMAKE_EXE_LINKER_FLAGS "-static")
+
 AUX_SOURCE_DIRECTORY(. src)
 ADD_EXECUTABLE(main ${src})
 
