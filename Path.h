@@ -83,7 +83,7 @@ public:
     }
 };
 
-Path robotPath[10];
-bool robotGetGoods[10];
+extern Path robotPath[10];
+extern bool robotGetGoods[10];
 
 #endif //HUAWEIICHIHANTANYAO_PATH_H

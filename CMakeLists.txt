@@ -11,7 +11,8 @@ endif (!WIN32)
 set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 AUX_SOURCE_DIRECTORY(. src)
-ADD_EXECUTABLE(main ${src})
+ADD_EXECUTABLE(main ${src}
+        Path.cpp)
 
 #add_executable(main main.cpp
 #        tanyao.h

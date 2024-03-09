@@ -128,8 +128,8 @@ Path getPath1(int robId, Point target) {
         int nextframe = step[fr.x][fr.y] + 1;
         for (int i = 0; i < 10; i++) {
             if (i != robId) {
-                if (robot[i].path.length > 50000) continue;
-                Point robotThisPoint = robot[i].path.getPointbyTime(nextframe);
+                if (robotPath[i].length > 50000) continue;
+                Point robotThisPoint = robotPath[i].getPointbyTime(nextframe);
                 thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
             }
         }
@@ -150,8 +150,8 @@ Path getPath1(int robId, Point target) {
         }
         for (int i = 0; i < 10; i++)
             if (i != robId) {
-                if (robot[i].path.length > 50000) continue;
-                Point robotThisPoint = robot[i].path.getPointbyTime(nextframe);
+                if (robotPath[i].length > 50000) continue;
+                Point robotThisPoint = robotPath[i].getPointbyTime(nextframe);
                 thismap[robotThisPoint.x][robotThisPoint.y] = maze[robotThisPoint.x][robotThisPoint.y];
             }
     }
