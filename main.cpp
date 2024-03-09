@@ -35,18 +35,32 @@ int main() {
     Map::init();
     for(int i = 0; i <= 9; i++) Map::pretreatPath(berth[i]);
     allocateHome();
+    for (int i = 0; i <= 9; i++) {
+        if (robotHome[i] == 5) cerr << "IS YOU! ROBOT:" << i << '\n';
+    }
     while (frame < 15000){
         Map::update();
-        if ((frame - 1) % 2000 == 0) {
-            if ((frame - 1) % 4000 == 0) ship[1].get(berth[1]);
-            else ship[0].sell();
+        if (ship[0].isFree()) {
+            ship[0].setMission(0);
+        }
+        if (ship[1].isFree()) {
+            ship[1].setMission(1);
+        }
+        if (ship[2].isFree()) {
+            ship[2].setMission(4);
+        }
+        if (ship[3].isFree()) {
+            ship[3].setMission(6);
+        }
+        if (ship[4].isFree()) {
+//            ship[4].setMission(5);
         }
 //        while (true) cerr << "init";
         for(int i = 0; i <= 9; i++)
             calcEfficiency(i);
         while(newGoods.size())newGoods.pop_back();
         for(int i = 0; i <= 9; i++){
-//            if (i != 0) continue;
+            if (i != 5 && i != 0 && i != 7 && i != 9) continue;
 //            cerr << "berth:" << operation[robotHome[i]].top().targetBerthId << '\n';
             if (robotCrushed[i]) {
                 if (robot[i].getMission() == RobotState::MISSION_GET) {
@@ -95,7 +109,7 @@ void allocateHome(){
             to_berth_distance[++cnt].robotId = i;
             to_berth_distance[cnt].berthId = j;
             //to_berth_distance[cnt].distance = Path(robot[i].position, berth[j].position, -1).length;
-            to_berth_distance[cnt].distance = Map::getLength(berth[j],robot[i].position);
+            to_berth_distance[cnt].distance = Map::getLength(j,robot[i].position);
         }
     }
     sort(to_berth_distance + 1,to_berth_distance + cnt + 1,cmp);
@@ -288,7 +302,8 @@ Path getPathbyAStar(int robID, Point target) {
 
 void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
-        int dis = Map::getLength(berth[start], newGoods[i].position);
+        int dis = Map::getLength(start, newGoods[i].position);
+//        while (frame == 813);
         double efficiency = 1.0 * newGoods[i].value / (dis * 2.0);
         operation[start].push((Operation){newGoods[i], start, dis * 2, efficiency});
     }
