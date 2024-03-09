@@ -6,6 +6,10 @@
 
 static int goodsNumber = 0;
 
+const int nx[]={0,0,1,-1};
+const int ny[]={1,-1,0,0};
+int pathLength[12][207][207];
+
 void Map::init() {
     //读入地图
     int cnt = 0;
@@ -59,4 +63,32 @@ void Map::update() {
     string thisisOK;
     cin >> thisisOK;
     while(thisisOK != "OK") cin >> thisisOK;
+}
+
+int Map::getLength(Berth ber, Point end) {
+    return pathLength[ber.id][end.x][end.y];
+}
+
+void Map::pretreatPath(Berth ber){
+    queue<Point> q;
+    Point start = ber.position;
+    q.push(start);
+    for(int i = 0; i <= 200; i++)
+        for(int j = 0; j <=200 ; j++)
+            pathLength[ber.id][i][j] = 1000000;
+    pathLength[ber.id][start.x][start.y] = 0;
+    while(q.size()){
+        Point cur = q.front();
+        q.pop();
+        for(int i = 0; i <= 3; i++){
+            int dx = cur.x + nx[i];
+            int dy = cur.y + ny[i];
+            if(dx < 0||dx >= 200||dy < 0||dy >= 200)continue;
+            if (maze[dx][dy] == PointState::OCEAN || maze[dx][dy] == PointState::BLOCK)continue;
+            if(pathLength[ber.id][dx][dy] > pathLength[ber.id][cur.x][cur.y] + 1){
+                pathLength[ber.id][dx][dy] = pathLength[ber.id][cur.x][cur.y] + 1;
+                q.push((Point{dx,dy}));
+            }
+        }
+    }
 }

@@ -12,6 +12,10 @@ public:
     static void init();
 
     static void update();
+
+    static void pretreatPath(Berth ber);
+
+    static int getLength(Berth ber, Point end);
 };
 
 #endif //HUAWEIICHIHANTANYAO_MAP_H

@@ -33,6 +33,7 @@ void calcEfficiency(int start);
 int main() {
     freopen("out.txt", "w", stderr);
     Map::init();
+    for(int i = 0; i <= 9; i++) Map::pretreatPath(berth[i]);
     allocateHome();
     while (frame < 15000){
         Map::update();
@@ -80,7 +81,8 @@ void allocateHome(){
         for(int j = 0; j <= 9; j++){
             to_berth_distance[++cnt].robotId = i;
             to_berth_distance[cnt].berthId = j;
-            to_berth_distance[cnt].distance = Path(robot[i].position, berth[j].position, -1).length;
+            //to_berth_distance[cnt].distance = Path(robot[i].position, berth[j].position, -1).length;
+            to_berth_distance[cnt].distance = Map::getLength(berth[j],robot[i].position);
         }
     }
     sort(to_berth_distance + 1,to_berth_distance + cnt + 1,cmp);
@@ -188,7 +190,7 @@ Path getPath1(int robId, Point target) {
 
 void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
-        int dis = Path(newGoods[i].position, berth[start].position, -1).length;
+        int dis = Map::getLength(berth[start], newGoods[i].position);
         double efficiency = 1.0 * newGoods[i].value / (dis * 2.0);
         operation[start].push((Operation){newGoods[i], berth[start], dis * 2, efficiency});
     }
