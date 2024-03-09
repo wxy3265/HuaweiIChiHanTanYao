@@ -24,7 +24,7 @@ void Robot::setMission(Goods _goodsToGet, Berth _target) {
 //    target.position.x += 3, target.position.y += 3;
     mission = RobotState::MISSION_GET;
     state = RobotState::MISSION_MOVE;
-    path = Path(position, goodsToGet.position, id);
+    robotPath[id] = Path(position, goodsToGet.position, id);
     nextPoint = position;
 }
 
@@ -33,7 +33,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     if (true) {
         cerr << "robot" << id << "target:" << target.position.x << ',' << target.position.y << "pos:"
              << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
-             << "path:" << path.step << ' ' << path.length << ';' << "gtg:" << goodsToGet.position.x << ','
+             << "path:" << robotPath[id].step << ' ' << robotPath[id].length << ';' << "gtg:" << goodsToGet.position.x << ','
              << goodsToGet.position.y << '\n';
     }
     position = _position;
@@ -41,8 +41,9 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     carrying = _carrying;
 //    while (true && frame != 1 && id >= 4) cerr << frame;
     if (state == RobotState::MISSION_MOVE) {
-        if (position == nextPoint) nextPoint = path.getNextPoint();
-        if (nextPoint == Point(-1, -1) || nextPoint == Point(0, 0) || path.length == path.step) {
+        robotGetGoods[id] = false;
+        if (position == nextPoint) nextPoint = robotPath[id].getNextPoint();
+        if (nextPoint == Point(-1, -1) || nextPoint == Point(0, 0) || robotPath[id].length == robotPath[id].step) {
             state = mission;
             return;
         }
@@ -50,12 +51,13 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     } else if (state == RobotState::MISSION_GET) {
         get();
         if (!carrying) return;
+        robotGetGoods[id] = true;
         goods.push_back(goodsToGet);
-        path = Path(position, Point(target.position.x + 3, target.position.y + 3), id);
-        nextPoint = path.getNextPoint();
+        nextPoint = robotPath[id].getNextPoint();
         state = RobotState::MISSION_MOVE;
         mission = RobotState::MISSION_PULL;
     } else if (state == RobotState::MISSION_PULL) {
+        robotGetGoods[id] = false;
         pull();
         goods.pop_back();
         mission = state = RobotState::FREE;

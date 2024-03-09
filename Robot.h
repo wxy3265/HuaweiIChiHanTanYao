@@ -28,7 +28,6 @@ private:
 public:
     int id;
     Point position;
-    Path path;
     int getState();
     vector<Goods> getGoods();
     void setMission(Goods _goodsToGet, Berth _target);

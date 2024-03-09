@@ -13,7 +13,7 @@ class Path {
     vector<Point> points;
 public:
     int length, step;
-    Path() {length = step = 0}
+    Path() {length = 1e7; step = 0;}
 
     Path(const vector<Point> &points, int length) : points(points), length(length) {step = 0;}
 
@@ -83,7 +83,7 @@ public:
     }
 };
 
-Path pathToGoods[10];
-Path pathToBerth[10];
+Path robotPath[10];
+bool robotGetGoods[10];
 
 #endif //HUAWEIICHIHANTANYAO_PATH_H

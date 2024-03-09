@@ -37,19 +37,25 @@ int main() {
     while (frame < 15000){
         Map::update();
 //        while (true) cerr << "init";
-        for(int i = 0; i <= 9; i++)
-            calcEfficiency(i);
         while(newGoods.size())newGoods.pop_back();
         for(int i = 0; i <= 9; i++){
+                for(int i = 0; i <= 9; i++)
+                    calcEfficiency(i);
+            if (robotGetGoods[i]) {
+                robotPath[i] = getPath1(i, berth[robotHome[i]].position);
+            }
             if(robot[i].getState() == RobotState::FREE){
                 while(operation[robotHome[i]].size()){
                     int dis = operation[robotHome[i]].top().totalDistance / 2;
                     int time = operation[robotHome[i]].top().targetGoods.time;
-                    if((frame + dis < time + 1000) && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0) && (Path(robot[i].position, operation[robotHome[i]].top().targetGoods.position, -1).length < 50000))break;
+                    if((frame + dis < time + 1000)
+                        && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0)
+                        && (Path(robot[i].position,operation[robotHome[i]].top().targetGoods.position, -1).length < 50000))
+                        break;
                     operation[robotHome[i]].pop();
                 }
                 if(operation[robotHome[i]].empty())continue;
-                robot[i].setMission(operation[robotHome[i]].top().targetGoods, operation[robotHome[i]].top().targetBerth);
+                robotSetMission(i, operation[robotHome[i]].top().targetGoods, operation[robotHome[i]].top().targetBerth);
 //                while (true) cerr << "FREE";
                 visitGoods[operation[robotHome[i]].top().targetGoods.id] = 1;
                 operation[robotHome[i]].pop();
@@ -63,8 +69,7 @@ int main() {
 
 void robotSetMission(int robId, Goods goodsToGet, Berth targetBerth) {
     robot[robId].setMission(goodsToGet, targetBerth);
-    pathToGoods[robId] = getPath1(robId, goodsToGet.position);
-    pathToBerth[robId];
+    robotPath[robId] = getPath1(robId, goodsToGet.position);
 }
 
 void allocateHome(){
@@ -123,7 +128,7 @@ Path getPath1(int robId, Point target) {
         int nextframe = step[fr.x][fr.y] + 1;
         for (int i = 0; i < 10; i++) {
             if (i != robId) {
-                if (robot[i].path.length = 10000000) continue;
+                if (robot[i].path.length > 50000) continue;
                 Point robotThisPoint = robot[i].path.getPointbyTime(nextframe);
                 thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
             }
@@ -145,7 +150,7 @@ Path getPath1(int robId, Point target) {
         }
         for (int i = 0; i < 10; i++)
             if (i != robId) {
-                if (robot[i].path.length = 10000000) continue;
+                if (robot[i].path.length > 50000) continue;
                 Point robotThisPoint = robot[i].path.getPointbyTime(nextframe);
                 thismap[robotThisPoint.x][robotThisPoint.y] = maze[robotThisPoint.x][robotThisPoint.y];
             }
