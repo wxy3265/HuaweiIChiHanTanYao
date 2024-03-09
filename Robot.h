@@ -22,6 +22,7 @@ private:
     int mission;
     int state = RobotState::FREE;
     bool enable;
+    bool crashed;
     void move(int direction);
     void get();
     void pull();
@@ -29,9 +30,10 @@ public:
     int id;
     Point position;
     int getState();
-    vector<Goods> getGoods();
+    Goods getGoodsToGet();
     void setMission(Goods _goodsToGet, int _targetId);
     void update(Point _position, bool _enable, bool _carrying);
+    int getMission();
 };
 
 extern Robot robot[12];

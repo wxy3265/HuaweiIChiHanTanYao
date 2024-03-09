@@ -16,7 +16,6 @@ void Robot::pull() {
     cerr << "pull!\n";
 }
 int Robot::getState() {return state;}
-vector<Goods> Robot::getGoods() {return goods;}
 void Robot::setMission(Goods _goodsToGet, int _targetId) {
     goodsToGet = _goodsToGet;
     targetId = _targetId;
@@ -29,23 +28,35 @@ void Robot::setMission(Goods _goodsToGet, int _targetId) {
 
 //更新机器人状态
 void Robot::update(Point _position, bool _enable, bool _carrying) {
-    if (id == 0) {
+    robotCrushed[id] = false;
+    if (id == 6) {
         cerr << "robot" << id << "target:" << berth[targetId].position.x << ',' << berth[targetId].position.y << "pos:"
              << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
              << "path:" << robotPath[id].step << ' ' << robotPath[id].length << ';'
              << "gtg:" << goodsToGet.position.x << ',' << goodsToGet.position.y
-             << "carrying:" << carrying << '\n';
+             << "carrying:" << carrying << " enable:" << enable << " crash:" << crashed << '\n';
     }
     position = _position;
     enable = _enable;
     carrying = _carrying;
 //    while (true && frame != 1 && id >= 4) cerr << frame;
+    if (!enable) {
+//        robotPath[id] = Path();
+        crashed = true;
+        return;
+    }
     if (state == RobotState::MISSION_MOVE) {
-        if (mission == RobotState::MISSION_PULL) cerr << "carrying:" << carrying << '\n';
+//        if (mission == RobotState::MISSION_PULL) cerr << "carrying:" << carrying << '\n';
+        if (crashed) {
+            cerr << "crashed:" << id << '\n';
+            robotCrushed[id] = true;
+            crashed = false;
+            return;
+        }
         robotGetGoods[id] = false;
         if (position == nextPoint || nextPoint == Point(-1, -1)) {
             nextPoint = robotPath[id].getNextPoint();
-            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
+//            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
         }
         if (nextPoint == Point(-1, -1) || robotPath[id].length == robotPath[id].step) {
             state = mission;
@@ -57,7 +68,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         cerr << "get:" << position.x << ',' << position.y
              << " goods:" << goodsToGet.position.x << ',' << goodsToGet.position.y << '\n';
         if (!carrying) {
-            cerr << "returned!\n";
+//            cerr << "returned!\n";
             return;
         }
         robotGetGoods[id] = true;
@@ -73,6 +84,14 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
 //        goods.pop_back();
         mission = state = RobotState::FREE;
     }
+}
+
+int Robot::getMission() {
+    return mission;
+}
+
+Goods Robot::getGoodsToGet() {
+    return goodsToGet;
 }
 
 Robot robot[12];

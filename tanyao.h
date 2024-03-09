@@ -19,6 +19,7 @@
 extern char maze[300][300];
 extern int frame, totalMoney;
 extern int capacity;
+extern bool robotCrushed[10];
 
 using namespace std;
 

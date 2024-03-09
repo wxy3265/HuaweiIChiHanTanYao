@@ -47,7 +47,14 @@ int main() {
         while(newGoods.size())newGoods.pop_back();
         for(int i = 0; i <= 9; i++){
 //            if (i != 0) continue;
-            cerr << "berth:" << operation[robotHome[i]].top().targetBerthId << '\n';
+//            cerr << "berth:" << operation[robotHome[i]].top().targetBerthId << '\n';
+            if (robotCrushed[i]) {
+                if (robot[i].getMission() == RobotState::MISSION_GET) {
+                    robotPath[i] = getPath1(i, robot[i].getGoodsToGet().position);
+                } else if (robot[i].getMission() == RobotState::MISSION_PULL) {
+                    robotPath[i] = getPath1(i, Point(berth[robotHome[i]].position.x + 3, berth[robotHome[i]].position.y + 3));
+                }
+            }
             if (robotGetGoods[i]) {
                 robotPath[i] = getPath1(i, Point(berth[robotHome[i]].position.x + 3, berth[robotHome[i]].position.y + 3));
             }
@@ -132,7 +139,7 @@ Path getPath1(int robId, Point target) {
     vector<Point> points;
     queue<Point> q;
     q.push(robot[robId].position);
-//    cerr << "getPath1:" << robId << '\n';
+    cerr << "getPath1:" << robId << '\n';
 //    int ssss = 0;
     while (!q.empty()) {
 //        ssss++;
@@ -143,7 +150,12 @@ Path getPath1(int robId, Point target) {
             if (i != robId) {
                 if (robotPath[i].length > 50000) continue;
                 Point robotThisPoint = robotPath[i].getPointbyTime(nextframe);
-                if (robotThisPoint.x == -1 && robotThisPoint.y == -1) continue;
+                if(robotCrushed[i] && robotCrushed[robId]) {
+//                    cerr << "Avoid Crushed!" << i << ' ' << robId << '\n';
+                    thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
+
+                }
+                if (robotThisPoint == Point(-1, -1)) continue;
 //                cerr << ssss << " " << nextframe << " " << i << " " << robId << " " << robotThisPoint.x << " " << robotThisPoint.y << "\n";
                 thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
             }
@@ -167,6 +179,11 @@ Path getPath1(int robId, Point target) {
             if (i != robId) {
                 if (robotPath[i].length > 50000) continue;
                 Point robotThisPoint = robotPath[i].getPointbyTime(nextframe);
+                if(robotCrushed[i] && robotCrushed[robId]) {
+//                    cerr << "Avoid Crushed!" << i << ' ' << robId << '\n';
+                    thismap[robotThisPoint.x][robotThisPoint.y] = maze[robotThisPoint.x][robotThisPoint.y];
+
+                }
                 if (robotThisPoint.x == -1 && robotThisPoint.y == -1) continue;
                 thismap[robotThisPoint.x][robotThisPoint.y] = maze[robotThisPoint.x][robotThisPoint.y];
             }
@@ -187,18 +204,18 @@ Path getPath1(int robId, Point target) {
     }
     repath.push((Point){nx, ny});
     length++;
-    cerr << "start:" << robot[robId].position.x << ',' << robot[robId].position.y << ' '
-         << "target:" << target.x << ',' << target.y << '\n';
-    cerr << "robId:" << robId << "path:";
+//    cerr << "start:" << robot[robId].position.x << ',' << robot[robId].position.y << ' '
+//         << "target:" << target.x << ',' << target.y << '\n';
+//    cerr << "robId:" << robId << "path:";
     while (!repath.empty()) {
         points.push_back(repath.top());
-        cerr << repath.top().x << ',' << repath.top().y << ' ';
+//        cerr << repath.top().x << ',' << repath.top().y << ' ';
         repath.pop();
     }
-    cerr << '\n';
-    cerr << "targetposition:" << target.x << " " << target.y << "\n";
-    cerr << "endposition" << points.back().x << " " << points.back().y << "\n";
-    makeMap(points);
+//    cerr << '\n';
+//    cerr << "targetposition:" << target.x << " " << target.y << "\n";
+//    cerr << "endposition" << points.back().x << " " << points.back().y << "\n";
+//    makeMap(points);
     return Path(points, length);
 }
 
