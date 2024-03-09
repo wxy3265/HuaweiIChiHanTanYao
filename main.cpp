@@ -37,10 +37,10 @@ int main() {
     while (frame < 15000){
         Map::update();
 //        while (true) cerr << "init";
+        for(int i = 0; i <= 9; i++)
+            calcEfficiency(i);
         while(newGoods.size())newGoods.pop_back();
         for(int i = 0; i <= 9; i++){
-                for(int i = 0; i <= 9; i++)
-                    calcEfficiency(i);
             if (robotGetGoods[i]) {
                 robotPath[i] = getPath1(i, berth[robotHome[i]].position);
             }
@@ -68,7 +68,8 @@ int main() {
 }
 
 void robotSetMission(int robId, Goods goodsToGet, Berth targetBerth) {
-    robot[robId].setMission(goodsToGet, targetBerth);
+    cerr << "robotSetMission\n";
+    robot[robId].setMission(goodsToGet, targetBerth.id);
     robotPath[robId] = getPath1(robId, goodsToGet.position);
 }
 

@@ -17,21 +17,20 @@ void Robot::pull() {
 }
 int Robot::getState() {return state;}
 vector<Goods> Robot::getGoods() {return goods;}
-void Robot::setMission(Goods _goodsToGet, Berth _target) {
-    cerr << id << "set" << target.id;
+void Robot::setMission(Goods _goodsToGet, int _targetId) {
+    cerr << id << "set" << targetId;
     goodsToGet = _goodsToGet;
-    target = _target;
+    targetId = _targetId;
 //    target.position.x += 3, target.position.y += 3;
     mission = RobotState::MISSION_GET;
     state = RobotState::MISSION_MOVE;
-//    robotPath[id] = Path(position, goodsToGet.position, id);
     nextPoint = position;
 }
 
 //更新机器人状态
 void Robot::update(Point _position, bool _enable, bool _carrying) {
     if (true) {
-        cerr << "robot" << id << "target:" << target.position.x << ',' << target.position.y << "pos:"
+        cerr << "robot" << id << "target:" << berth[targetId].position.x << ',' << berth[targetId].position.y << "pos:"
              << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
              << "path:" << robotPath[id].step << ' ' << robotPath[id].length << ';' << "gtg:" << goodsToGet.position.x << ','
              << goodsToGet.position.y << '\n';
@@ -63,7 +62,5 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         mission = state = RobotState::FREE;
     }
 }
-
-Robot::Robot(const Berth &target) : target(target) {}
 
 Robot robot[12];

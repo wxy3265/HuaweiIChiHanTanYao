@@ -18,7 +18,7 @@ private:
     bool carrying;
     Point nextPoint;
     Goods goodsToGet;
-    Berth target;
+    int targetId;
     int mission;
     int state = RobotState::FREE;
     bool enable;
@@ -30,7 +30,7 @@ public:
     Point position;
     int getState();
     vector<Goods> getGoods();
-    void setMission(Goods _goodsToGet, Berth _target);
+    void setMission(Goods _goodsToGet, int _targetId);
     void update(Point _position, bool _enable, bool _carrying);
 };
 
