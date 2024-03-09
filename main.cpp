@@ -29,6 +29,7 @@ void makeMap(vector<Point> points);
 Path getPath1(int robId, Point target);
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId);
 void calcEfficiency(int start);
+void getMission(int shipId);
 
 int main() {
     freopen("out.txt", "w", stderr);
@@ -40,27 +41,13 @@ int main() {
     }
     while (frame < 15000){
         Map::update();
-        if (ship[0].isFree()) {
-            ship[0].setMission(0);
-        }
-        if (ship[1].isFree()) {
-            ship[1].setMission(1);
-        }
-        if (ship[2].isFree()) {
-            ship[2].setMission(4);
-        }
-        if (ship[3].isFree()) {
-            ship[3].setMission(6);
-        }
-        if (ship[4].isFree()) {
-//            ship[4].setMission(5);
-        }
-//        while (true) cerr << "init";
+        for(int i = 0; i <= 4; i++)
+            if(ship[i].isFree())getMission(i);
         for(int i = 0; i <= 9; i++)
             calcEfficiency(i);
         while(newGoods.size())newGoods.pop_back();
         for(int i = 0; i <= 9; i++){
-            if (i != 5 && i != 0 && i != 7 && i != 9) continue;
+//            if (i != 5 && i != 0 && i != 7 && i != 9) continue;
 //            cerr << "berth:" << operation[robotHome[i]].top().targetBerthId << '\n';
             if (robotCrushed[i]) {
                 if (robot[i].getMission() == RobotState::MISSION_GET) {
@@ -307,4 +294,23 @@ void calcEfficiency(int start){
         double efficiency = 1.0 * newGoods[i].value / (dis * 2.0);
         operation[start].push((Operation){newGoods[i], start, dis * 2, efficiency});
     }
+}
+
+void getMission(int shipId){
+    double efficiency = 0;
+    int targetBerth = -1;
+    for(int i = 0; i <= 9; i++){
+        int num = berth[i].getGoodsNum();
+        int k = 0;
+        while(k * capacity < num){
+            k++;
+            int minum = min(k * capacity, num);
+            double eff = 1.0 * berth[i].getHeadGoodsValue(minum) / (berth[i].distance * 2.0 * k);
+            if(eff > efficiency){
+                efficiency = eff;
+                targetBerth = i;
+            }
+        }
+    }
+    if(targetBerth != -1)ship[shipId].setMission(targetBerth);
 }
