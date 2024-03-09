@@ -4,7 +4,8 @@
 
 #ifndef HUAWEIICHIHANTANYAO_MAP_H
 #define HUAWEIICHIHANTANYAO_MAP_H
-#include "values.h"
+#include "Ship.h"
+#include "Robot.h"
 
 class Map {
 public:

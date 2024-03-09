@@ -6,6 +6,7 @@
 #define HUAWEIICHIHANTANYAO_GOODS_H
 
 #include "Point.h"
+#include "tanyao.h"
 
 class Goods {
 private:
@@ -24,5 +25,6 @@ public:
     }
 };
 
+extern vector<Goods> newGoods;
 
 #endif //HUAWEIICHIHANTANYAO_GOODS_H

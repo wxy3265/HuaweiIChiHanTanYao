@@ -63,3 +63,5 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
 }
 
 Robot::Robot(const Berth &target) : target(target) {}
+
+Robot robot[12];

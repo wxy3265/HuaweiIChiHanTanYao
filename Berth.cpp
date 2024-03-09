@@ -30,4 +30,4 @@ int Berth::getGoodsNum() {
     return (int)goods.size();
 }
 
-
+Berth berth[12];

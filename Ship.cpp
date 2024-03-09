@@ -50,3 +50,5 @@ void Ship::update(int _state) {
 bool Ship::isFree() {
     return mission == ShipState::FREE;
 }
+
+Ship ship[7];

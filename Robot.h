@@ -35,5 +35,6 @@ public:
     void update(Point _position, bool _enable, bool _carrying);
 };
 
+extern Robot robot[12];
 
 #endif //HUAWEIICHIHANTANYAO_ROBOT_H

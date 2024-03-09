@@ -27,5 +27,6 @@ public:
     int getGoodsNum();
 };
 
+extern Berth berth[12];
 
 #endif //HUAWEIICHIHANTANYAO_BERTH_H

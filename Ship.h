@@ -28,5 +28,6 @@ public:
     void update(int _state);
 };
 
+extern Ship ship[7];
 
 #endif //HUAWEIICHIHANTANYAO_SHIP_H
