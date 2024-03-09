@@ -30,4 +30,19 @@ int Berth::getGoodsNum() {
     return (int)goods.size();
 }
 
+int Berth::getHeadGoodsValue(int k) {
+    queue <Goods> tmp;
+    int n = goods.size(), tot = 0;
+    for (int i = 1; i <= n && !goods.empty(); i++) {
+        if (i <= k) tot += goods.front().value;
+        tmp.push(goods.front());
+        goods.pop();
+    }
+    while (!tmp.empty()) {
+        goods.push(tmp.front());
+        tmp.pop();
+    }
+    return tot;
+}
+
 Berth berth[12];

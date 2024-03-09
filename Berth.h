@@ -25,6 +25,7 @@ public:
     int getShip();
     bool empty();
     int getGoodsNum();
+    int getHeadGoodsValue(int k);
 };
 
 extern Berth berth[12];

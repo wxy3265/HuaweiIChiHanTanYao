@@ -19,6 +19,7 @@ void Ship::setMission(int _targetId) {
     targetId = _targetId;
     mission = ShipState::MISSION_MOVE;
     endCompleteTime = frame + berth[targetId].distance + 3;
+    if (frame <= 3) endCompleteTime = 0;
 }
 
 void Ship::pushGoods(Goods goods1) {
