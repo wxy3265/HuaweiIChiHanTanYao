@@ -78,7 +78,7 @@ public:
         return points[++step];
     }
     Point getPointbyTime(int nextTime) {
-        if (step + nextTime > length) return {-1, -1};
+        if (step + nextTime >= length) return {-1, -1};
         else return points[step + nextTime];
     }
 };

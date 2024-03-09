@@ -14,11 +14,10 @@ private:
     vector<Goods> goods;
     int state = ShipState::FREE;
     int endCompleteTime;
-    void get(Berth &berth);
-    void sell();
-
 public:
     int id;
+    void get(Berth &berth);
+    void sell();
 
     void setMission(Berth &berth);
     void pushGoods(Goods goods1);

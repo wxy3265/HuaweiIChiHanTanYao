@@ -5,7 +5,7 @@ int berthRobot[12];
 bool visitGoods[200007];
 struct Operation{
     Goods targetGoods;
-    Berth targetBerth;
+    int targetBerthId;
     int totalDistance;
     double efficiency;
     bool operator<(const Operation &x) const{
@@ -27,7 +27,7 @@ bool cmp(Distance_to_berth x, Distance_to_berth y){
 void allocateHome();
 void makeMap(vector<Point> points);
 Path getPath1(int robId, Point target);
-void robotSetMission(int robId, Goods goodsToGet, Berth targetBerth);
+void robotSetMission(int robId, Goods goodsToGet, int targetBerthId);
 void calcEfficiency(int start);
 
 int main() {
@@ -37,13 +37,19 @@ int main() {
     allocateHome();
     while (frame < 15000){
         Map::update();
+        if ((frame - 1) % 2000 == 0) {
+            if ((frame - 1) % 4000 == 0) ship[1].get(berth[1]);
+            else ship[0].sell();
+        }
 //        while (true) cerr << "init";
         for(int i = 0; i <= 9; i++)
             calcEfficiency(i);
         while(newGoods.size())newGoods.pop_back();
         for(int i = 0; i <= 9; i++){
+//            if (i != 0) continue;
+            cerr << "berth:" << operation[robotHome[i]].top().targetBerthId << '\n';
             if (robotGetGoods[i]) {
-                robotPath[i] = getPath1(i, berth[robotHome[i]].position);
+                robotPath[i] = getPath1(i, Point(berth[robotHome[i]].position.x + 3, berth[robotHome[i]].position.y + 3));
             }
             if(robot[i].getState() == RobotState::FREE){
                 while(operation[robotHome[i]].size()){
@@ -56,7 +62,7 @@ int main() {
                     operation[robotHome[i]].pop();
                 }
                 if(operation[robotHome[i]].empty())continue;
-                robotSetMission(i, operation[robotHome[i]].top().targetGoods, operation[robotHome[i]].top().targetBerth);
+                robotSetMission(i, operation[robotHome[i]].top().targetGoods, operation[robotHome[i]].top().targetBerthId);
 //                while (true) cerr << "FREE";
                 visitGoods[operation[robotHome[i]].top().targetGoods.id] = 1;
                 operation[robotHome[i]].pop();
@@ -68,9 +74,9 @@ int main() {
     return 0;
 }
 
-void robotSetMission(int robId, Goods goodsToGet, Berth targetBerth) {
-    cerr << "robotSetMission\n";
-    robot[robId].setMission(goodsToGet, targetBerth.id);
+void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
+    cerr << "robotSetMission tar:" << targetBerthId << '\n';
+    robot[robId].setMission(goodsToGet, targetBerthId);
     robotPath[robId] = getPath1(robId, goodsToGet.position);
 }
 
@@ -97,7 +103,7 @@ void allocateHome(){
 }
 
 void makeMap(vector<Point> points) {
-    freopen("Pathmap.txt", "w", stdout);
+//    freopen("Pathmap.txt", "w", stderr);
     char pathinMap[300][300];
     for (int i = 0; i < 200; i++)
         for (int j = 0; j < 200; j++)
@@ -109,7 +115,7 @@ void makeMap(vector<Point> points) {
             cerr << pathinMap[i][j];
         cerr << "\n";
     }
-    fclose(stdout);
+//    fclose(stderr);
 }
 
 Path getPath1(int robId, Point target) {
@@ -117,15 +123,19 @@ Path getPath1(int robId, Point target) {
     int fyy[4] = {1, -1, 0, 0};
     int step[300][300], stepnum[300][300], ffind[300][300], flag = 0;
     char thismap[300][300];
-    for (int i = 0; i < 210; i++)
+    for (int i = 0; i < 210; i++) {
         for (int j = 0; j < 210; j++) {
             step[i][j] = stepnum[i][j] = ffind[i][j] = 0;
             thismap[i][j] = maze[i][j];
         }
+    }
     vector<Point> points;
     queue<Point> q;
     q.push(robot[robId].position);
+//    cerr << "getPath1:" << robId << '\n';
+//    int ssss = 0;
     while (!q.empty()) {
+//        ssss++;
         Point fr = q.front();
         q.pop();
         int nextframe = step[fr.x][fr.y] + 1;
@@ -134,6 +144,7 @@ Path getPath1(int robId, Point target) {
                 if (robotPath[i].length > 50000) continue;
                 Point robotThisPoint = robotPath[i].getPointbyTime(nextframe);
                 if (robotThisPoint.x == -1 && robotThisPoint.y == -1) continue;
+//                cerr << ssss << " " << nextframe << " " << i << " " << robId << " " << robotThisPoint.x << " " << robotThisPoint.y << "\n";
                 thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
             }
         }
@@ -152,13 +163,14 @@ Path getPath1(int robId, Point target) {
                 }
             }
         }
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 10; i++) {
             if (i != robId) {
                 if (robotPath[i].length > 50000) continue;
                 Point robotThisPoint = robotPath[i].getPointbyTime(nextframe);
                 if (robotThisPoint.x == -1 && robotThisPoint.y == -1) continue;
                 thismap[robotThisPoint.x][robotThisPoint.y] = maze[robotThisPoint.x][robotThisPoint.y];
             }
+        }
     }
     if (flag == 0) {
 
@@ -184,6 +196,8 @@ Path getPath1(int robId, Point target) {
         repath.pop();
     }
     cerr << '\n';
+    cerr << "targetposition:" << target.x << " " << target.y << "\n";
+    cerr << "endposition" << points.back().x << " " << points.back().y << "\n";
     makeMap(points);
     return Path(points, length);
 }
@@ -192,6 +206,6 @@ void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
         int dis = Map::getLength(berth[start], newGoods[i].position);
         double efficiency = 1.0 * newGoods[i].value / (dis * 2.0);
-        operation[start].push((Operation){newGoods[i], berth[start], dis * 2, efficiency});
+        operation[start].push((Operation){newGoods[i], start, dis * 2, efficiency});
     }
 }
