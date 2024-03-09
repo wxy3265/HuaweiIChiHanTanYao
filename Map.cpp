@@ -31,7 +31,7 @@ void Map::init() {
         berth[id].distance = time, berth[id].velocity = vel;
     }
     //初始化船舶ID
-    for (int i = 1; i < 5; i++) ship[i].id = i;
+    for (int i = 0; i < 5; i++) ship[i].id = i;
     scanf("%d", &capacity);
     //OK
     string thisisOK;
@@ -65,8 +65,8 @@ void Map::update() {
     while(thisisOK != "OK") cin >> thisisOK;
 }
 
-int Map::getLength(Berth ber, Point end) {
-    return pathLength[ber.id][end.x][end.y];
+int Map::getLength(int berthId, Point end) {
+    return pathLength[berthId][end.x][end.y];
 }
 
 void Map::pretreatPath(Berth ber){

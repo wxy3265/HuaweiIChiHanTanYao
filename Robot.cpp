@@ -72,16 +72,15 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
             return;
         }
         robotGetGoods[id] = true;
-        goods.push_back(goodsToGet);
         nextPoint = robotPath[id].getNextPoint();
         state = RobotState::MISSION_MOVE;
         mission = RobotState::MISSION_PULL;
     } else if (state == RobotState::MISSION_PULL) {
         cerr << id << "Pulled\n";
         pull();
+        berth[targetId].pushGoods(goodsToGet);
         if (carrying) return;
         robotGetGoods[id] = false;
-//        goods.pop_back();
         mission = state = RobotState::FREE;
     }
 }

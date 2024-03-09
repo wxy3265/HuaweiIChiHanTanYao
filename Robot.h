@@ -14,7 +14,6 @@ public:
     Robot() {}
 
 private:
-    vector<Goods> goods;
     bool carrying;
     Point nextPoint;
     Goods goodsToGet;
