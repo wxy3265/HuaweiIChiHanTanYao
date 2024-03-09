@@ -13,11 +13,10 @@ class Path {
     vector<Point> points;
 public:
     int length, step;
-    Path() {}
-    void setPath(vector<Point> ps, int len) {
-        points = ps, length = len;
-//        this.points = ps, this.length = len;
-    }
+    Path() {length = step = 0}
+
+    Path(const vector<Point> &points, int length) : points(points), length(length) {step = 0;}
+
     Path(Point start, Point end, int id) {
         step = 0, length = 0;
         queue<Point> q;
@@ -84,5 +83,7 @@ public:
     }
 };
 
+Path pathToGoods[10];
+Path pathToBerth[10];
 
 #endif //HUAWEIICHIHANTANYAO_PATH_H
