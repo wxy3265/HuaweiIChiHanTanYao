@@ -24,7 +24,7 @@ void Robot::setMission(Goods _goodsToGet, Berth _target) {
 //    target.position.x += 3, target.position.y += 3;
     mission = RobotState::MISSION_GET;
     state = RobotState::MISSION_MOVE;
-    robotPath[id] = Path(position, goodsToGet.position, id);
+//    robotPath[id] = Path(position, goodsToGet.position, id);
     nextPoint = position;
 }
 
