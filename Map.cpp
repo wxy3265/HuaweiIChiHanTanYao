@@ -43,7 +43,9 @@ void Map::init() {
 
 void Map::update() {
     scanf("%d%d", &frame, &totalMoney);
-    cerr << "frame:" << frame << '\n';
+    cerr << "lastFrame:" << lastFrame << " " << "frame:" << frame << '\n';
+    framesum += frame - lastFrame - 1;
+    lastFrame = frame;
     //读入新增货物
     int k;
     scanf("%d", &k);

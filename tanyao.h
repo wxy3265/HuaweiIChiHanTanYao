@@ -17,7 +17,7 @@
 #include <map>
 
 extern char maze[300][300];
-extern int frame, totalMoney;
+extern int frame, totalMoney, lastFrame, framesum;
 extern int capacity;
 extern bool robotCrushed[10];
 

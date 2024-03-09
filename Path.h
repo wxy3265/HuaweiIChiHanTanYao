@@ -60,16 +60,16 @@ public:
         }
         repath.push((Point){nx, ny});
         length++;
-        if (id != -1) {
-            cerr << "start:" << start.x << ',' << start.y << ' ' << "end:" << end.x << ',' << end.y << '\n';
-            cerr << "id:" << id << "path:";
-        }
+//        if (id != -1) {
+//            cerr << "start:" << start.x << ',' << start.y << ' ' << "end:" << end.x << ',' << end.y << '\n';
+//            cerr << "id:" << id << "path:";
+//        }
         while (!repath.empty()) {
             points.push_back(repath.top());
-            if (id != -1) cerr << repath.top().x << ',' << repath.top().y << ' ';
+//            if (id != -1) cerr << repath.top().x << ',' << repath.top().y << ' ';
             repath.pop();
         }
-        if (id != -1) cerr << '\n';
+//        if (id != -1) cerr << '\n';
 //        while(!id && start.x == 2) ;
     }
     Point getNextPoint() {

@@ -9,11 +9,11 @@ void Robot::move(int direction) {
 }
 void Robot::get() {
     cout << "get " << id << '\n';
-    cerr << "get!\n";
+//    cerr << "get!\n";
 }
 void Robot::pull() {
     cout << "pull " << id << '\n';
-    cerr << "pull!\n";
+//    cerr << "pull!\n";
 }
 int Robot::getState() {return state;}
 void Robot::setMission(Goods _goodsToGet, int _targetId) {
@@ -23,19 +23,20 @@ void Robot::setMission(Goods _goodsToGet, int _targetId) {
     mission = RobotState::MISSION_GET;
     state = RobotState::MISSION_MOVE;
     nextPoint = position;
-    cerr << id << "set" << _targetId;
+//    cerr << id << "set" << _targetId;
 }
 
+int totGetValue = 0;
 //更新机器人状态
 void Robot::update(Point _position, bool _enable, bool _carrying) {
     robotCrushed[id] = false;
-    if (id == 6) {
-        cerr << "robot" << id << "target:" << berth[targetId].position.x << ',' << berth[targetId].position.y << "pos:"
-             << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
-             << "path:" << robotPath[id].step << ' ' << robotPath[id].length << ';'
-             << "gtg:" << goodsToGet.position.x << ',' << goodsToGet.position.y
-             << "carrying:" << carrying << " enable:" << enable << " crash:" << crashed << '\n';
-    }
+//    if (id == 6) {
+//        cerr << "robot" << id << "target:" << berth[targetId].position.x << ',' << berth[targetId].position.y << "pos:"
+//             << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
+//             << "path:" << robotPath[id].step << ' ' << robotPath[id].length << ';'
+//             << "gtg:" << goodsToGet.position.x << ',' << goodsToGet.position.y
+//             << "carrying:" << carrying << " enable:" << enable << " crash:" << crashed << '\n';
+//    }
     position = _position;
     enable = _enable;
     carrying = _carrying;
@@ -48,7 +49,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     if (state == RobotState::MISSION_MOVE) {
 //        if (mission == RobotState::MISSION_PULL) cerr << "carrying:" << carrying << '\n';
         if (crashed) {
-            cerr << "crashed:" << id << '\n';
+//            cerr << "crashed:" << id << '\n';
             robotCrushed[id] = true;
             crashed = false;
             return;
@@ -65,18 +66,20 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         move(position.getDirection(nextPoint));
     } else if (state == RobotState::MISSION_GET) {
         get();
-        cerr << "get:" << position.x << ',' << position.y
-             << " goods:" << goodsToGet.position.x << ',' << goodsToGet.position.y << '\n';
+//        cerr << "get:" << position.x << ',' << position.y
+//             << " goods:" << goodsToGet.position.x << ',' << goodsToGet.position.y << '\n';
         if (!carrying) {
 //            cerr << "returned!\n";
             return;
         }
+        totGetValue += goodsToGet.value;
+        cerr << "getedV:" << totGetValue << '\n';
         robotGetGoods[id] = true;
         nextPoint = robotPath[id].getNextPoint();
         state = RobotState::MISSION_MOVE;
         mission = RobotState::MISSION_PULL;
     } else if (state == RobotState::MISSION_PULL) {
-        cerr << id << "Pulled\n";
+//        cerr << id << "Pulled\n";
         pull();
         berth[targetId].pushGoods(goodsToGet);
         if (carrying) return;

@@ -83,7 +83,7 @@ int main() {
 }
 
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
-    cerr << "robotSetMission tar:" << targetBerthId << '\n';
+//    cerr << "robotSetMission tar:" << targetBerthId << '\n';
     robot[robId].setMission(goodsToGet, targetBerthId);
     robotPath[robId] = getPath1(robId, goodsToGet.position);
 }
@@ -140,7 +140,7 @@ Path getPath1(int robId, Point target) {
     vector<Point> points;
     queue<Point> q;
     q.push(robot[robId].position);
-    cerr << "getPath1:" << robId << '\n';
+//    cerr << "getPath1:" << robId << '\n';
 //    int ssss = 0;
     while (!q.empty()) {
 //        ssss++;
@@ -150,15 +150,31 @@ Path getPath1(int robId, Point target) {
         for (int i = 0; i < 10; i++) {
             if (i != robId) {
                 if (robotPath[i].length > 50000) continue;
-                Point robotThisPoint = robotPath[i].getPointbyTime(nextframe);
-                if(robotCrushed[i] && robotCrushed[robId]) {
-//                    cerr << "Avoid Crushed!" << i << ' ' << robId << '\n';
-                    thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
+//                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
+//                if (robotThisPoint1 != Point(-1, -1)) {
+//                    thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
+//                }
 
+                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
+                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
+                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
+
+
+//                if(robotCrushed[i] && robotCrushed[robId]) {
+////                    cerr << "Avoid Crushed!" << i << ' ' << robId << '\n';
+//                    thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
+//                }
+                if (robotThisPoint0 != Point(-1, -1)) {
+                    thismap[robotThisPoint0.x][robotThisPoint0.y] = PointState::BLOCK;
                 }
-                if (robotThisPoint == Point(-1, -1)) continue;
+                if (robotThisPoint1 != Point(-1, -1)) {
+                    thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
+                }
+                if (robotThisPoint2 != Point(-1, -1)) {
+                    thismap[robotThisPoint2.x][robotThisPoint2.y] = PointState::BLOCK;
+                }
+
 //                cerr << ssss << " " << nextframe << " " << i << " " << robId << " " << robotThisPoint.x << " " << robotThisPoint.y << "\n";
-                thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
             }
         }
         for (int i = 0; i < 4; i++) {
@@ -179,14 +195,20 @@ Path getPath1(int robId, Point target) {
         for (int i = 0; i < 10; i++) {
             if (i != robId) {
                 if (robotPath[i].length > 50000) continue;
-                Point robotThisPoint = robotPath[i].getPointbyTime(nextframe);
-                if(robotCrushed[i] && robotCrushed[robId]) {
-//                    cerr << "Avoid Crushed!" << i << ' ' << robId << '\n';
-                    thismap[robotThisPoint.x][robotThisPoint.y] = maze[robotThisPoint.x][robotThisPoint.y];
+//                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
+//                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1)
+//                    thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
 
-                }
-                if (robotThisPoint.x == -1 && robotThisPoint.y == -1) continue;
-                thismap[robotThisPoint.x][robotThisPoint.y] = maze[robotThisPoint.x][robotThisPoint.y];
+                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
+                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
+                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
+                if (robotThisPoint0.x != -1 && robotThisPoint0.y != -1)
+                    thismap[robotThisPoint0.x][robotThisPoint0.y] = maze[robotThisPoint0.x][robotThisPoint0.y];
+                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1)
+                    thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
+                if (robotThisPoint2.x != -1 && robotThisPoint2.y != -1)
+                    thismap[robotThisPoint2.x][robotThisPoint2.y] = maze[robotThisPoint2.x][robotThisPoint2.y];
+
             }
         }
     }
@@ -205,18 +227,10 @@ Path getPath1(int robId, Point target) {
     }
     repath.push((Point){nx, ny});
     length++;
-//    cerr << "start:" << robot[robId].position.x << ',' << robot[robId].position.y << ' '
-//         << "target:" << target.x << ',' << target.y << '\n';
-//    cerr << "robId:" << robId << "path:";
     while (!repath.empty()) {
         points.push_back(repath.top());
-//        cerr << repath.top().x << ',' << repath.top().y << ' ';
         repath.pop();
     }
-//    cerr << '\n';
-//    cerr << "targetposition:" << target.x << " " << target.y << "\n";
-//    cerr << "endposition" << points.back().x << " " << points.back().y << "\n";
-//    makeMap(points);
     return Path(points, length);
 }
 
@@ -248,7 +262,7 @@ Path getPathbyAStar(int robID, Point target) {
          * getRobotPathArea
          * */
         for (int i = 0; i < 4; i++) {
-            int ex = tp.position.x + fx[i], ey = tp.position.y + fy[i];
+            int ex = tp.position.x + fxx[i], ey = tp.position.y + fyy[i];
             if (ex < 0 || ex >= 200 || ey < 0 || ey >= 200) continue;
             if (b[ex][ey]) continue;
             if (thismap[ex][ey] != PointState::BLOCK && thismap[ex][ey] != PointState::OCEAN) {
@@ -274,8 +288,8 @@ Path getPathbyAStar(int robID, Point target) {
     while (nx != robot[robID].position.x || ny != robot[robID].position.y) {
         repath.push((Point){nx, ny});
         int lastx = nx, lasty = ny;
-        nx -= fx[dirc[lastx][lasty]];
-        ny -= fy[dirc[lastx][lasty]];
+        nx -= fxx[dirc[lastx][lasty]];
+        ny -= fyy[dirc[lastx][lasty]];
         length++;
     }
     repath.push((Point){nx, ny});
