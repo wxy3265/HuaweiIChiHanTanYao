@@ -9,6 +9,8 @@ static int goodsNumber = 0;
 const int nx[]={0,0,1,-1};
 const int ny[]={1,-1,0,0};
 int pathLength[12][207][207];
+int berth_to_berth[12][12];
+int open[12];
 
 void Map::init() {
     //读入地图
@@ -92,6 +94,44 @@ void Map::pretreatPath(Berth ber){
             if(pathLength[ber.id][dx][dy] > pathLength[ber.id][cur.x][cur.y] + 1){
                 pathLength[ber.id][dx][dy] = pathLength[ber.id][cur.x][cur.y] + 1;
                 q.push((Point{dx,dy}));
+            }
+        }
+    }
+}
+bool berthCmp(Berth x,Berth y){
+    return x.distance < y.distance;
+}
+bool Map::isOpen(int id) {
+    return open[id];
+}
+void Map::calcDistanceBetweenBerth(){
+    int r = 10;
+    int contain[12];
+    int close[12];
+    memset(contain, 0, sizeof contain);
+    memset(close, 0, sizeof close);
+    for(int i = 0; i <= 9; i++)
+        for(int j = 0; j <= 9; j++){
+            if(i == j)continue;
+            berth_to_berth[i][j] = getLength(i,berth[j].position);
+            if(berth_to_berth[i][j] < r){
+                contain[i]++;
+            }
+        }
+    Berth newBerth[12];
+    for(int i = 0; i <= 9; i++)newBerth[i] = berth[i];
+    sort(newBerth, newBerth + 10, berthCmp);
+    for(int i = 10; i >= 0; i--){
+        for(int j = 0; j <= 9; j++){
+            int id = newBerth[j].id;
+            if (contain[id] == i && !close[id]){
+                open[id] = 1;
+                for(int k = 0; k <= 9; k++){
+                    if(k == id)continue;
+                    if(berth_to_berth[id][k] < r){
+                        close[k] = 1;
+                    }
+                }
             }
         }
     }

@@ -16,6 +16,10 @@ public:
     static void pretreatPath(Berth ber);
 
     static int getLength(int berthId, Point end);
+
+    static void calcDistanceBetweenBerth();
+
+    static bool isOpen(int id);
 };
 
 #endif //HUAWEIICHIHANTANYAO_MAP_H
