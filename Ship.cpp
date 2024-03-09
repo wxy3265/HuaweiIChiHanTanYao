@@ -49,6 +49,7 @@ void Ship::update(int _state) {
         }
         for (int i = 1; i <= berth[targetId].velocity && !berth[targetId].empty(); i++)
             goods.push_back(berth[targetId].fetchGoods());
+        visitBerth[targetId] = false;
     } else if (mission == ShipState::MISSION_PULL) {
         if (frame >= endCompleteTime) {
 //            while (true) cerr << "empty!";

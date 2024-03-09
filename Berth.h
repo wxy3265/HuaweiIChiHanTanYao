@@ -29,5 +29,6 @@ public:
 };
 
 extern Berth berth[12];
+extern bool visitBerth[12];
 
 #endif //HUAWEIICHIHANTANYAO_BERTH_H

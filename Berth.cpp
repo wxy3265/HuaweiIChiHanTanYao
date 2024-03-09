@@ -46,3 +46,4 @@ int Berth::getHeadGoodsValue(int k) {
 }
 
 Berth berth[12];
+bool visitBerth[12];

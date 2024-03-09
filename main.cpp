@@ -297,9 +297,10 @@ void calcEfficiency(int start){
 }
 
 void getMission(int shipId){
-    double efficiency = 0;
+    double efficiency = -1000000;
     int targetBerth = -1;
     for(int i = 0; i <= 9; i++){
+        if(visitBerth[i])continue;
         int num = berth[i].getGoodsNum();
         int k = 0;
         while(k * capacity < num){
@@ -312,5 +313,8 @@ void getMission(int shipId){
             }
         }
     }
-    if(targetBerth != -1)ship[shipId].setMission(targetBerth);
+    if(targetBerth != -1){
+        ship[shipId].setMission(targetBerth);
+        visitBerth[targetBerth] = true;
+    }
 }
