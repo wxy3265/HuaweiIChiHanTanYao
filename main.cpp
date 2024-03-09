@@ -202,6 +202,73 @@ Path getPath1(int robId, Point target) {
     return Path(points, length);
 }
 
+Path getPathbyAStar(int robID, Point target) {
+    int fxx[4] = {0, 0, 1, -1};
+    int fyy[4] = {1, -1, 0, 0};
+    vector<Point> points;
+    struct node {
+        Point position, target;
+        int step;
+        bool operator < (const node &b) const {
+            return ((abs(position.x - target.x) + abs(position.y - target.y)) > (abs(b.position.x - b.target.x) + abs(b.position.y - target.y)));
+        }
+    };
+    priority_queue<node> q;
+    q.push((node){robot[robID].position, target, 0});
+    int b[300][300], dirc[300][300];
+    char thismap[300][300];
+    for (int i = 0; i < 200; i++)
+        for (int j = 0; j < 200; j++) {
+            b[i][j] = dirc[i][j] = 0;
+            thismap[i][j] = maze[i][j];
+        }
+    int flag = 0, length = 0;
+    while (!q.empty()) {
+        node tp = q.top();
+        q.pop();
+        /*
+         * getRobotPathArea
+         * */
+        for (int i = 0; i < 4; i++) {
+            int ex = tp.position.x + fx[i], ey = tp.position.y + fy[i];
+            if (ex < 0 || ex >= 200 || ey < 0 || ey >= 200) continue;
+            if (b[ex][ey]) continue;
+            if (thismap[ex][ey] != PointState::BLOCK && thismap[ex][ey] != PointState::OCEAN) {
+                q.push((node){(Point){ex, ey}, target, tp.step + 1});
+                b[ex][ey] = 1;
+                dirc[ex][ey] = i;
+                if (ex == target.x && ey == target.y) {
+                    flag = 1;
+                    break;
+                }
+            }
+        }
+        /*
+         * returnMapArea
+         * */
+        if (flag == 1) break;
+    }
+    if (flag == 0) {
+        return Path();
+    }
+    int nx = target.x, ny = target.y;
+    stack<Point> repath;
+    while (nx != robot[robID].position.x || ny != robot[robID].position.y) {
+        repath.push((Point){nx, ny});
+        int lastx = nx, lasty = ny;
+        nx -= fx[dirc[lastx][lasty]];
+        ny -= fy[dirc[lastx][lasty]];
+        length++;
+    }
+    repath.push((Point){nx, ny});
+    length++;
+    while (!repath.empty()) {
+        points.push_back(repath.top());
+        repath.pop();
+    }
+    return Path(points, length);
+}
+
 void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
         int dis = Map::getLength(berth[start], newGoods[i].position);
