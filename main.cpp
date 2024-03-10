@@ -166,7 +166,7 @@ Path getPath1(int robId, Point target) {
 
                 Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
                 Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
-//                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
+                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
 
 
 //                if(robotCrushed[i] && robotCrushed[robId]) {
@@ -179,9 +179,9 @@ Path getPath1(int robId, Point target) {
                 if (robotThisPoint1 != Point(-1, -1)) {
                     thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
                 }
-//                if (robotThisPoint2 != Point(-1, -1)) {
-//                    thismap[robotThisPoint2.x][robotThisPoint2.y] = PointState::BLOCK;
-//                }
+                if (robotThisPoint2 != Point(-1, -1)) {
+                    thismap[robotThisPoint2.x][robotThisPoint2.y] = PointState::BLOCK;
+                }
 
 //                cerr << ssss << " " << nextframe << " " << i << " " << robId << " " << robotThisPoint.x << " " << robotThisPoint.y << "\n";
             }
@@ -210,7 +210,7 @@ Path getPath1(int robId, Point target) {
 
                 Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
                 Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
-//                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
+                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
 //                if(robotCrushed[i] && robotCrushed[robId]) {
 ////                    cerr << "Avoid Crushed!" << i << ' ' << robId << '\n';
 //                    thismap[robotThisPoint0.x][robotThisPoint0.y] = maze[robotThisPoint0.x][robotThisPoint0.y];
@@ -219,8 +219,8 @@ Path getPath1(int robId, Point target) {
                     thismap[robotThisPoint0.x][robotThisPoint0.y] = maze[robotThisPoint0.x][robotThisPoint0.y];
                 if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1)
                     thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
-//                if (robotThisPoint2.x != -1 && robotThisPoint2.y != -1)
-//                    thismap[robotThisPoint2.x][robotThisPoint2.y] = maze[robotThisPoint2.x][robotThisPoint2.y];
+                if (robotThisPoint2.x != -1 && robotThisPoint2.y != -1)
+                    thismap[robotThisPoint2.x][robotThisPoint2.y] = maze[robotThisPoint2.x][robotThisPoint2.y];
 
             }
         }

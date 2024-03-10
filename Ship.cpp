@@ -5,8 +5,8 @@
 #include "Ship.h"
 
 void Ship::get() {
-//    cerr << "ship! get" << id << ' ' << targetId << '\n';
-    cout << "ship " << id << ' ' << targetId << '\n';
+    cerr << "ship! get" << id << ' ' << target.front().targetId << '\n';
+    cout << "ship " << id << ' ' << target.front().targetId << '\n';
 }
 
 void Ship::pull() {

@@ -127,7 +127,7 @@ void Map::calcDistanceBetweenBerth(){
     memset(close, 0, sizeof close);
     for(int i = 0; i <= 9; i++)
         for(int j = 0; j <= 9; j++){
-            if(i == j) continue;
+            if(i == j)continue;
             berth_to_berth[i][j] = getLength(i,berth[j].position);
             if(berth_to_berth[i][j] < r){
                 contain[i]++;
