@@ -35,10 +35,8 @@ int main() {
     freopen("out.txt", "w", stderr);
     Map::init();
     for(int i = 0; i <= 9; i++) Map::pretreatPath(berth[i]);
+    Map::calcDistanceBetweenBerth();
     allocateHome();
-    for (int i = 0; i <= 9; i++) {
-        if (robotHome[i] == 5) cerr << "IS YOU! ROBOT:" << i << '\n';
-    }
     while (frame < 15000){
         Map::update();
         for(int i = 0; i <= 4; i++)
@@ -83,7 +81,7 @@ int main() {
 }
 
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
-//    cerr << "robotSetMission tar:" << targetBerthId << '\n';
+    cerr << "robotSetMission tar:" << targetBerthId << '\n';
     robot[robId].setMission(goodsToGet, targetBerthId);
     robotPath[robId] = getPath1(robId, goodsToGet.position);
 }
@@ -102,10 +100,16 @@ void allocateHome(){
     sort(to_berth_distance + 1,to_berth_distance + cnt + 1,cmp);
 
     for(int i = 1; i <= cnt; i++){
+        if(!Map::isOpen(to_berth_distance[i].berthId))continue;
         if(robotHome[to_berth_distance[i].robotId] != -1)continue;
         if(berthRobot[to_berth_distance[i].berthId] != -1)continue;
         robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
         berthRobot[to_berth_distance[i].berthId] = to_berth_distance[i].robotId;
+    }
+    for(int i = 1; i <= cnt; i++){
+        if(!Map::isOpen(to_berth_distance[i].berthId))continue;
+        if(robotHome[to_berth_distance[i].robotId] != -1)continue;
+        robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
     }
     cout.flush();
 }
@@ -227,10 +231,18 @@ Path getPath1(int robId, Point target) {
     }
     repath.push((Point){nx, ny});
     length++;
+//    cerr << "start:" << robot[robId].position.x << ',' << robot[robId].position.y << ' '
+//         << "target:" << target.x << ',' << target.y << '\n';
+//    cerr << "robId:" << robId << "path:";
     while (!repath.empty()) {
         points.push_back(repath.top());
+//        cerr << repath.top().x << ',' << repath.top().y << ' ';
         repath.pop();
     }
+//    cerr << '\n';
+//    cerr << "targetposition:" << target.x << " " << target.y << "\n";
+//    cerr << "endposition" << points.back().x << " " << points.back().y << "\n";
+//    makeMap(points);
     return Path(points, length);
 }
 
