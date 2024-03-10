@@ -7,19 +7,29 @@
 
 #include "Berth.h"
 
+class ShipMission {
+public:
+    ShipMission(int targetId, int numToCarry);
+
+    int targetId, numToCarry;
+};
+
 class Ship {
 private:
     int mission = ShipState::FREE;
-    int targetId;
+//    int targetId;
+    queue<ShipMission> target;
     vector<Goods> goods;
     int state = ShipState::FREE;
     int endCompleteTime;
+    bool firstMove = true;
 public:
     int id;
     void get();
     void pull();
 
-    void setMission(int _targetId);
+    int totValue();
+    void setMission(ShipMission _target);
     void pushGoods(Goods goods1);
     bool isFree();
     int getState();

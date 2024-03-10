@@ -309,7 +309,6 @@ Path getPathbyAStar(int robID, Point target) {
 void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
         int dis = Map::getLength(start, newGoods[i].position);
-//        while (frame == 813);
         double efficiency = 1.0 * newGoods[i].value / (dis * 2.0);
         operation[start].push((Operation){newGoods[i], start, dis * 2, efficiency});
     }
@@ -333,7 +332,7 @@ void getMission(int shipId){
         }
     }
     if(targetBerth != -1){
-        ship[shipId].setMission(targetBerth);
+        ship[shipId].setMission(ShipMission(targetBerth, 12));
         visitBerth[targetBerth] = true;
     }
 }
