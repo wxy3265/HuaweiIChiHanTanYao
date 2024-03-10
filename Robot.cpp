@@ -33,9 +33,17 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     if (true) {
         cerr << "robot" << id << "target:" << berth[targetId].position.x << ',' << berth[targetId].position.y << "pos:"
              << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
-             << "path:" << robotPath[id].step << ' ' << robotPath[id].length << ';'
+             << "path:" << robotPath[id].step << ' ' << robotPath[id].length << "!" << robotPath[id].points.size() << "!" << ';'
              << "gtg:" << goodsToGet.position.x << ',' << goodsToGet.position.y
              << "carrying:" << carrying << " enable:" << enable << " crash:" << crashed << '\n';
+    }
+//    while (id == 5) ;
+    if (id == 5) {
+        cerr << "5:" << robotPath[id].length << '\n';
+        for (int i = 0; i < robotPath[id].points.size(); i++) {
+            cerr << robotPath[id].points[i].x << ',' << robotPath[id].points[i].y << ' ';
+        }
+        cerr << '\n';
     }
     position = _position;
     enable = _enable;
@@ -59,7 +67,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         robotGetGoods[id] = false;
         if (position == nextPoint || nextPoint == Point(-1, -1)) {
             nextPoint = robotPath[id].getNextPoint();
-//            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
+            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
         }
         if (nextPoint == Point(-1, -1) || robotPath[id].length == robotPath[id].step) {
             state = mission;

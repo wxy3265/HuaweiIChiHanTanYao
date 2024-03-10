@@ -76,6 +76,7 @@ void Map::update() {
         scanf("%d%d%d%d", &goods, &x, &y, &state);
         robot[i].update(Point(x, y), state, goods);
     }
+    cerr << "机器人更新完毕\n";
     //更新船舶
     for (int i = 0, state, id; i < 5; i++) {
         scanf("%d%d", &state, &id);

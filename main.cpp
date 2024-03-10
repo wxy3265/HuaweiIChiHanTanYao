@@ -37,26 +37,33 @@ int main() {
     for(int i = 0; i <= 9; i++) Map::pretreatPath(berth[i]);
     Map::calcDistanceBetweenBerth();
     allocateHome();
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i <= 9; i++) {
         cerr << i << "'s home:" << robotHome[i] << '\n';
     }
     while (frame < 15000){
         Map::update();
-        for(int i = 0; i <= 4; i++)
+        cerr << "frameStep0:" << frame << '\n';
+        for(int i = 0; i <= 4; i++) {
             if(ship[i].isFree())getMission(i);
-        for(int i = 0; i <= 9; i++)
+        }
+        for(int i = 0; i <= 9; i++) {
             calcEfficiency(i);
+        }
         while(newGoods.size())newGoods.pop_back();
+        cerr << "frameStep1:" << frame << '\n';
         for(int i = 0; i <= 9; i++){
+            cerr << "frameStep1:" << frame << " robot:" << i << '\n';
 //            if (i != 5 && i != 0 && i != 7 && i != 9) continue;
 //            cerr << "berth:" << operation[robotHome[i]].top().targetBerthId << '\n';
             if (robotCrushed[i]) {
+                cerr << "robotCrash:" << i;
                 if (robot[i].getMission() == RobotState::MISSION_GET) {
                     robotPath[i] = getPath1(i, robot[i].getGoodsToGet().position);
                 } else if (robot[i].getMission() == RobotState::MISSION_PULL) {
                     robotPath[i] = getPath1(i, Point(berth[robotHome[i]].position.x + 3, berth[robotHome[i]].position.y + 3));
                 }
-                robotCrushed[i] = false;
+                if (robotPath[i].length < 50000) robotCrushed[i] = false;
+                cerr << "crash end\n";
             }
             if (robotGetGoods[i]) {
                 robotPath[i] = getPath1(i, Point(berth[robotHome[i]].position.x + 3, berth[robotHome[i]].position.y + 3));
@@ -65,10 +72,11 @@ int main() {
                 while(operation[robotHome[i]].size()){
                     int dis = operation[robotHome[i]].top().totalDistance / 2;
                     int time = operation[robotHome[i]].top().targetGoods.time;
-                    if((frame + dis + 25 < time + 1000)
+                    if((frame + dis + 50 < time + 1000)
                         && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0)
-                        && (Map::getLength(operation[robotHome[i]].top().targetBerthId,robot[i].position) < 50000))
+                        && (Map::getLength(operation[robotHome[i]].top().targetBerthId,robot[i].position) < 50000)) {
                         break;
+                    }
                     operation[robotHome[i]].pop();
                 }
                 if(operation[robotHome[i]].empty())continue;
@@ -149,7 +157,7 @@ Path getPath1(int robId, Point target) {
     vector<Point> points;
     queue<Point> q;
     q.push(robot[robId].position);
-//    cerr << "getPath1:" << robId << '\n';
+    cerr << "getPath1:" << robId << '\n';
 //    int ssss = 0;
     while (!q.empty()) {
 //        ssss++;
@@ -157,6 +165,7 @@ Path getPath1(int robId, Point target) {
         q.pop();
         int nextframe = step[fr.x][fr.y] + 1;
         for (int i = 0; i < 10; i++) {
+            if (i == robId) continue;
             if (robotCrushed[i] || !robotEnable[i]) thismap[robot[i].position.x][robot[i].position.y] = PointState::BLOCK;
         }
         for (int i = 0; i < 10; i++) {
@@ -167,7 +176,8 @@ Path getPath1(int robId, Point target) {
 //                    thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
 //                }
 
-                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
+                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe);
+//                while (robId == 1) cerr << "next:" << nextframe << '\n';
                 Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
                 Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
 
@@ -209,18 +219,20 @@ Path getPath1(int robId, Point target) {
                 Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
                 Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
                 Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
-                if (robotThisPoint0.x != -1 && robotThisPoint0.y != -1)
+                if (robotThisPoint0.x != -1 && robotThisPoint0.y != -1) {
                     thismap[robotThisPoint0.x][robotThisPoint0.y] = maze[robotThisPoint0.x][robotThisPoint0.y];
-                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1)
+                }
+                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1) {
                     thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
-                if (robotThisPoint2.x != -1 && robotThisPoint2.y != -1)
+                }
+                if (robotThisPoint2.x != -1 && robotThisPoint2.y != -1) {
                     thismap[robotThisPoint2.x][robotThisPoint2.y] = maze[robotThisPoint2.x][robotThisPoint2.y];
+                }
 
             }
         }
     }
     if (flag == 0) {
-
         return Path();
     }
     int nx = target.x, ny = target.y, length = 0;
@@ -236,8 +248,11 @@ Path getPath1(int robId, Point target) {
     length++;
     while (!repath.empty()) {
         points.push_back(repath.top());
+//        cerr << "repath top:" << repath.top().x << ',' << repath.top().y << '\n';
         repath.pop();
     }
+//    makeMap(points);
+//    cerr << "pathLength" << length << '\n';
     return Path(points, length);
 }
 
@@ -334,7 +349,7 @@ void getMission(int shipId){
         }
     }
     if(targetBerth != -1){
-        ship[shipId].setMission(ShipMission(targetBerth, 12));
+        ship[shipId].setMission(ShipMission(targetBerth, -1));
         visitBerth[targetBerth] = true;
     }
 }

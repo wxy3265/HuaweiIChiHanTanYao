@@ -10,8 +10,8 @@ const int fx[4] = {0, 0, 1, -1};
 const int fy[4] = {1, -1, 0, 0};
 
 class Path {
-    vector<Point> points;
 public:
+    vector<Point> points;
     int length, step;
     Path() {length = 1e7; step = 0;}
 
@@ -73,13 +73,17 @@ public:
 //        while(!id && start.x == 2) ;
     }
     Point getNextPoint() {
-        if (step == length) return {-1, -1};
+        if (step == length - 1 || length > 50000) return {-1, -1};
 //        while (true) cerr << "step:" << step;
+        cerr << "getNextPoint!!!" << step << ' ' << points.size() << ' ' << length << '\n';
         return points[++step];
     }
     Point getPointbyTime(int nextTime) {
-        if (step + nextTime >= length) return {-1, -1};
-        else return points[step + nextTime];
+        if (step + nextTime >= length || length > 50000) return {-1, -1};
+        else {
+//            cerr << "gpt:" << nextTime << ' ' << step << ' ' << points.size() << ' ' << length << '\n';
+            return points[step + nextTime];
+        }
     }
 };
 
