@@ -340,7 +340,7 @@ void getMission(int shipId){
         }
     }
     if(targetBerth != -1){
-        ship[shipId].setMission(targetBerth);
+        ship[shipId].setMission(ShipMission(targetBerth, -1));
         visitBerth[targetBerth] = true;
     }
 }

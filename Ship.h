@@ -9,6 +9,8 @@
 
 class ShipMission {
 public:
+    ShipMission(int targetId, int numToCarry);
+
     int targetId, numToCarry;
 };
 

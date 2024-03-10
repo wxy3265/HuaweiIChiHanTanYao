@@ -105,7 +105,7 @@ bool Map::isOpen(int id) {
     return open[id];
 }
 void Map::calcDistanceBetweenBerth(){
-    int r = 10;
+    int r = 0;
     int contain[12];
     int close[12];
     memset(contain, 0, sizeof contain);
