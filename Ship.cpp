@@ -14,11 +14,10 @@ void Ship::pull() {
     cout << "go " << id << '\n';
 }
 
-void Ship::setMission(int _targetId) {
-    get();
-    targetId = _targetId;
+void Ship::setMission(ShipMission _target) {
+    target.push(_target);
     mission = ShipState::MISSION_MOVE;
-    endCompleteTime = frame + berth[targetId].distance + 3;
+    endCompleteTime = frame + berth[target.front().targetId].distance + 3;
     if (frame <= 3) endCompleteTime = 0;
 }
 
@@ -37,19 +36,30 @@ void Ship::update(int _state) {
 //        endCompleteTime++;
 //        return;
 //    }
-    if (mission == ShipState::MISSION_MOVE) {
+    if (mission == ShipState::FREE) {
+        if (!target.empty()) {
+            mission = ShipState::MISSION_MOVE;
+        }
+    } if (mission == ShipState::MISSION_MOVE) {
         if (frame >= endCompleteTime) {
             mission = ShipState::MISSION_GET;
         }
     } else if (mission == ShipState::MISSION_GET) {
-        if (berth[targetId].empty() || goods.size() >= capacity) {
-            endCompleteTime = frame + berth[targetId].distance + 3;
-            mission = ShipState::MISSION_PULL;
-            pull();
+        if (berth[target.front().targetId].empty() || goods.size() >= capacity ||
+        (target.front().numToCarry != -1 && goods.size() >= target.front().numToCarry)) {
+            if (!target.empty()) {
+                endCompleteTime = frame + 503;
+                mission = ShipState::MISSION_MOVE;
+                target.pop();
+            } else {
+                endCompleteTime = frame + berth[target.front().targetId].distance + 3;
+                mission = ShipState::MISSION_PULL;
+                pull();
+            }
         }
-        for (int i = 1; i <= berth[targetId].velocity && !berth[targetId].empty(); i++)
-            goods.push_back(berth[targetId].fetchGoods());
-        visitBerth[targetId] = false;
+        for (int i = 1; i <= berth[target.front().targetId].velocity && !berth[target.front().targetId].empty(); i++)
+            goods.push_back(berth[target.front().targetId].fetchGoods());
+        visitBerth[target.front().targetId] = false;
     } else if (mission == ShipState::MISSION_PULL) {
         if (frame >= endCompleteTime) {
 //            while (true) cerr << "empty!";
