@@ -69,25 +69,19 @@ public:
 //            if (id != -1) cerr << repath.top().x << ',' << repath.top().y << ' ';
             repath.pop();
         }
-//        if (id != -1) cerr << '\n';
-//        while(!id && start.x == 2) ;
     }
     Point getNextPoint() {
         if (step == length - 1 || length > 50000) return {-1, -1};
-//        while (true) cerr << "step:" << step;
-        cerr << "getNextPoint!!!" << step << ' ' << points.size() << ' ' << length << '\n';
         return points[++step];
     }
     Point getPointbyTime(int nextTime) {
         if (step + nextTime >= length || length > 50000) return {-1, -1};
         else {
-//            cerr << "gpt:" << nextTime << ' ' << step << ' ' << points.size() << ' ' << length << '\n';
             return points[step + nextTime];
         }
     }
 };
 
 extern Path robotPath[10];
-extern bool robotGetGoods[10];
 
 #endif //HUAWEIICHIHANTANYAO_PATH_H

@@ -42,37 +42,17 @@ int main() {
     }
     while (frame < 15000){
         Map::update();
-        cerr << "frameStep0:" << frame << '\n';
-        for(int i = 0; i <= 4; i++) {
-            if(ship[i].isFree())getMission(i);
-        }
-        for(int i = 0; i <= 9; i++) {
-            calcEfficiency(i);
-        }
-        while(newGoods.size())newGoods.pop_back();
-        cerr << "frameStep1:" << frame << '\n';
+        cerr << "frame=" << frame << '\n';
+        for(int i = 0; i <= 4; i++) if(ship[i].isFree())getMission(i);
+        for(int i = 0; i <= 9; i++) calcEfficiency(i);
+        while(newGoods.size()) newGoods.pop_back();
+//        cerr << "frameStep1:" << frame << '\n';
         for(int i = 0; i <= 9; i++){
-            cerr << "frameStep1:" << frame << " robot:" << i << '\n';
-//            if (i != 5 && i != 0 && i != 7 && i != 9) continue;
-//            cerr << "berth:" << operation[robotHome[i]].top().targetBerthId << '\n';
-            if (robotCrushed[i]) {
-                cerr << "robotCrash:" << i;
-                if (robot[i].getMission() == RobotState::MISSION_GET) {
-                    robotPath[i] = getPath1(i, robot[i].getGoodsToGet().position);
-                } else if (robot[i].getMission() == RobotState::MISSION_PULL) {
-                    robotPath[i] = getPath1(i, Point(berth[robotHome[i]].position.x + 3, berth[robotHome[i]].position.y + 3));
-                }
-                if (robotPath[i].length < 50000) robotCrushed[i] = false;
-                cerr << "crash end\n";
-            }
-            if (robotGetGoods[i]) {
-                robotPath[i] = getPath1(i, Point(berth[robotHome[i]].position.x + 3, berth[robotHome[i]].position.y + 3));
-            }
             if(robot[i].getState() == RobotState::FREE){
                 while(operation[robotHome[i]].size()){
                     int dis = operation[robotHome[i]].top().totalDistance / 2;
                     int time = operation[robotHome[i]].top().targetGoods.time;
-                    if((frame + dis + 50 < time + 1000)
+                    if((frame + dis + 100 < time + 1000)
                         && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0)
                         && (Map::getLength(operation[robotHome[i]].top().targetBerthId,robot[i].position) < 50000)) {
                         break;
@@ -81,7 +61,6 @@ int main() {
                 }
                 if(operation[robotHome[i]].empty())continue;
                 robotSetMission(i, operation[robotHome[i]].top().targetGoods, operation[robotHome[i]].top().targetBerthId);
-//                while (true) cerr << "FREE";
                 visitGoods[operation[robotHome[i]].top().targetGoods.id] = 1;
                 operation[robotHome[i]].pop();
             }
@@ -125,135 +104,6 @@ void allocateHome(){
         robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
     }
     cout.flush();
-}
-
-void makeMap(vector<Point> points) {
-//    freopen("Pathmap.txt", "w", stderr);
-    char pathinMap[300][300];
-    for (int i = 0; i < 200; i++)
-        for (int j = 0; j < 200; j++)
-            pathinMap[i][j] = maze[i][j];
-    for (int i = 0; i < points.size(); i++)
-        pathinMap[points[i].x][points[i].y] = '~';
-    for (int i = 0; i < 200; i++) {
-        for (int j = 0; j < 200; j++)
-            cerr << pathinMap[i][j];
-        cerr << "\n";
-    }
-//    fclose(stderr);
-}
-
-Path getPath1(int robId, Point target) {
-    int fxx[4] = {0, 0, 1, -1};
-    int fyy[4] = {1, -1, 0, 0};
-    int step[300][300], stepnum[300][300], ffind[300][300], flag = 0;
-    char thismap[300][300];
-    for (int i = 0; i < 210; i++) {
-        for (int j = 0; j < 210; j++) {
-            step[i][j] = stepnum[i][j] = ffind[i][j] = 0;
-            thismap[i][j] = maze[i][j];
-        }
-    }
-    vector<Point> points;
-    queue<Point> q;
-    q.push(robot[robId].position);
-    cerr << "getPath1:" << robId << '\n';
-//    int ssss = 0;
-    while (!q.empty()) {
-//        ssss++;
-        Point fr = q.front();
-        q.pop();
-        int nextframe = step[fr.x][fr.y] + 1;
-        for (int i = 0; i < 10; i++) {
-            if (i == robId) continue;
-            if (robotCrushed[i] || !robotEnable[i]) thismap[robot[i].position.x][robot[i].position.y] = PointState::BLOCK;
-        }
-        for (int i = 0; i < 10; i++) {
-            if (i != robId) {
-                if (robotPath[i].length > 50000) continue;
-//                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
-//                if (robotThisPoint1 != Point(-1, -1)) {
-//                    thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
-//                }
-
-                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe);
-//                while (robId == 1) cerr << "next:" << nextframe << '\n';
-                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
-                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
-
-                if (robotThisPoint0 != Point(-1, -1)) {
-                    thismap[robotThisPoint0.x][robotThisPoint0.y] = PointState::BLOCK;
-                }
-                if (robotThisPoint1 != Point(-1, -1)) {
-                    thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
-                }
-                if (robotThisPoint2 != Point(-1, -1)) {
-                    thismap[robotThisPoint2.x][robotThisPoint2.y] = PointState::BLOCK;
-                }
-
-//                cerr << ssss << " " << nextframe << " " << i << " " << robId << " " << robotThisPoint.x << " " << robotThisPoint.y << "\n";
-            }
-        }
-        for (int i = 0; i < 4; i++) {
-            int ex = fr.x + fxx[i], ey = fr.y + fyy[i];
-            if (ex < 0 || ex > 199 || ey < 0 || ey > 199) continue;
-            if (ffind[ex][ey]) continue;
-            if (thismap[ex][ey] != PointState::OCEAN && thismap[ex][ey] != PointState::BLOCK) {
-                q.push((Point){ex, ey});
-                ffind[ex][ey] = 1;
-                step[ex][ey] = step[fr.x][fr.y] + 1;
-                stepnum[ex][ey] = i;
-                if (ex == target.x && ey == target.y) {
-                    flag = 1;
-                    break;
-                }
-            }
-        }
-        for (int i = 0; i < 10; i++) {
-            if (i != robId) {
-                if (robotPath[i].length > 50000) continue;
-//                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
-//                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1)
-//                    thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
-
-                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
-                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
-                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
-                if (robotThisPoint0.x != -1 && robotThisPoint0.y != -1) {
-                    thismap[robotThisPoint0.x][robotThisPoint0.y] = maze[robotThisPoint0.x][robotThisPoint0.y];
-                }
-                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1) {
-                    thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
-                }
-                if (robotThisPoint2.x != -1 && robotThisPoint2.y != -1) {
-                    thismap[robotThisPoint2.x][robotThisPoint2.y] = maze[robotThisPoint2.x][robotThisPoint2.y];
-                }
-
-            }
-        }
-    }
-    if (flag == 0) {
-        return Path();
-    }
-    int nx = target.x, ny = target.y, length = 0;
-    stack<Point> repath;
-    while (nx != robot[robId].position.x || ny != robot[robId].position.y) {
-        repath.push((Point){nx, ny});
-        int lastx = nx, lasty = ny;
-        nx -= fx[stepnum[lastx][lasty]];
-        ny -= fy[stepnum[lastx][lasty]];
-        length++;
-    }
-    repath.push((Point){nx, ny});
-    length++;
-    while (!repath.empty()) {
-        points.push_back(repath.top());
-//        cerr << "repath top:" << repath.top().x << ',' << repath.top().y << '\n';
-        repath.pop();
-    }
-//    makeMap(points);
-//    cerr << "pathLength" << length << '\n';
-    return Path(points, length);
 }
 
 Path getPathbyAStar(int robID, Point target) {

@@ -51,6 +51,11 @@ void Ship::update(int _state) {
             mission = ShipState::MISSION_GET;
         }
     } else if (mission == ShipState::MISSION_GET) {
+        if (frame + berth[target.front().targetId].distance + 3 >= 14995) {
+            mission = ShipState::MISSION_PULL;
+            visitBerth[target.front().targetId] = false;
+            pull();
+        }
         if ((berth[target.front().targetId].empty() && target.front().numToCarry == -1) ||
         goods.size() >= capacity ||
         (target.front().numToCarry != -1 && goods.size() >= target.front().numToCarry)) {
@@ -64,9 +69,10 @@ void Ship::update(int _state) {
                 pull();
             }
         }
-        for (int i = 1; i <= berth[target.front().targetId].velocity && !berth[target.front().targetId].empty(); i++)
-            goods.push_back(berth[target.front().targetId].fetchGoods());
         visitBerth[target.front().targetId] = false;
+        for (int i = 1; i <= berth[target.front().targetId].velocity && !berth[target.front().targetId].empty(); i++) {
+            goods.push_back(berth[target.front().targetId].fetchGoods());
+        }
     } else if (mission == ShipState::MISSION_PULL) {
         if (frame >= endCompleteTime) {
 //            while (true) cerr << "empty!";

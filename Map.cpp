@@ -34,27 +34,9 @@ void Map::init() {
 //        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
 //             << "time: " << time << " vel:" << vel << '\n';
             berth[id].distance = time, berth[id].velocity = vel;
-            int flag = 0;
-            for (int j = berth[id].position.x; j <= berth[id].position.x + 3; j++) {
-                for (int k = berth[id].position.y; k <= berth[id].position.y + 3; k++) {
-                    for (int l = 0; l < 4; l++) {
-                        int findx = nx[l] + j, findy = ny[l] + k;
-                        if (findx < 0 || findx >= 200 || findy < 0 || findy >= 200) continue;
-                        if (maze[findx][findy] == PointState::PLAIN) {
-                            flag = 1;
-                            berth[id].targerPosition = (Point){findx,findy};
-                            break;
-                        }
-                    }
-                    if (flag) break;
-                }
-                if (flag) break;
-            }
-
         }
     //初始化船舶ID
     for (int i = 0; i < 5; i++) ship[i].id = i;
-    for (int i = 0; i < 9; i++) robotEnable[i] = true;
     scanf("%d", &capacity);
     //OK
     string thisisOK;
@@ -72,7 +54,7 @@ void Map::update() {
     scanf("%d", &k);
     for (int i = 1, x, y, m; i <= k; i++) {
         scanf("%d%d%d", &x, &y, &m);
-        newGoods.push_back(Goods(Point(x, y), m, frame, ++goodsNumber));
+        newGoods.emplace_back(Point(x, y), m, frame, ++goodsNumber);
     }
     //更新机器人
     for (int i = 0, state, x, y, goods; i < 10; i++) {

@@ -25,6 +25,8 @@ private:
     void move(int direction);
     void get();
     void pull();
+    int waitTime = 0;
+    Point lastPosition;
 public:
     int id;
     Point position;
@@ -35,6 +37,6 @@ public:
     int getMission();
 };
 
-extern Robot robot[12];
+extern Robot robot[10];
 
 #endif //HUAWEIICHIHANTANYAO_ROBOT_H

@@ -6,5 +6,3 @@
 char maze[300][300];
 int frame, totalMoney, lastFrame, framesum;
 int capacity;
-bool robotCrushed[10];
-bool robotEnable[10];

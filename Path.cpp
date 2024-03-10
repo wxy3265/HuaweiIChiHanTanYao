@@ -5,4 +5,3 @@
 #include "Path.h"
 
 Path robotPath[10];
-bool robotGetGoods[10];
