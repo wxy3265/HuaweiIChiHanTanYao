@@ -30,8 +30,8 @@ void Map::init() {
     for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
         scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
         berth[id].id = id, berth[id].position.x = x, berth[id].position.y = y,
-        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
-             << "time: " << time << " vel:" << vel << '\n';
+//        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
+//             << "time: " << time << " vel:" << vel << '\n';
         berth[id].distance = time, berth[id].velocity = vel;
     }
     //初始化船舶ID
@@ -45,7 +45,7 @@ void Map::init() {
 
 void Map::update() {
     scanf("%d%d", &frame, &totalMoney);
-    cerr << "lastFrame:" << lastFrame << " " << "frame:" << frame << '\n';
+//    cerr << "lastFrame:" << lastFrame << " " << "frame:" << frame << '\n';
     framesum += frame - lastFrame - 1;
     lastFrame = frame;
     //读入新增货物
@@ -105,7 +105,7 @@ bool Map::isOpen(int id) {
     return open[id];
 }
 void Map::calcDistanceBetweenBerth(){
-    int r = 0;
+    int r = 10;
     int contain[12];
     int close[12];
     memset(contain, 0, sizeof contain);

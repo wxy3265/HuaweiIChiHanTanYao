@@ -61,9 +61,9 @@ int main() {
                 while(operation[robotHome[i]].size()){
                     int dis = operation[robotHome[i]].top().totalDistance / 2;
                     int time = operation[robotHome[i]].top().targetGoods.time;
-                    if((frame + dis < time + 1000)
+                    if((frame + dis + 25 < time + 1000)
                         && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0)
-                        && (Path(robot[i].position,operation[robotHome[i]].top().targetGoods.position, -1).length < 50000))
+                        && (Map::getLength(operation[robotHome[i]].top().targetBerthId,robot[i].position) < 50000))
                         break;
                     operation[robotHome[i]].pop();
                 }
@@ -77,11 +77,12 @@ int main() {
         cout << "OK" << endl;
         cout.flush();
     }
+    cerr << "跳帧数量" << framesum << "\n";
     return 0;
 }
 
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
-    cerr << "robotSetMission tar:" << targetBerthId << '\n';
+//    cerr << "robotSetMission tar:" << targetBerthId << '\n';
     robot[robId].setMission(goodsToGet, targetBerthId);
     robotPath[robId] = getPath1(robId, goodsToGet.position);
 }
@@ -231,18 +232,10 @@ Path getPath1(int robId, Point target) {
     }
     repath.push((Point){nx, ny});
     length++;
-//    cerr << "start:" << robot[robId].position.x << ',' << robot[robId].position.y << ' '
-//         << "target:" << target.x << ',' << target.y << '\n';
-//    cerr << "robId:" << robId << "path:";
     while (!repath.empty()) {
         points.push_back(repath.top());
-//        cerr << repath.top().x << ',' << repath.top().y << ' ';
         repath.pop();
     }
-//    cerr << '\n';
-//    cerr << "targetposition:" << target.x << " " << target.y << "\n";
-//    cerr << "endposition" << points.back().x << " " << points.back().y << "\n";
-//    makeMap(points);
     return Path(points, length);
 }
 
@@ -340,7 +333,7 @@ void getMission(int shipId){
         }
     }
     if(targetBerth != -1){
-        ship[shipId].setMission(ShipMission(targetBerth, -1));
+        ship[shipId].setMission(targetBerth);
         visitBerth[targetBerth] = true;
     }
 }
