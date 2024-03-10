@@ -30,26 +30,28 @@ int totGetValue = 0;
 //更新机器人状态
 void Robot::update(Point _position, bool _enable, bool _carrying) {
     robotCrushed[id] = false;
-//    if (id == 6) {
-//        cerr << "robot" << id << "target:" << berth[targetId].position.x << ',' << berth[targetId].position.y << "pos:"
-//             << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
-//             << "path:" << robotPath[id].step << ' ' << robotPath[id].length << ';'
-//             << "gtg:" << goodsToGet.position.x << ',' << goodsToGet.position.y
-//             << "carrying:" << carrying << " enable:" << enable << " crash:" << crashed << '\n';
-//    }
+    if (true) {
+        cerr << "robot" << id << "target:" << berth[targetId].position.x << ',' << berth[targetId].position.y << "pos:"
+             << position.x << ' ' << position.y << "next: " << nextPoint.x << ',' << nextPoint.y
+             << "path:" << robotPath[id].step << ' ' << robotPath[id].length << ';'
+             << "gtg:" << goodsToGet.position.x << ',' << goodsToGet.position.y
+             << "carrying:" << carrying << " enable:" << enable << " crash:" << crashed << '\n';
+    }
     position = _position;
     enable = _enable;
+    robotEnable[id] = enable;
     carrying = _carrying;
 //    while (true && frame != 1 && id >= 4) cerr << frame;
     if (!enable) {
 //        robotPath[id] = Path();
+        robotCrushed[id] = false;
         crashed = true;
         return;
     }
     if (state == RobotState::MISSION_MOVE) {
 //        if (mission == RobotState::MISSION_PULL) cerr << "carrying:" << carrying << '\n';
         if (crashed) {
-//            cerr << "crashed:" << id << '\n';
+            cerr << "crashed:" << id << '\n';
             robotCrushed[id] = true;
             crashed = false;
             return;

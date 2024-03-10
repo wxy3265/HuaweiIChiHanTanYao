@@ -51,6 +51,7 @@ void Map::init() {
         }
     //初始化船舶ID
     for (int i = 0; i < 5; i++) ship[i].id = i;
+    for (int i = 0; i < 9; i++) robotEnable[i] = true;
     scanf("%d", &capacity);
     //OK
     string thisisOK;
@@ -120,7 +121,7 @@ bool Map::isOpen(int id) {
     return open[id];
 }
 void Map::calcDistanceBetweenBerth(){
-    int r = 10;
+    int r = 50;
     int contain[12];
     int close[12];
     memset(contain, 0, sizeof contain);

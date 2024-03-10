@@ -27,14 +27,14 @@ int Ship::getState() {return state;}
 vector<Goods> Ship::getGoods() {return goods;}
 
 void Ship::update(int _state) {
-    cerr << "ship:" << id << " totValue:" << totValue() << " goodsNumber:" << goods.size()
-    << " nowframe:" << frame << " endF:" << endCompleteTime
-    << "targetSize:" << target.size() << " mission:";
-    if (mission == ShipState::MISSION_MOVE) cerr << "move";
-    else if (mission == ShipState::MISSION_PULL) cerr << "pull";
-    else if (mission == ShipState::MISSION_GET) cerr << "get";
-    else if (mission == ShipState::FREE) cerr << "free";
-    cerr << '\n';
+//    cerr << "ship:" << id << " totValue:" << totValue() << " goodsNumber:" << goods.size()
+//    << " nowframe:" << frame << " endF:" << endCompleteTime
+//    << "targetSize:" << target.size() << " mission:";
+//    if (mission == ShipState::MISSION_MOVE) cerr << "move";
+//    else if (mission == ShipState::MISSION_PULL) cerr << "pull";
+//    else if (mission == ShipState::MISSION_GET) cerr << "get";
+//    else if (mission == ShipState::FREE) cerr << "free";
+//    cerr << '\n';
     state = _state;
 //    if (state == ShipState::FREE) {
 //        endCompleteTime++;
