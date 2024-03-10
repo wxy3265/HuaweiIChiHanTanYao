@@ -264,15 +264,15 @@ Path getPathbyAStar(int robID, Point target) {
         Point position, target;
         int step;
         bool operator < (const node &b) const {
-            return ((abs(position.x - target.x) + abs(position.y - target.y)) > (abs(b.position.x - b.target.x) + abs(b.position.y - target.y)));
+            return ((abs(position.x - target.x) + abs(position.y - target.y) + step) > (b.step + abs(b.position.x - b.target.x) + abs(b.position.y - target.y) ));
         }
     };
     priority_queue<node> q;
     q.push((node){robot[robID].position, target, 0});
     int b[300][300], dirc[300][300];
     char thismap[300][300];
-    for (int i = 0; i < 200; i++)
-        for (int j = 0; j < 200; j++) {
+    for (int i = 0; i < 210; i++)
+        for (int j = 0; j < 210; j++) {
             b[i][j] = dirc[i][j] = 0;
             thismap[i][j] = maze[i][j];
         }

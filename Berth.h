@@ -15,6 +15,7 @@ private:
 public:
     int id;
     Point position;
+    Point targerPosition;
     int distance;
     int velocity;
 

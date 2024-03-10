@@ -26,20 +26,6 @@ void Map::init() {
             }
         }
     }
-//    bool setOcean[300][300];
-//    for (int i = 0; i < 200; i++)
-//        for (int j = 0; j < 200; j++)
-//            setOcean[i][j] = false;
-//
-//    for (int i = 0; i < 200; i++)
-//        for (int j = 0; j < 200; j++)
-//            if (maze[i][j] == PointState::OCEAN) {
-//                for (int k = 0; k < 4; k++) {
-//                    int ffx = i + nx[k], ffy = j + ny[k];
-//                    if (maze[ffx][ffy] == PointState::BERTH && setOcean[i][j] == false)
-//                        maze[ffx][ffy] = PointState::OCEAN, setOcean[ffx][ffy] = true;
-//                }
-//            }
 
         //读入泊位信息
         for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
@@ -48,6 +34,23 @@ void Map::init() {
 //        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
 //             << "time: " << time << " vel:" << vel << '\n';
             berth[id].distance = time, berth[id].velocity = vel;
+            int flag = 0;
+            for (int j = berth[id].position.x; j <= berth[id].position.x + 3; j++) {
+                for (int k = berth[id].position.y; k <= berth[id].position.y + 3; k++) {
+                    for (int l = 0; l < 4; l++) {
+                        int findx = nx[l] + j, findy = ny[l] + k;
+                        if (findx < 0 || findx >= 200 || findy < 0 || findy >= 200) continue;
+                        if (maze[findx][findy] == PointState::PLAIN) {
+                            flag = 1;
+                            berth[id].targerPosition = (Point){findx,findy};
+                            break;
+                        }
+                    }
+                    if (flag) break;
+                }
+                if (flag) break;
+            }
+
         }
     //初始化船舶ID
     for (int i = 0; i < 5; i++) ship[i].id = i;
