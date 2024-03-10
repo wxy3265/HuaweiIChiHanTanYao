@@ -50,8 +50,10 @@ int main() {
             if (robotCrushed[i]) {
                 if (robot[i].getMission() == RobotState::MISSION_GET) {
                     robotPath[i] = getPath1(i, robot[i].getGoodsToGet().position);
+//                    robotCrushed[i] = false;
                 } else if (robot[i].getMission() == RobotState::MISSION_PULL) {
                     robotPath[i] = getPath1(i, Point(berth[robotHome[i]].position.x + 3, berth[robotHome[i]].position.y + 3));
+//                    robotCrushed[i] = false;
                 }
             }
             if (robotGetGoods[i]) {
@@ -61,10 +63,10 @@ int main() {
                 while(operation[robotHome[i]].size()){
                     int dis = operation[robotHome[i]].top().totalDistance / 2;
                     int time = operation[robotHome[i]].top().targetGoods.time;
-                    if((frame + dis + 25 < time + 1000)
-                        && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0)
-                        && (Map::getLength(operation[robotHome[i]].top().targetBerthId,robot[i].position) < 50000))
+                    if((frame + dis + 40 < time + 1000)
+                        && (visitGoods[operation[robotHome[i]].top().targetGoods.id] == 0)) {
                         break;
+                    }
                     operation[robotHome[i]].pop();
                 }
                 if(operation[robotHome[i]].empty())continue;
@@ -77,7 +79,7 @@ int main() {
         cout << "OK" << endl;
         cout.flush();
     }
-    cerr << "跳帧数量" << framesum << "\n";
+//    cerr << "跳帧数量" << framesum << "\n";
     return 0;
 }
 
@@ -104,12 +106,14 @@ void allocateHome(){
         if(!Map::isOpen(to_berth_distance[i].berthId))continue;
         if(robotHome[to_berth_distance[i].robotId] != -1)continue;
         if(berthRobot[to_berth_distance[i].berthId] != -1)continue;
+        if(to_berth_distance[i].distance > 50000)continue;
         robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
         berthRobot[to_berth_distance[i].berthId] = to_berth_distance[i].robotId;
     }
     for(int i = 1; i <= cnt; i++){
         if(!Map::isOpen(to_berth_distance[i].berthId))continue;
         if(robotHome[to_berth_distance[i].robotId] != -1)continue;
+        if(to_berth_distance[i].distance > 50000)continue;
         robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
     }
     cout.flush();
@@ -162,12 +166,12 @@ Path getPath1(int robId, Point target) {
 
                 Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
                 Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
-                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
+//                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
 
 
 //                if(robotCrushed[i] && robotCrushed[robId]) {
 ////                    cerr << "Avoid Crushed!" << i << ' ' << robId << '\n';
-//                    thismap[robotThisPoint.x][robotThisPoint.y] = PointState::BLOCK;
+//                    thismap[robotThisPoint0.x][robotThisPoint0.y] = PointState::BLOCK;
 //                }
                 if (robotThisPoint0 != Point(-1, -1)) {
                     thismap[robotThisPoint0.x][robotThisPoint0.y] = PointState::BLOCK;
@@ -175,9 +179,9 @@ Path getPath1(int robId, Point target) {
                 if (robotThisPoint1 != Point(-1, -1)) {
                     thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
                 }
-                if (robotThisPoint2 != Point(-1, -1)) {
-                    thismap[robotThisPoint2.x][robotThisPoint2.y] = PointState::BLOCK;
-                }
+//                if (robotThisPoint2 != Point(-1, -1)) {
+//                    thismap[robotThisPoint2.x][robotThisPoint2.y] = PointState::BLOCK;
+//                }
 
 //                cerr << ssss << " " << nextframe << " " << i << " " << robId << " " << robotThisPoint.x << " " << robotThisPoint.y << "\n";
             }
@@ -206,13 +210,17 @@ Path getPath1(int robId, Point target) {
 
                 Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
                 Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
-                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
+//                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
+//                if(robotCrushed[i] && robotCrushed[robId]) {
+////                    cerr << "Avoid Crushed!" << i << ' ' << robId << '\n';
+//                    thismap[robotThisPoint0.x][robotThisPoint0.y] = maze[robotThisPoint0.x][robotThisPoint0.y];
+//                }
                 if (robotThisPoint0.x != -1 && robotThisPoint0.y != -1)
                     thismap[robotThisPoint0.x][robotThisPoint0.y] = maze[robotThisPoint0.x][robotThisPoint0.y];
                 if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1)
                     thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
-                if (robotThisPoint2.x != -1 && robotThisPoint2.y != -1)
-                    thismap[robotThisPoint2.x][robotThisPoint2.y] = maze[robotThisPoint2.x][robotThisPoint2.y];
+//                if (robotThisPoint2.x != -1 && robotThisPoint2.y != -1)
+//                    thismap[robotThisPoint2.x][robotThisPoint2.y] = maze[robotThisPoint2.x][robotThisPoint2.y];
 
             }
         }

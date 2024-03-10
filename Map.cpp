@@ -26,14 +26,29 @@ void Map::init() {
             }
         }
     }
-    //读入泊位信息
-    for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
-        scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
-        berth[id].id = id, berth[id].position.x = x, berth[id].position.y = y,
+//    bool setOcean[300][300];
+//    for (int i = 0; i < 200; i++)
+//        for (int j = 0; j < 200; j++)
+//            setOcean[i][j] = false;
+//
+//    for (int i = 0; i < 200; i++)
+//        for (int j = 0; j < 200; j++)
+//            if (maze[i][j] == PointState::OCEAN) {
+//                for (int k = 0; k < 4; k++) {
+//                    int ffx = i + nx[k], ffy = j + ny[k];
+//                    if (maze[ffx][ffy] == PointState::BERTH && setOcean[i][j] == false)
+//                        maze[ffx][ffy] = PointState::OCEAN, setOcean[ffx][ffy] = true;
+//                }
+//            }
+
+        //读入泊位信息
+        for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
+            scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
+            berth[id].id = id, berth[id].position.x = x, berth[id].position.y = y,
 //        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
 //             << "time: " << time << " vel:" << vel << '\n';
-        berth[id].distance = time, berth[id].velocity = vel;
-    }
+            berth[id].distance = time, berth[id].velocity = vel;
+        }
     //初始化船舶ID
     for (int i = 0; i < 5; i++) ship[i].id = i;
     scanf("%d", &capacity);

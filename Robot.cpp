@@ -73,7 +73,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
             return;
         }
         totGetValue += goodsToGet.value;
-        cerr << "getedV:" << totGetValue << '\n';
+//        cerr << "getedV:" << totGetValue << '\n';
         robotGetGoods[id] = true;
         nextPoint = robotPath[id].getNextPoint();
         state = RobotState::MISSION_MOVE;
