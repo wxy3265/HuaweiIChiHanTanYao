@@ -19,6 +19,7 @@
 extern char maze[300][300];
 extern int frame, totalMoney, lastFrame, framesum;
 extern int capacity;
+extern const int PathAlgorithm; //0为bfs 1为 A*
 
 using namespace std;
 

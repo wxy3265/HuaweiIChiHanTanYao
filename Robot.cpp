@@ -26,7 +26,9 @@ void Robot::setMission(Goods _goodsToGet, int _targetId) {
     mission = RobotState::MISSION_GET;
     state = RobotState::MISSION_MOVE;
     nextPoint = position;
-    robotPath[id] = getPathbyAStar(id, goodsToGet.position);
+    if (PathAlgorithm == 0) robotPath[id] = getPath1(id, goodsToGet.position);
+    else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
+    else robotPath[id] = getPath1(id, goodsToGet.position);
 }
 
 int totGetValue = 0;
@@ -67,8 +69,16 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     }
     if (state == RobotState::MISSION_MOVE) {
         if (robotPath[id].length > 50000) {
-            if (mission == RobotState::MISSION_GET) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
-            if (mission == RobotState::MISSION_PULL) robotPath[id] = getPathbyAStar(id, berth[targetId].position);
+            if (mission == RobotState::MISSION_GET) {
+                if (PathAlgorithm == 0) robotPath[id] = getPath1(id, goodsToGet.position);
+                else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
+                else robotPath[id] = getPath1(id, goodsToGet.position);
+            }
+            if (mission == RobotState::MISSION_PULL) {
+                if (PathAlgorithm == 0) robotPath[id] = getPath1(id, berth[targetId].position);
+                else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].position);
+                else robotPath[id] = getPath1(id, berth[targetId].position);
+            }
             return;
         }
         if (position == nextPoint || nextPoint == Point(-1, -1)) {
@@ -85,8 +95,16 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
                 if ((nextPoint != Point(-1, -1)) &&
                     (robot[i].position == nextPoint || nextPoint == robot[i].nextPoint)) {
 //                    cerr << "阻止了" << id << "移动到" << i << "的位置\n";
-                    if (mission == RobotState::MISSION_GET) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
-                    if (mission == RobotState::MISSION_PULL) robotPath[id] = getPathbyAStar(id, berth[targetId].position);
+                    if (mission == RobotState::MISSION_GET) {
+                        if (PathAlgorithm == 0) robotPath[id] = getPath1(id, goodsToGet.position);
+                        else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
+                        else robotPath[id] = getPath1(id, goodsToGet.position);
+                    }
+                    if (mission == RobotState::MISSION_PULL) {
+                        if (PathAlgorithm == 0) robotPath[id] = getPath1(id, berth[targetId].position);
+                        else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].position);
+                        else robotPath[id] = getPath1(id, berth[targetId].position);
+                    }
                     nextPoint = robotPath[id].getNextPoint();
                     return;
                 }
@@ -103,7 +121,9 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         nextPoint = robotPath[id].getNextPoint();
         state = RobotState::MISSION_MOVE;
         mission = RobotState::MISSION_PULL;
-        robotPath[id] = getPathbyAStar(id, berth[targetId].position);
+        if (PathAlgorithm == 0) robotPath[id] = getPath1(id, berth[targetId].position);
+        else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].position);
+        else robotPath[id] = getPath1(id, berth[targetId].position);
     } else if (state == RobotState::MISSION_PULL) {
 //        cerr << id << "Pulled\n";
         pull();
@@ -140,6 +160,7 @@ void makeMap(vector<Point> points) {
 }
 
 Path getPath1(int robId, Point target) {
+//    cerr << "使用了 Algorithm BFS \n";
     int fxx[4] = {0, 0, 1, -1};
     int fyy[4] = {1, -1, 0, 0};
     int step[300][300], stepnum[300][300], ffind[300][300], flag = 0;
@@ -229,6 +250,7 @@ Path getPath1(int robId, Point target) {
 }
 
 Path getPathbyAStar(int robId, Point target) {
+//    cerr << "使用了 Algorithm A*" << "\n";
     int fxx[4] = {0, 0, 1, -1};
     int fyy[4] = {1, -1, 0, 0};
     vector<Point> points;

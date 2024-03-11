@@ -33,6 +33,7 @@ void calcEfficiency(int start);
 void getMission(int shipId);
 
 int main() {
+//    PathAlgorithm = 1;
     freopen("out.txt", "w", stderr);
     Map::init();
     for(int i = 0; i <= 9; i++) Map::pretreatPath(berth[i]);
@@ -76,7 +77,9 @@ int main() {
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
 //    cerr << "robotSetMission tar:" << targetBerthId << '\n';
     robot[robId].setMission(goodsToGet, targetBerthId);
-    robotPath[robId] = getPathbyAStar(robId, goodsToGet.position);
+    if (PathAlgorithm == 0) robotPath[robId] = getPath1(robId, goodsToGet.position);
+    else if (PathAlgorithm == 1) robotPath[robId] = getPathbyAStar(robId, goodsToGet.position);
+    else robotPath[robId] = getPath1(robId, goodsToGet.position);
 }
 
 void allocateHome(){
