@@ -31,8 +31,8 @@ void Map::init() {
         for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
             scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
             berth[id].id = id, berth[id].position.x = x, berth[id].position.y = y,
-        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
-             << "time: " << time << " vel:" << vel << '\n';
+//        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
+//             << "time: " << time << " vel:" << vel << '\n';
             berth[id].distance = time, berth[id].velocity = vel;
         }
     //初始化船舶ID
@@ -67,7 +67,7 @@ void Map::update() {
         scanf("%d%d", &state, &id);
         ship[i].update(state);
     }
-    for (int i = 0; i < 10; i++) cerr << "berth:[" << i << "] goodsValue:<" << berth[i].getTotalValue() << ">\n";
+//    for (int i = 0; i < 10; i++) cerr << "berth:[" << i << "] goodsValue:<" << berth[i].getTotalValue() << ">\n";
     //OK
     string thisisOK;
     cin >> thisisOK;
