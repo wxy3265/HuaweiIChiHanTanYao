@@ -31,6 +31,7 @@ Path getPathbyAStar(int robId, Point target);
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId);
 void calcEfficiency(int start);
 void getMission(int shipId);
+void getMissionPlus(int shipId);
 
 int main() {
 //    PathAlgorithm = 1;
@@ -112,6 +113,73 @@ void allocateHome(){
     cout.flush();
 }
 
+Path getPathbyAStar(int robID, Point target) {
+    int fxx[4] = {0, 0, 1, -1};
+    int fyy[4] = {1, -1, 0, 0};
+    vector<Point> points;
+    struct node {
+        Point position, target;
+        int step;
+        bool operator < (const node &b) const {
+            return ((abs(position.x - target.x) + abs(position.y - target.y) + step) > (b.step + abs(b.position.x - b.target.x) + abs(b.position.y - target.y) ));
+        }
+    };
+    priority_queue<node> q;
+    q.push((node){robot[robID].position, target, 0});
+    int b[300][300], dirc[300][300];
+    char thismap[300][300];
+    for (int i = 0; i < 210; i++)
+        for (int j = 0; j < 210; j++) {
+            b[i][j] = dirc[i][j] = 0;
+            thismap[i][j] = maze[i][j];
+        }
+    int flag = 0, length = 0;
+    while (!q.empty()) {
+        node tp = q.top();
+        q.pop();
+        /*
+         * getRobotPathArea
+         * */
+        for (int i = 0; i < 4; i++) {
+            int ex = tp.position.x + fxx[i], ey = tp.position.y + fyy[i];
+            if (ex < 0 || ex >= 200 || ey < 0 || ey >= 200) continue;
+            if (b[ex][ey]) continue;
+            if (thismap[ex][ey] != PointState::BLOCK && thismap[ex][ey] != PointState::OCEAN) {
+                q.push((node){(Point){ex, ey}, target, tp.step + 1});
+                b[ex][ey] = 1;
+                dirc[ex][ey] = i;
+                if (ex == target.x && ey == target.y) {
+                    flag = 1;
+                    break;
+                }
+            }
+        }
+        /*
+         * returnMapArea
+         * */
+        if (flag == 1) break;
+    }
+    if (flag == 0) {
+        return Path();
+    }
+    int nx = target.x, ny = target.y;
+    stack<Point> repath;
+    while (nx != robot[robID].position.x || ny != robot[robID].position.y) {
+        repath.push((Point){nx, ny});
+        int lastx = nx, lasty = ny;
+        nx -= fxx[dirc[lastx][lasty]];
+        ny -= fyy[dirc[lastx][lasty]];
+        length++;
+    }
+    repath.push((Point){nx, ny});
+    length++;
+    while (!repath.empty()) {
+        points.push_back(repath.top());
+        repath.pop();
+    }
+    return Path(points, length);
+}
+
 void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
         double dis = Map::getLength(start, newGoods[i].position) * 2;
@@ -140,5 +208,63 @@ void getMission(int shipId){
     if(targetBerth != -1){
         ship[shipId].setMission(ShipMission(targetBerth, -1));
         visitBerth[targetBerth] = true;
+    }
+}
+
+void getMissionPlus(int shipId){
+    double efficiency = -1000000;
+    int targetBerth1 = -1,targetBerth2 = -1;
+    int cap1 = 0,cap2 = 0;
+    for(int i = 0; i <= 9; i++){
+        int num = berth[i].getGoodsNum();
+        int minum = min(num, capacity);
+        double eff = 1.0 * berth [i].getHeadGoodsValue(minum) / (berth[i].distance * 2.0);
+        if(eff > efficiency){
+            efficiency = eff;
+            targetBerth1 = i;
+            cap1 = minum;
+        }
+    }
+
+    for (int i = 0; i <= 9; i++) {
+        int num1 = berth[i].getGoodsNum();
+        for(int j = 0; j <= 9; j++){
+            if(i == j)continue;
+            int num2 = berth[j].getGoodsNum();
+            for (int cnt1 = 0; cnt1 <= min(num1, capacity); cnt1++) {
+                int cnt2 = min(capacity - cnt1, num2);
+                double eff = 1.0 * (berth[i].getHeadGoodsValue(cnt1) + berth[j].getHeadGoodsValue(cnt2)) / (berth[i].distance + berth[j].distance + 500.0);
+                if(eff > efficiency){
+                    if(cnt1 == 0){
+                        efficiency = eff;
+                        targetBerth1 = i;
+                        cap1 = cnt1;
+                    }else if(cnt2 == 0){
+                        efficiency = eff;
+                        targetBerth1 = j;
+                        cap1 = cnt2;
+                    }else{
+                        efficiency = eff;
+                        targetBerth1 = i;
+                        targetBerth2 = j;
+                        cap1 = cnt1;
+                        cap2 = cnt2;
+                    }
+                }
+            }
+        }
+    }
+    if(targetBerth1 != -1){
+        if(targetBerth2 == -1){
+            ship[shipId].setMission(ShipMission(targetBerth1,-1));
+            //berth[targetBerth1].visitGoods += cap1;
+            visitGoods[targetBerth1] = 1;
+        }
+        else{
+            ship[shipId].setMission(ShipMission(targetBerth1,cap1));
+            ship[shipId].setMission(ShipMission(targetBerth2,cap2));
+            berth[targetBerth1].visitGoods += cap1;
+            berth[targetBerth2].visitGoods += cap2;
+        }
     }
 }

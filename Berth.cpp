@@ -8,12 +8,13 @@ int totInValue = 0;
 void Berth::pushGoods(Goods gd) {
     goods.push(gd);
     totInValue += gd.value;
-//    cerr << "totInvalue:" << totInValue << '\n';
+    cerr << "totInvalue:" << totInValue << '\n';
 }
 
 Goods Berth::fetchGoods() {
     Goods goods1 = goods.front();
     goods.pop();
+    visitGoods --;
     return goods1;
 }
 
@@ -37,7 +38,7 @@ int Berth::getHeadGoodsValue(int k) {
     queue <Goods> tmp;
     int n = goods.size(), tot = 0;
     for (int i = 1; i <= n && !goods.empty(); i++) {
-        if (i <= k) tot += goods.front().value;
+        if (i <= k + visitGoods && i > visitGoods) tot += goods.front().value;
         tmp.push(goods.front());
         goods.pop();
     }

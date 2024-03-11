@@ -12,12 +12,13 @@ class Berth {
 private:
     int shipState;
     queue<Goods> goods;
+
 public:
     int id;
     Point position;
     int distance;
     int velocity;
-
+    int visitGoods = 0;
     void pushGoods(Goods gd);
     Goods fetchGoods();
 
