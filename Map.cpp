@@ -10,7 +10,7 @@ const int nx[]={0,0,1,-1};
 const int ny[]={1,-1,0,0};
 int pathLength[12][207][207];
 int berth_to_berth[12][12];
-int open[12];
+bool open[12];
 
 void Map::init() {
     //读入地图
@@ -31,8 +31,8 @@ void Map::init() {
         for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
             scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
             berth[id].id = id, berth[id].position.x = x, berth[id].position.y = y,
-//        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
-//             << "time: " << time << " vel:" << vel << '\n';
+        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
+             << "time: " << time << " vel:" << vel << '\n';
             berth[id].distance = time, berth[id].velocity = vel;
         }
     //初始化船舶ID
@@ -61,12 +61,13 @@ void Map::update() {
         scanf("%d%d%d%d", &goods, &x, &y, &state);
         robot[i].update(Point(x, y), state, goods);
     }
-    cerr << "机器人更新完毕\n";
+//    cerr << "机器人更新完毕\n";
     //更新船舶
     for (int i = 0, state, id; i < 5; i++) {
         scanf("%d%d", &state, &id);
         ship[i].update(state);
     }
+    for (int i = 0; i < 10; i++) cerr << "berth:[" << i << "] goodsValue:<" << berth[i].getTotalValue() << ">\n";
     //OK
     string thisisOK;
     cin >> thisisOK;
@@ -107,9 +108,21 @@ bool Map::isOpen(int id) {
     return open[id];
 }
 void Map::calcDistanceBetweenBerth(){
+//    open[0] = true;
+//    open[1] = true;
+//    open[2] = true;
+//    open[3] = true;
+//    open[4] = true;
+//    open[5] = true;
+//    open[6] = true;
+//    open[7] = true;
+//    open[8] = true;
+//    open[9] = true;
+//    open[10] = true;
+//    return;
     int r = 50;
     int contain[12];
-    int close[12];
+    bool close[12];
     memset(contain, 0, sizeof contain);
     memset(close, 0, sizeof close);
     for(int i = 0; i <= 9; i++)
@@ -121,17 +134,17 @@ void Map::calcDistanceBetweenBerth(){
             }
         }
     Berth newBerth[12];
-    for(int i = 0; i <= 9; i++)newBerth[i] = berth[i];
+    for(int i = 0; i <= 9; i++) newBerth[i] = berth[i];
     sort(newBerth, newBerth + 10, berthCmp);
     for(int i = 10; i >= 0; i--){
         for(int j = 0; j <= 9; j++){
             int id = newBerth[j].id;
             if (contain[id] == i && !close[id]){
-                open[id] = 1;
+                open[id] = true;
                 for(int k = 0; k <= 9; k++){
                     if(k == id)continue;
                     if(berth_to_berth[id][k] < r){
-                        close[k] = 1;
+                        close[k] = true;
                     }
                 }
             }

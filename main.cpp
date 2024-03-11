@@ -6,7 +6,7 @@ bool visitGoods[200007];
 struct Operation{
     Goods targetGoods;
     int targetBerthId;
-    int totalDistance;
+    double totalDistance;
     double efficiency;
     bool operator<(const Operation &x) const{
         return efficiency < x.efficiency;
@@ -92,6 +92,7 @@ void allocateHome(){
     sort(to_berth_distance + 1,to_berth_distance + cnt + 1,cmp);
 
     for(int i = 1; i <= cnt; i++){
+        if(to_berth_distance[i].distance > 100000)continue;
         if(!Map::isOpen(to_berth_distance[i].berthId))continue;
         if(robotHome[to_berth_distance[i].robotId] != -1)continue;
         if(berthRobot[to_berth_distance[i].berthId] != -1)continue;
@@ -99,6 +100,7 @@ void allocateHome(){
         berthRobot[to_berth_distance[i].berthId] = to_berth_distance[i].robotId;
     }
     for(int i = 1; i <= cnt; i++){
+        if(to_berth_distance[i].distance > 100000)continue;
         if(!Map::isOpen(to_berth_distance[i].berthId))continue;
         if(robotHome[to_berth_distance[i].robotId] != -1)continue;
         robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
@@ -175,7 +177,7 @@ Path getPathbyAStar(int robID, Point target) {
 
 void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
-        int dis = Map::getLength(start, newGoods[i].position);
+        double dis = Map::getLength(start, newGoods[i].position) * 2;
         double efficiency = 1.0 * newGoods[i].value / (dis * 2.0);
         operation[start].push((Operation){newGoods[i], start, dis * 2, efficiency});
     }

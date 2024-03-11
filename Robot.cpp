@@ -29,6 +29,7 @@ void Robot::setMission(Goods _goodsToGet, int _targetId) {
 }
 
 int totGetValue = 0;
+int totGiveUp = 0;
 //更新机器人状态
 void Robot::update(Point _position, bool _enable, bool _carrying) {
     lastPosition = position;
@@ -40,10 +41,15 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     } else {
         waitTime = 0;
     }
-    if (waitTime >= 100) {
-        state = RobotState::MISSION_PULL;
+    if (waitTime >= 10) {
+        if (carrying) totGiveUp += goodsToGet.value;
+        cerr << "[" << id << "]放弃任务！总价值：<" << totGiveUp << ">\n";
+        waitTime = 0;
+        state = RobotState::FREE;
+        pull();
+        return;
     }
-    if (true) {
+    if (false) {
         cerr << "robot[" << id << "] target:" << berth[targetId].position.x << ',' << berth[targetId].position.y << " pos:"
              << position.x << ' ' << position.y << " next: " << nextPoint.x << ',' << nextPoint.y
              << " path:" << robotPath[id].step << '/' << robotPath[id].length
@@ -66,20 +72,23 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         }
         if (position == nextPoint || nextPoint == Point(-1, -1)) {
             nextPoint = robotPath[id].getNextPoint();
-            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
+//            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
         }
         if (nextPoint == Point(-1, -1) || robotPath[id].length == robotPath[id].step) {
             state = mission;
             return;
         }
-        for (int i = 0; i < id; i++) {
-            if (i == id) continue;
-            if ((nextPoint != Point(-1, -1)) && (robot[i].position == nextPoint || nextPoint == robot[i].nextPoint)) {
-                cerr << "阻止了" << id << "移动到" << i << "的位置\n";
-                if (mission == RobotState::MISSION_GET) robotPath[id] = getPath1(id, goodsToGet.position);
-                if (mission == RobotState::MISSION_PULL) robotPath[id] = getPath1(id, berth[targetId].position);
-                nextPoint = robotPath[id].getNextPoint();
-                return;
+        if (true) {
+            for (int i = 0; i < id; i++) {
+                if (i == id) continue;
+                if ((nextPoint != Point(-1, -1)) &&
+                    (robot[i].position == nextPoint || nextPoint == robot[i].nextPoint)) {
+                    cerr << "阻止了" << id << "移动到" << i << "的位置\n";
+                    if (mission == RobotState::MISSION_GET) robotPath[id] = getPath1(id, goodsToGet.position);
+                    if (mission == RobotState::MISSION_PULL) robotPath[id] = getPath1(id, berth[targetId].position);
+                    nextPoint = robotPath[id].getNextPoint();
+                    return;
+                }
             }
         }
         move(position.getDirection(nextPoint));
@@ -89,13 +98,13 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
 //            return;
         }
         totGetValue += goodsToGet.value;
-        cerr << "getedV:" << totGetValue << '\n';
+//        cerr << "gotV:" << totGetValue << '\n';
         nextPoint = robotPath[id].getNextPoint();
         state = RobotState::MISSION_MOVE;
         mission = RobotState::MISSION_PULL;
         robotPath[id] = getPath1(id, berth[targetId].position);
     } else if (state == RobotState::MISSION_PULL) {
-        cerr << id << "Pulled\n";
+//        cerr << id << "Pulled\n";
         pull();
         berth[targetId].pushGoods(goodsToGet);
 //        if (carrying) return;
@@ -143,7 +152,7 @@ Path getPath1(int robId, Point target) {
     vector<Point> points;
     queue<Point> q;
     q.push(robot[robId].position);
-    cerr << "getPath1:" << robId << '\n';
+//    cerr << "getPath1:" << robId << '\n';
     for(int i = 0; i < 10; i++) {
         if (i == robId) continue;
         thismap[robot[i].position.x][robot[i].position.y] = PointState::BLOCK;

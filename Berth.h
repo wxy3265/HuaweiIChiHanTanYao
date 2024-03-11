@@ -26,9 +26,10 @@ public:
     bool empty();
     int getGoodsNum();
     int getHeadGoodsValue(int k);
+    int getTotalValue();
 };
 
-extern Berth berth[12];
-extern bool visitBerth[12];
+extern Berth berth[10];
+extern bool visitBerth[10];
 
 #endif //HUAWEIICHIHANTANYAO_BERTH_H

@@ -4,8 +4,11 @@
 
 #include "Berth.h"
 
+int totInValue = 0;
 void Berth::pushGoods(Goods gd) {
     goods.push(gd);
+    totInValue += gd.value;
+    cerr << "totInvalue:" << totInValue << '\n';
 }
 
 Goods Berth::fetchGoods() {
@@ -45,5 +48,20 @@ int Berth::getHeadGoodsValue(int k) {
     return tot;
 }
 
-Berth berth[12];
-bool visitBerth[12];
+int Berth::getTotalValue() {
+    queue <Goods> tmp;
+    int tot = 0;
+    while(!goods.empty()) {
+        tot += goods.front().value;
+        tmp.push(goods.front());
+        goods.pop();
+    }
+    while (!tmp.empty()) {
+        goods.push(tmp.front());
+        tmp.pop();
+    }
+    return tot;
+}
+
+Berth berth[10];
+bool visitBerth[10];
