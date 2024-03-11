@@ -29,21 +29,21 @@ vector<Goods> Ship::getGoods() {return goods;}
 int shipGetTotal = 0;
 
 void Ship::update(int _state) {
-//    cerr << "ship:" << id << " totValue:" << totValue() << " goodsNumber:" << goods.size()
-//    << " nowframe:" << frame << " endF:" << endCompleteTime
-//    << "targetSize:" << target.size() << " mission:";
-//    if (mission == ShipState::MISSION_MOVE) cerr << "move";
-//    else if (mission == ShipState::MISSION_PULL) cerr << "pull";
-//    else if (mission == ShipState::MISSION_GET) cerr << "get";
-//    else if (mission == ShipState::FREE) cerr << "free";
-//    cerr << '\n';
+    if (cerrShip) {
+        cerr << "ship:[" << id << "] totValue:<" << totValue() << "> goodsNumber:" << goods.size()
+             << " target:" << target.front().targetId << " nowframe:" << frame << " endF:" << endCompleteTime
+             << " todo:" << target.size() << " mission:";
+        if (mission == ShipState::MISSION_MOVE) cerr << "move";
+        else if (mission == ShipState::MISSION_PULL) cerr << "pull";
+        else if (mission == ShipState::MISSION_GET) cerr << "get";
+        else if (mission == ShipState::FREE) cerr << "free";
+        cerr << '\n';
+    }
     state = _state;
 //    if (state == ShipState::FREE) {
 //        endCompleteTime++;
 //        return;
 //    }
-//    if (frame == 14999) cerr << "[" << id << "] remain " << "<" << totValue() << ">\n";
-//    cerr << "frame:" << frame << "," << this->id << "LKP AK IOI" << "\n";
     if (mission == ShipState::FREE) {
         if (!target.empty()) {
             mission = ShipState::MISSION_MOVE;
@@ -65,25 +65,22 @@ void Ship::update(int _state) {
         if ((berth[target.front().targetId].empty() && target.front().numToCarry == -1) ||
         goods.size() >= capacity ||
         (target.front().numToCarry != -1 && goods.size() >= target.front().numToCarry)) {
+//            if (frame + berth[target.front().targetId].distance * 2 >= 14900) return;
 //        if (frame - endCompleteTime > 100)  {
-//            cerr << "frame:" << frame << "," << this->id << "LKP AK IOI" << "\n";
             visitBerth[target.front().targetId] = false;
             int dis = berth[target.front().targetId].distance;
             target.pop();
-//            cerr << "frame:" << frame << "," << this->id << "LKP AK IOI" << "\n";
             if (!target.empty()) {
                 endCompleteTime = frame + 503;
                 mission = ShipState::MISSION_MOVE;
+                get();
             } else {
                 endCompleteTime = frame + dis + 10;
                 mission = ShipState::MISSION_PULL;
                 pull();
             }
-            return;
         }
-//        cerr << target.front().targetId << "\n";
         for (int i = 1; i <= berth[target.front().targetId].velocity && !berth[target.front().targetId].empty(); i++) {
-//        cerr << "frame:" << frame << "," << this->id << "LKP AK IOI" << "\n";
             goods.push_back(berth[target.front().targetId].fetchGoods());
             shipGetTotal += goods.back().value;
 //            cerr << "ship[" << id << "] fetched goods value<" << goods.back().value << "> tot:" << shipGetTotal << '\n';

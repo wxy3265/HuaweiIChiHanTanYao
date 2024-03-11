@@ -17,8 +17,8 @@ private:
     bool carrying;
     Point nextPoint;
     Goods goodsToGet;
-    int targetId;
     int mission;
+    int targetId;
     int state = RobotState::FREE;
     bool enable;
     bool crashed;
@@ -35,8 +35,11 @@ public:
     void setMission(Goods _goodsToGet, int _targetId);
     void update(Point _position, bool _enable, bool _carrying);
     int getMission();
+    int getTargetId();
 };
 
 extern Robot robot[10];
+Path getPath1(int robId, Point target);
+Path getPathbyAStar(int robId, Point target);
 
 #endif //HUAWEIICHIHANTANYAO_ROBOT_H

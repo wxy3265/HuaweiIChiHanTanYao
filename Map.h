@@ -13,13 +13,15 @@ public:
 
     static void update();
 
-    static void pretreatPath(Berth ber);
+    static void pretreatPath(int berthId);
 
-    static int getLength(int berthId, Point end);
+    static int getLengthFromBerthToPoint(int berthId, Point end);
 
     static void calcDistanceBetweenBerth();
 
     static bool isOpen(int id);
+
+    static int getNearBerthId(Point point);
 };
 
 #endif //HUAWEIICHIHANTANYAO_MAP_H

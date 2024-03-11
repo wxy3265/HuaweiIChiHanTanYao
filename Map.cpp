@@ -10,9 +10,16 @@ const int nx[]={0,0,1,-1};
 const int ny[]={1,-1,0,0};
 int pathLength[12][207][207];
 int berth_to_berth[12][12];
+int nearBerthId[203][203];
+int nearBerthLength[203][203];
 bool open[12];
 
 void Map::init() {
+    for (int i = 0; i < 203; i++) {
+        for (int j = 0; j < 203; j++) {
+            nearBerthLength[i][j] = 1e7;
+        }
+    }
     //读入地图
     int cnt = 0;
     for (int i = 0; i < 200; i++) {
@@ -26,15 +33,14 @@ void Map::init() {
             }
         }
     }
-
-        //读入泊位信息
-        for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
-            scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
-            berth[id].id = id, berth[id].position.x = x, berth[id].position.y = y,
+    //读入泊位信息
+    for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
+        scanf("%d%d%d%d%d", &id, &x, &y, &time, &vel);
+        berth[id].id = id, berth[id].position.x = x, berth[id].position.y = y,
 //        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
 //             << "time: " << time << " vel:" << vel << '\n';
-            berth[id].distance = time, berth[id].velocity = vel;
-        }
+        berth[id].distance = time, berth[id].velocity = vel;
+    }
     //初始化船舶ID
     for (int i = 0; i < 5; i++) ship[i].id = i;
     scanf("%d", &capacity);
@@ -74,19 +80,23 @@ void Map::update() {
     while(thisisOK != "OK") cin >> thisisOK;
 }
 
-int Map::getLength(int berthId, Point end) {
+int Map::getLengthFromBerthToPoint(int berthId, Point end) {
     return pathLength[berthId][end.x][end.y];
 }
 
-void Map::pretreatPath(Berth ber){
+int Map::getNearBerthId(Point point) {
+    return nearBerthId[point.x][point.y];
+}
+
+void Map::pretreatPath(int berthId){
     queue<Point> q;
-    Point start = ber.position;
+    Point start = berth[berthId].position;
     q.push(start);
     for(int i = 0; i <= 200; i++)
         for(int j = 0; j <=200 ; j++)
-            pathLength[ber.id][i][j] = 1000000;
-    pathLength[ber.id][start.x][start.y] = 0;
-    while(q.size()){
+            pathLength[berthId][i][j] = 1000000;
+    pathLength[berthId][start.x][start.y] = 0;
+    while(!q.empty()) {
         Point cur = q.front();
         q.pop();
         for(int i = 0; i <= 3; i++){
@@ -94,12 +104,22 @@ void Map::pretreatPath(Berth ber){
             int dy = cur.y + ny[i];
             if(dx < 0||dx >= 200||dy < 0||dy >= 200)continue;
             if (maze[dx][dy] == PointState::OCEAN || maze[dx][dy] == PointState::BLOCK)continue;
-            if(pathLength[ber.id][dx][dy] > pathLength[ber.id][cur.x][cur.y] + 1){
-                pathLength[ber.id][dx][dy] = pathLength[ber.id][cur.x][cur.y] + 1;
+            if(pathLength[berthId][dx][dy] > pathLength[berthId][cur.x][cur.y] + 1){
+                pathLength[berthId][dx][dy] = pathLength[berthId][cur.x][cur.y] + 1;
+                if (pathLength[berthId][dx][dy] < nearBerthLength[dx][dy]) {
+                    nearBerthLength[dx][dy] = pathLength[berthId][dx][dy];
+                    nearBerthId[dx][dy] = berthId;
+                }
                 q.push((Point{dx,dy}));
             }
         }
     }
+    /*for (int i = 0; i < 200; i++) {
+        for (int j = 0; j < 200; j++) {
+            cerr << nearBerthId[i][j];
+        }
+        cerr << '\n';
+    }*/
 }
 bool berthCmp(Berth x,Berth y){
     return x.distance < y.distance;
@@ -108,18 +128,17 @@ bool Map::isOpen(int id) {
     return open[id];
 }
 void Map::calcDistanceBetweenBerth(){
-//    open[0] = true;
+    open[0] = true;
 //    open[1] = true;
-//    open[2] = true;
+    open[2] = true;
 //    open[3] = true;
-//    open[4] = true;
+    open[4] = true;
 //    open[5] = true;
 //    open[6] = true;
-//    open[7] = true;
+    open[7] = true;
 //    open[8] = true;
-//    open[9] = true;
-//    open[10] = true;
-//    return;
+    open[9] = true;
+    return;
     int r = 50;
     int contain[12];
     bool close[12];
@@ -128,7 +147,7 @@ void Map::calcDistanceBetweenBerth(){
     for(int i = 0; i <= 9; i++)
         for(int j = 0; j <= 9; j++){
             if(i == j)continue;
-            berth_to_berth[i][j] = getLength(i,berth[j].position);
+            berth_to_berth[i][j] = getLengthFromBerthToPoint(i, berth[j].position);
             if(berth_to_berth[i][j] < r){
                 contain[i]++;
             }
