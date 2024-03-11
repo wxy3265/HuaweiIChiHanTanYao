@@ -112,8 +112,8 @@ void allocateHome(){
     }
     cout.flush();
 }
-
-Path getPathbyAStar(int robID, Point target) {
+Path getPathbyAStar(int robId, Point target) {
+//    cerr << "使用了 Algorithm A*" << "\n";
     int fxx[4] = {0, 0, 1, -1};
     int fyy[4] = {1, -1, 0, 0};
     vector<Point> points;
@@ -125,7 +125,7 @@ Path getPathbyAStar(int robID, Point target) {
         }
     };
     priority_queue<node> q;
-    q.push((node){robot[robID].position, target, 0});
+    q.push((node){robot[robId].position, target, 0});
     int b[300][300], dirc[300][300];
     char thismap[300][300];
     for (int i = 0; i < 210; i++)
@@ -133,6 +133,10 @@ Path getPathbyAStar(int robID, Point target) {
             b[i][j] = dirc[i][j] = 0;
             thismap[i][j] = maze[i][j];
         }
+    for (int i = 0; i < 10; i++) {
+        if (i == robId) continue;
+        thismap[robot[i].position.x][robot[i].position.y] = PointState::BLOCK;
+    }
     int flag = 0, length = 0;
     while (!q.empty()) {
         node tp = q.top();
@@ -140,6 +144,14 @@ Path getPathbyAStar(int robID, Point target) {
         /*
          * getRobotPathArea
          * */
+        int nextframe = tp.step + 1;
+        for (int i = 0; i < 10; i++)
+            if (i != robId) {
+                if (robotPath[i].length > 50000) continue;
+                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
+                if (robotThisPoint1 != Point(-1, -1)) thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
+            }
+
         for (int i = 0; i < 4; i++) {
             int ex = tp.position.x + fxx[i], ey = tp.position.y + fyy[i];
             if (ex < 0 || ex >= 200 || ey < 0 || ey >= 200) continue;
@@ -154,6 +166,14 @@ Path getPathbyAStar(int robID, Point target) {
                 }
             }
         }
+
+        for (int i = 0; i < 10; i++) {
+            if (i != robId) {
+                if (robotPath[i].length > 50000) continue;
+                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
+                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1) thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
+            }
+        }
         /*
          * returnMapArea
          * */
@@ -164,7 +184,7 @@ Path getPathbyAStar(int robID, Point target) {
     }
     int nx = target.x, ny = target.y;
     stack<Point> repath;
-    while (nx != robot[robID].position.x || ny != robot[robID].position.y) {
+    while (nx != robot[robId].position.x || ny != robot[robId].position.y) {
         repath.push((Point){nx, ny});
         int lastx = nx, lasty = ny;
         nx -= fxx[dirc[lastx][lasty]];
@@ -179,7 +199,6 @@ Path getPathbyAStar(int robID, Point target) {
     }
     return Path(points, length);
 }
-
 void calcEfficiency(int start){
     for(int i = 0; i < newGoods.size(); i++) {
         double dis = Map::getLength(start, newGoods[i].position) * 2;
