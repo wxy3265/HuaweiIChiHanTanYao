@@ -31,8 +31,9 @@ void allocateHome();
 void makeMap(vector<Point> points);
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId);
 void calcEfficiency(int startBerthId);
-void calcEfficiencyPlus(int startBerthId);
+void calcEfficiencyPlus(int robId);
 void shipGetMission(int shipId);
+void shipGetMissionMini(int shipId);
 void shipGetMissionPlus(int shipId);
 void robotGetMissionFromOperation(int robId);
 void robotGetMissionFromOperationPlus(int robId);
@@ -48,9 +49,11 @@ int main() {
     cout.flush();
     while (frame < 15000){
         Map::update();
-        if (cerrFrame)
-            cerr << "frame=" << frame << '\n';
-        for(int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMission(i);
+//        if (cerrFrame)
+        cerr << "frame=" << frame << '\n';
+        for (int i = 0; i < 10; i++)
+            cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue() << "> numbers:" << berth[i].getGoodsNum() << '\n';
+        for(int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMissionMini(i);
         for(int i = 0; i <= 9; i++) calcEfficiency(i);
         while(!newGoods.empty()) newGoods.pop_back();
         for(int i = 0; i <= 9; i++)
@@ -64,10 +67,10 @@ int main() {
 }
 
 void robotGetMissionFromOperation(int robId) {
-    cerr << "robGetPlusID:[" << robId << "]" << operation[robotHome[robId]].size() << "\n";
-//    if (robotHome[robId] == -1) return;
+//    cerr << "robGetPlusID:[" << robId << "]" << operation[robotHome[robId]].size() << "\n";
+    if (robotHome[robId] == -1) return;
     while(!operation[robotHome[robId]].empty()){
-        cerr << "OK\n";
+//        cerr << "OK\n";
         double dis = operation[robotHome[robId]].top().goodsDistance;
         int time = operation[robotHome[robId]].top().targetGoods.time;
         if((frame + dis + 100 < time + 1000)
@@ -139,6 +142,7 @@ void calcEfficiency(int startBerthId){
         int nearBerthId = Map::getNearBerthId(newGood.position);
         double pathLength = Map::getLengthFromBerthToPoint(startBerthId, newGood.position) * 2;
         double efficiency = 1.0 * newGood.value / pathLength;
+//        if (newGood.value > 150)
         operation[startBerthId].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
     }
 }
@@ -154,6 +158,7 @@ void calcEfficiencyPlus(int robId){
                             berth[nearBerthId].distance * 0;
         double goodsDistance = Map::getLengthFromBerthToPoint(nowBerthId, newGood.position);
         double efficiency = 2 * newGood.value / pathLength;
+//        if (newGood.value > 150)
         operationPlus[robId].push((Operation){newGood, nearBerthId, pathLength, goodsDistance, efficiency});
     }
 //    cerr << "end\n";
@@ -180,6 +185,10 @@ void shipGetMission(int shipId){
         ship[shipId].setMission(ShipMission(targetBerth, -1));
         visitBerth[targetBerth] = true;
     }
+}
+void shipGetMissionMini(int shipId) {
+    ship[shipId].setMission((ShipMission){shipId * 2, -1});
+    ship[shipId].setMission((ShipMission){shipId * 2 + 1, -1});
 }
 void shipGetMissionPlus(int shipId){
     double efficiency = -1000000;

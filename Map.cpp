@@ -60,6 +60,7 @@ void Map::update() {
     scanf("%d", &k);
     for (int i = 1, x, y, m; i <= k; i++) {
         scanf("%d%d%d", &x, &y, &m);
+        cerr << "newGoods Value:<" << m << ">\n";
         newGoods.emplace_back(Point(x, y), m, frame, ++goodsNumber);
     }
     //更新机器人
@@ -129,14 +130,14 @@ bool Map::isOpen(int id) {
 }
 void Map::calcDistanceBetweenBerth(){
     open[0] = true;
-//    open[1] = true;
+    open[1] = true;
     open[2] = true;
-//    open[3] = true;
+    open[3] = true;
     open[4] = true;
-//    open[5] = true;
-//    open[6] = true;
+    open[5] = true;
+    open[6] = true;
     open[7] = true;
-//    open[8] = true;
+    open[8] = true;
     open[9] = true;
     return;
     int r = 50;
