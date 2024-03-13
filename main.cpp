@@ -31,7 +31,9 @@ void allocateHome();
 void makeMap(vector<Point> points);
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId);
 void calcEfficiency(int startBerthId);
+void calcEfficiencyMax(int startBerthId);
 void calcEfficiencyPlus(int robId);
+void calcEfficiencyUltra(int startBerthId);
 void shipGetMission(int shipId);
 void shipGetMissionMini(int shipId);
 void shipGetMissionPlus(int shipId);
@@ -42,19 +44,24 @@ int main() {
 //    PathAlgorithm = 1;
     freopen("out.txt", "w", stderr);
     Map::init();
-    for(int i = 0; i <= 9; i++) Map::pretreatPath(i), robotFirstMission[i] = true;
     Map::calcDistanceBetweenBerth();
+    for(int i = 0; i <= 9; i++) Map::pretreatPath(i), robotFirstMission[i] = true;
     allocateHome();
-    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
+//    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();
     while (frame < 15000){
         Map::update();
 //        if (cerrFrame)
-        cerr << "frame=" << frame << '\n';
-        for (int i = 0; i < 10; i++)
-            cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue() << "> numbers:" << berth[i].getGoodsNum() << '\n';
+//        cerr << "frame=" << frame << '\n';
+        int totBerthValue = 0;
+        /*for (int i = 0; i < 10; i++) {
+            cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue() << "> numbers:" << berth[i].getGoodsNum()
+                 << '\n';
+            totBerthValue += berth[i].getTotalValue();
+        }
+        cerr << "totBerthValue: <" << totBerthValue << ">\n";*/
         for(int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMissionMini(i);
-        for(int i = 0; i <= 9; i++) calcEfficiency(i);
+        for(int i = 0; i <= 9; i++) calcEfficiencyMax(i);
         while(!newGoods.empty()) newGoods.pop_back();
         for(int i = 0; i <= 9; i++)
             if(robot[i].getState() == RobotState::FREE)
@@ -73,8 +80,9 @@ void robotGetMissionFromOperation(int robId) {
 //        cerr << "OK\n";
         double dis = operation[robotHome[robId]].top().goodsDistance;
         int time = operation[robotHome[robId]].top().targetGoods.time;
-        if((frame + dis + 100 < time + 1000)
-           && !visitGoods[operation[robotHome[robId]].top().targetGoods.id]) {
+        if((frame + dis + 10 < time + 1000)
+           && !visitGoods[operation[robotHome[robId]].top().targetGoods.id]
+           && operation[robotHome[robId]].top().goodsDistance <= 800000) {
             break;
         }
         operation[robotHome[robId]].pop();
@@ -97,7 +105,7 @@ void robotGetMissionFromOperationPlus(int robId) {
     }
     if(operationPlus[robId].empty()) return;
     robotSetMission(robId, operationPlus[robId].top().targetGoods, operationPlus[robId].top().targetBerthId);
-    cerr << "rob[" << robId << "] getGoods " << operationPlus[robId].top().targetGoods.id << '\n';
+//    cerr << "rob[" << robId << "] getGoods " << operationPlus[robId].top().targetGoods.id << '\n';
     visitGoods[operationPlus[robId].top().targetGoods.id] = true;
     operationPlus[robId].pop();
 }
@@ -108,6 +116,7 @@ void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
     if (PathAlgorithm == 0) robotPath[robId] = getPath1(robId, goodsToGet.position);
     else if (PathAlgorithm == 1) robotPath[robId] = getPathbyAStar(robId, goodsToGet.position);
     else robotPath[robId] = getPath1(robId, goodsToGet.position);
+//    robotHome[robId] = targetBerthId;
 }
 void allocateHome(){
     for(int i = 0; i <= 9; i++) robotHome[i] = berthRobot[i] = -1;
@@ -137,13 +146,37 @@ void allocateHome(){
         robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
     }
 }
-void calcEfficiency(int startBerthId){
+void calcEfficiency(int startBerthId) {
     for(auto & newGood : newGoods) {
         int nearBerthId = Map::getNearBerthId(newGood.position);
         double pathLength = Map::getLengthFromBerthToPoint(startBerthId, newGood.position) * 2;
         double efficiency = 1.0 * newGood.value / pathLength;
 //        if (newGood.value > 150)
-        operation[startBerthId].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
+        operation[startBerthId].push((Operation){newGood, startBerthId, pathLength, pathLength / 2.0, efficiency});
+    }
+}
+void calcEfficiencyMax(int startBerthId) {
+    double deltaLength = 2.75;
+    for(auto & newGood : newGoods) {
+        int nearBerthId = Map::getNearBerthId(newGood.position);
+        //if(nearBerthId != startBerthId)continue;
+        double pathLength = Map::getLengthFromBerthToPoint(nearBerthId, newGood.position) * 2;
+        double pathLength1 = Map::getLengthFromBerthToPoint(startBerthId, newGood.position) * 2;
+        double efficiency = 1.0 * newGood.value / pathLength;
+        double efficiency1 = 1.0 * (newGood.value - (pathLength1 - pathLength) * deltaLength) / pathLength1;
+//        if (newGood.value > 150)
+        operation[nearBerthId].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
+        if(nearBerthId != startBerthId)operation[startBerthId].push((Operation){newGood,startBerthId,pathLength1,pathLength1 / 2.0, efficiency1});
+    }
+}
+void calcEfficiencyUltra(int startBerthId) {
+    for(auto & newGood : newGoods) {
+        int nearBerthId = Map::getNearBerthId(newGood.position);
+        if(nearBerthId != startBerthId) continue;
+        double pathLength = Map::getLengthFromBerthToPoint(startBerthId, newGood.position) * 2;
+        double efficiency = 1.0 * newGood.value / pathLength;
+//        if (newGood.value > 150)
+        operation[nearBerthId].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
     }
 }
 void calcEfficiencyPlus(int robId){

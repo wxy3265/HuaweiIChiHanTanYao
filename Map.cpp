@@ -40,6 +40,24 @@ void Map::init() {
 //        cerr << "berthid:" << id << " pos:" << berth[id].position.x << ',' << berth[id].position.y
 //             << "time: " << time << " vel:" << vel << '\n';
         berth[id].distance = time, berth[id].velocity = vel;
+        berth[id].distance = time, berth[id].velocity = vel;
+        int flag = 0;
+        for (int j = berth[id].position.x; j <= berth[id].position.x + 3; j++) {
+            for (int k = berth[id].position.y; k <= berth[id].position.y + 3; k++) {
+                for (int l = 0; l < 4; l++) {
+                    int findx = nx[l] + j, findy = ny[l] + k;
+                    if (findx < 0 || findx >= 200 || findy < 0 || findy >= 200) continue;
+                    if (maze[findx][findy] == PointState::PLAIN) {
+                        flag = 1;
+                        berth[id].targetPosition = (Point){j,k};
+                        break;
+                    }
+                }
+                if (flag) break;
+            }
+            if (flag) break;
+        }
+//        cerr << "berth[" << id << "]" << " targetPosition:" << berth[id].targetPosition.x << "," << berth[id].targetPosition.y << '\n';
     }
     //初始化船舶ID
     for (int i = 0; i < 5; i++) ship[i].id = i;
@@ -60,7 +78,7 @@ void Map::update() {
     scanf("%d", &k);
     for (int i = 1, x, y, m; i <= k; i++) {
         scanf("%d%d%d", &x, &y, &m);
-        cerr << "newGoods Value:<" << m << ">\n";
+//        cerr << "newGoods Value:<" << m << ">\n";
         newGoods.emplace_back(Point(x, y), m, frame, ++goodsNumber);
     }
     //更新机器人
@@ -90,6 +108,7 @@ int Map::getNearBerthId(Point point) {
 }
 
 void Map::pretreatPath(int berthId){
+//    if (!open[berthId]) return;
     queue<Point> q;
     Point start = berth[berthId].position;
     q.push(start);

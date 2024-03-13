@@ -16,6 +16,7 @@ private:
 public:
     int id;
     Point position;
+    Point targetPosition;
     int distance;
     int velocity;
     int visitGoods = 0;

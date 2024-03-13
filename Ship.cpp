@@ -75,7 +75,7 @@ void Ship::update(int _state) {
             return;
         }
         if (frame + berth[target.front().targetId].distance * 2 >= 15000 - deltaFrame - 1) {
-            cerr << "ship:[" << id << "] 临终等待\n";
+//            cerr << "ship:[" << id << "] 临终等待\n";
             for (int i = 1; i <= berth[target.front().targetId].velocity && !berth[target.front().targetId].empty(); i++) {
                 goods.push_back(berth[target.front().targetId].fetchGoods());
                 shipGetTotal += goods.back().value;
