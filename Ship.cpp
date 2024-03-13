@@ -32,6 +32,7 @@ int Ship::getState() {return state;}
 vector<Goods> Ship::getGoods() {return goods;}
 
 int shipGetTotal = 0;
+bool berthBanned[10];
 
 void Ship::update(int _state) {
 //    while (true);
@@ -80,6 +81,8 @@ void Ship::update(int _state) {
             visitBerth[target.front().targetId] = false;
             endCompleteTime = frame + berth[target.front().targetId].distance;
             pull();
+            berthVisitable[target.front().targetId] = false;
+            berthBanned[target.front().targetId] = true;
             goods.clear();
             return;
         }

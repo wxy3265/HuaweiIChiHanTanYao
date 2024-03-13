@@ -12,7 +12,6 @@ int pathLength[12][207][207];
 int berth_to_berth[12][12];
 int nearBerthId[203][203];
 int nearBerthLength[203][203];
-bool open[12];
 
 void Map::init() {
     for (int i = 0; i < 203; i++) {
@@ -145,19 +144,19 @@ bool berthCmp(Berth x,Berth y){
     return x.distance < y.distance;
 }
 bool Map::isOpen(int id) {
-    return open[id];
+    return berthVisitable[id];
 }
 void Map::calcDistanceBetweenBerth(){
-//    open[0] = true;
-    open[1] = true;
-//    open[2] = true;
-    open[3] = true;
-    open[4] = true;
-    open[5] = true;
-    open[6] = true;
-//    open[7] = true;
-    open[8] = true;
-//    open[9] = true;
+    berthVisitable[0] = true;
+    berthVisitable[1] = true;
+    berthVisitable[2] = true;
+    berthVisitable[3] = true;
+    berthVisitable[4] = true;
+    berthVisitable[5] = true;
+    berthVisitable[6] = true;
+    berthVisitable[7] = true;
+    berthVisitable[8] = true;
+    berthVisitable[9] = true;
     return;
     int r = 10;
     int contain[12];
@@ -179,7 +178,7 @@ void Map::calcDistanceBetweenBerth(){
         for(int j = 0; j <= 9; j++){
             int id = newBerth[j].id;
             if (contain[id] == i && !close[id]){
-                open[id] = true;
+                berthVisitable[id] = true;
                 for(int k = 0; k <= 9; k++){
                     if(k == id)continue;
                     if(berth_to_berth[id][k] < r){

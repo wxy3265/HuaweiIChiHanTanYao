@@ -31,6 +31,7 @@ bool Berth::empty() {
 }
 
 int Berth::getGoodsNum() {
+    if (empty()) return 0;
     return (int)(goods.size()) - visitGoods;
 }
 

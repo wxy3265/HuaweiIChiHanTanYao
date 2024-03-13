@@ -27,7 +27,6 @@ public:
     int id;
     void get();
     void pull();
-
     int totValue();
     void setMission(ShipMission _target);
     void pushGoods(Goods goods1);
@@ -38,5 +37,6 @@ public:
 };
 
 extern Ship ship[7];
+extern bool berthBanned[10];
 
 #endif //HUAWEIICHIHANTANYAO_SHIP_H
