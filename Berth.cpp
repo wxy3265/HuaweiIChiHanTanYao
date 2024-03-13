@@ -31,7 +31,7 @@ bool Berth::empty() {
 }
 
 int Berth::getGoodsNum() {
-    return (int)goods.size() - visitGoods;
+    return (int)(goods.size()) - visitGoods;
 }
 
 int Berth::getHeadGoodsValue(int k) {
@@ -66,3 +66,4 @@ int Berth::getTotalValue() {
 
 Berth berth[10];
 bool visitBerth[10];
+bool berthVisitable[12];

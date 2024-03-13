@@ -34,7 +34,8 @@ vector<Goods> Ship::getGoods() {return goods;}
 int shipGetTotal = 0;
 
 void Ship::update(int _state) {
-    if (cerrShip) {
+//    while (true);
+    if (true) {
         cerr << "ship:[" << id << "] totValue:<" << totValue() << "> goodsNumber:" << goods.size()
              << " target:" << target.front().targetId << " nowframe:" << frame << " endF:" << endCompleteTime
              << " todo:" << target.size() << " mission:";
@@ -65,6 +66,14 @@ void Ship::update(int _state) {
             mission = ShipState::MISSION_GET;
         }
     } else if (mission == ShipState::MISSION_GET) {
+        if (goods.size() >= capacity) {
+            cerr << "ship:[" << id << "] 满载而归\n";
+            endCompleteTime = frame + berth[target.front().targetId].distance + deltaFrame;
+            mission = ShipState::MISSION_PULL;
+            while (!target.empty()) target.pop();
+            pull();
+            return;
+        }
         if (frame + berth[target.front().targetId].distance >= 15000 - deltaFrame) {
             cerr << "ship:[" << id << "] 最终返回\n";
             mission = ShipState::MISSION_PULL;
@@ -74,8 +83,8 @@ void Ship::update(int _state) {
             goods.clear();
             return;
         }
-        if (frame + berth[target.front().targetId].distance * 2 >= 15000 - deltaFrame - 1) {
-//            cerr << "ship:[" << id << "] 临终等待\n";
+        if (frame + berth[target.front().targetId].distance + berth[(target.front().targetId + 1) % 10].distance + 500 >= 15000 - deltaFrame - 1) {
+            cerr << "ship:[" << id << "] 临终等待\n";
             for (int i = 1; i <= berth[target.front().targetId].velocity && !berth[target.front().targetId].empty(); i++) {
                 goods.push_back(berth[target.front().targetId].fetchGoods());
                 shipGetTotal += goods.back().value;
@@ -94,9 +103,10 @@ void Ship::update(int _state) {
                 }
             }
         }*/
-        if ((berth[target.front().targetId].empty() && target.front().numToCarry == -1) ||
+        if (frame >= endCompleteTime + 100 &&
+                ((berth[target.front().targetId].empty() && target.front().numToCarry == -1) ||
         goods.size() >= capacity ||
-        (target.front().numToCarry != -1 && goods.size() >= target.front().numToCarry)) {
+        (target.front().numToCarry != -1 && goods.size() >= target.front().numToCarry))) {
 //            if (frame + berth[target.front().targetId].distance * 2 >= 14900) return;
 //        if (frame - endCompleteTime > 100)  {
             visitBerth[target.front().targetId] = false;

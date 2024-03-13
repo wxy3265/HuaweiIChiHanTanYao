@@ -57,7 +57,7 @@ void Map::init() {
             }
             if (flag) break;
         }
-//        cerr << "berth[" << id << "]" << " targetPosition:" << berth[id].targetPosition.x << "," << berth[id].targetPosition.y << '\n';
+        cerr << "berth[" << id << "]" << " targetPosition:" << berth[id].targetPosition.x << "," << berth[id].targetPosition.y << '\n';
     }
     //初始化船舶ID
     for (int i = 0; i < 5; i++) ship[i].id = i;
@@ -78,7 +78,7 @@ void Map::update() {
     scanf("%d", &k);
     for (int i = 1, x, y, m; i <= k; i++) {
         scanf("%d%d%d", &x, &y, &m);
-//        cerr << "newGoods Value:<" << m << ">\n";
+        cerr << "newGoods Value:<" << m << ">\n";
         newGoods.emplace_back(Point(x, y), m, frame, ++goodsNumber);
     }
     //更新机器人
@@ -148,18 +148,18 @@ bool Map::isOpen(int id) {
     return open[id];
 }
 void Map::calcDistanceBetweenBerth(){
-    open[0] = true;
+//    open[0] = true;
     open[1] = true;
-    open[2] = true;
+//    open[2] = true;
     open[3] = true;
     open[4] = true;
     open[5] = true;
     open[6] = true;
-    open[7] = true;
+//    open[7] = true;
     open[8] = true;
-    open[9] = true;
+//    open[9] = true;
     return;
-    int r = 50;
+    int r = 10;
     int contain[12];
     bool close[12];
     memset(contain, 0, sizeof contain);
