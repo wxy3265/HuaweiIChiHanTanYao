@@ -15,6 +15,7 @@
 #include <cmath>
 #include <stack>
 #include <map>
+#pragma GCC optimize(2)
 
 extern char maze[300][300];
 extern int frame, totalMoney, lastFrame, framesum;
