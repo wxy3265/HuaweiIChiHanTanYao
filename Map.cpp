@@ -67,6 +67,7 @@ void Map::init() {
     cout << thisisOK << "\n";
 }
 
+int totGoodsNumber = 0;
 void Map::update() {
     scanf("%d%d", &frame, &totalMoney);
 //    cerr << "lastFrame:" << lastFrame << " " << "frame:" << frame << '\n';
@@ -75,6 +76,8 @@ void Map::update() {
     //读入新增货物
     int k;
     scanf("%d", &k);
+    totGoodsNumber += k;
+    cerr << "TotGoodsNumber:" << totGoodsNumber << '\n';
     for (int i = 1, x, y, m; i <= k; i++) {
         scanf("%d%d%d", &x, &y, &m);
         cerr << "newGoods Value:<" << m << ">\n";

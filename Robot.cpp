@@ -42,7 +42,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     } else {
         waitTime = 0;
     }
-    if (waitTime >= 10) {
+    if (waitTime >= 3) {
         if (carrying) totGiveUp += goodsToGet.value;
 //        cerr << "[" << id << "]放弃任务！总价值：<" << totGiveUp << ">\n";
         waitTime = 0;
@@ -50,7 +50,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         pull();
         return;
     }
-    if (cerrRobot) {
+    if (cerrRobot && id == 0) {
         cerr << "robot[" << id << "] target:" << berth[targetId].targetPosition.x << ',' << berth[targetId].targetPosition.y << " pos:"
              << position.x << ' ' << position.y << " next: " << nextPoint.x << ',' << nextPoint.y
              << " path:" << robotPath[id].step << '/' << robotPath[id].length
@@ -85,6 +85,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
 //            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
         }
         if (nextPoint == Point(-1, -1) || robotPath[id].length == robotPath[id].step) {
+//              || (mission == RobotState::MISSION_PULL && maze[position.x][position.y] == 'B')) {
             state = mission;
             return;
         }

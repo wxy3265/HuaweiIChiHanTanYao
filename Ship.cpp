@@ -36,7 +36,7 @@ bool berthBanned[10];
 
 void Ship::update(int _state) {
 //    while (true);
-    if (true) {
+    if (cerrShip) {
         cerr << "ship:[" << id << "] totValue:<" << totValue() << "> goodsNumber:" << goods.size()
              << " target:" << target.front().targetId << " nowframe:" << frame << " endF:" << endCompleteTime
              << " todo:" << target.size() << " mission:";
@@ -106,7 +106,7 @@ void Ship::update(int _state) {
                 }
             }
         }*/
-        if (frame >= endCompleteTime + 100 &&
+        if (frame >= endCompleteTime + deltaFrame &&
                 ((berth[target.front().targetId].empty() && target.front().numToCarry == -1) ||
         goods.size() >= capacity ||
         (target.front().numToCarry != -1 && goods.size() >= target.front().numToCarry))) {
