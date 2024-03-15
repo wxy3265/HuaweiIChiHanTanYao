@@ -21,7 +21,7 @@ private:
     queue<ShipMission> target;
     vector<Goods> goods;
     int state = ShipState::FREE;
-    int endCompleteTime;
+    int startCompleteTime;
     bool firstMove = true;
     void autoSetMission();
 public:
@@ -32,8 +32,10 @@ public:
     void setMission(ShipMission _target);
     void pushGoods(Goods goods1);
     bool isFree();
+    int getMission();
     int getState();
     vector<Goods> getGoods();
+    ShipMission getFirstTarget();
     void update(int _state);
 };
 

@@ -66,7 +66,18 @@ int main() {
 //    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();
     while (frame < 15000){
-        for (int i = 0; i < 9; i++) visitBerth[i] = false;
+        for (int i = 0; i < 10; i++) {
+            visitBerth[i] = false;
+        }
+        for (int i = 0; i < 5; i++) {
+            if (ship[i].getMission() == ShipState::MISSION_MOVE || ship[i].getMission() == ShipState::MISSION_GET) {
+                visitBerth[ship[i].getFirstTarget().targetId] = true;
+            }
+        }
+        for (int i = 0; i < 10; i++) {
+            cerr << visitBerth[i] << ' ';
+        }
+        cerr << '\n';
         Map::update();
 //        if (cerrFrame)
         cerr << "frame=" << frame << '\n';
