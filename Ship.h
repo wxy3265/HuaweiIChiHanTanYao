@@ -23,6 +23,7 @@ private:
     int state = ShipState::FREE;
     int endCompleteTime;
     bool firstMove = true;
+    void autoSetMission();
 public:
     int id;
     void get();

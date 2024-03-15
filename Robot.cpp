@@ -50,7 +50,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         pull();
         return;
     }
-    if (cerrRobot && id == 0) {
+    if (cerrRobot) {
         cerr << "robot[" << id << "] target:" << berth[targetId].targetPosition.x << ',' << berth[targetId].targetPosition.y << " pos:"
              << position.x << ' ' << position.y << " next: " << nextPoint.x << ',' << nextPoint.y
              << " path:" << robotPath[id].step << '/' << robotPath[id].length

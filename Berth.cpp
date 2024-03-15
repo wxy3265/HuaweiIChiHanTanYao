@@ -14,7 +14,7 @@ void Berth::pushGoods(Goods gd) {
 Goods Berth::fetchGoods() {
     Goods goods1 = goods.front();
     goods.pop();
-    visitGoods --;
+    if(visitGoods > 0) visitGoods --;
     return goods1;
 }
 
@@ -32,6 +32,7 @@ bool Berth::empty() {
 
 int Berth::getGoodsNum() {
     if (empty()) return 0;
+//    cerr << "visitGoods:" << visitGoods << '\n';
     return (int)(goods.size()) - visitGoods;
 }
 

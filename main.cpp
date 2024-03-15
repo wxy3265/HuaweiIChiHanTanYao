@@ -62,16 +62,11 @@ int main() {
     Map::calcDistanceBetweenBerth();
     for(int i = 0; i <= 9; i++) Map::pretreatPathToBerth(i), robotFirstMission[i] = true;
     for(int i = 0; i <= 9; i++) Map::pretreatPathToStart(i);
-    for (int i = 0; i < 200; i++) {
-        for (int j = 0; j < 200; j++) {
-            cerr << Map::getNearBerthId(Point(i, j));
-        }
-        cerr << '\n';
-    }
     allocateHome();
 //    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();
     while (frame < 15000){
+        for (int i = 0; i < 9; i++) visitBerth[i] = false;
         Map::update();
 //        if (cerrFrame)
         cerr << "frame=" << frame << '\n';
@@ -80,6 +75,7 @@ int main() {
             cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue()
                  << "> numbers:" << berth[i].getGoodsNum()
                  << " distance:" << berth[i].distance
+                 << " visit:" << visitBerth[i]
                  << '\n';
             totBerthValue += berth[i].getTotalValue();
         }
@@ -95,7 +91,7 @@ int main() {
                 }
             }
         }
-        for (int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMissionPlus(i);
+//        for (int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMissionMini(i);
 //        for (int i = 0; i <= 9; i++) calcEfficiencyMax(i);
         while (!newGoods.empty()) newGoods.pop_back();
         if (true) {
@@ -210,25 +206,31 @@ void robotGetMission(int robId) {
     else nowBerthId = robot[robId].getTargetId();
     if (nowBerthId == -1) return;
     int n = goodsOnMap.size();
+    for (int i = 0; i < n; i++) {
+        cerr << goodsOnMap[i].value << ' ';
+    }
+    cerr << '\n';
     priority_queue <GoodsMission> goodsMission;
-    cerr << "goodsOnMapSize:" << goodsOnMap.size() << '\n';
+//    cerr << "goodsOnMapSize:" << goodsOnMap.size() << '\n';
     for (int i = 0; i < n; i++) {
         Goods goods = goodsOnMap[i];
-//        if (goods.value < 100) continue;
+        if (goods.value < 100) continue;
         GoodsMission goodsMissionNow;
         int nearBerthId = Map::getNearBerthId(goods.position);
 //        int distance = Map::getLengthFromBerthToPoint(nearBerthId, goods.position);
         int distance = 0;
         if (nowBerthId == -2) distance += Map::getLengthFromStartToPoint(robId, goods.position);
         else distance += Map::getLengthFromBerthToPoint(nowBerthId, goods.position);
-        if (frame + distance + 10 >= goods.time + 1000) continue;
+//        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
+        if (frame + distance + 25 >= goods.time + 1000) continue;
         goodsMissionNow.goods = goods;
-        goodsMissionNow.key = (double) goods.value / (double)distance;
+        goodsMissionNow.key = 1.0 / (double)distance;
         goodsMission.push(goodsMissionNow);
     }
     if (goodsMission.empty()) return;
     GoodsMission targetMission = goodsMission.top();
     int targetBerthId = Map::getNearBerthId(targetMission.goods.position);
+    cerr << "chose:" << targetMission.goods.value << '\n';
     robotSetMission(robId, targetMission.goods, targetBerthId);
 }
 void calcEfficiency(int startBerthId) {
@@ -462,14 +464,15 @@ void shipGetMissionPlus(int shipId){
     if(targetBerth1 != -1){
         if(targetBerth2 == -1){
             ship[shipId].setMission(ShipMission(targetBerth1,-1));
-            berth[targetBerth1].visitGoods += cap1;
-            //visitGoods[targetBerth1] = true;
-        }
-        else{
+            //berth[targetBerth1].visitGoods = min(cap1 + berth[targetBerth1].visitGoods,;
+            visitBerth[targetBerth1] = true;
+        } else {
             ship[shipId].setMission(ShipMission(targetBerth1,-1));
             ship[shipId].setMission(ShipMission(targetBerth2,-1));
-            berth[targetBerth1].visitGoods += cap1;
-            berth[targetBerth2].visitGoods += cap2;
+            //berth[targetBerth1].visitGoods += cap1;
+            //berth[targetBerth2].visitGoods += cap2;
+            visitBerth[targetBerth1] = true;
+            visitBerth[targetBerth2] = true;
         }
     }
 }
