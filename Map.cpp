@@ -8,11 +8,13 @@ static int goodsNumber = 0;
 
 const int nx[]={0,0,1,-1};
 const int ny[]={1,-1,0,0};
-int pathLengthToBerth[10][200][200];
-int pathLengthToStart[10][200][200];
-int berth_to_berth[12][12];
+int pathLengthToBerth[10][203][203];
+int pathLengthToStart[10][203][203];
+int berth_to_berth[10][10];
+int pathLength[10][203][203];
 int nearBerthId[203][203];
 int nearBerthLength[203][203];
+bool visitGoods[200007];
 
 void Map::init() {
     for (int i = 0; i < 203; i++) {
@@ -45,6 +47,8 @@ void Map::init() {
         for (int j = berth[id].position.x; j <= berth[id].position.x + 3; j++) {
             for (int k = berth[id].position.y; k <= berth[id].position.y + 3; k++) {
                 for (int l = 0; l < 4; l++) {
+                    const int nx[]={0,0,1,-1};
+                    const int ny[]={1,-1,0,0};
                     int findx = nx[l] + j, findy = ny[l] + k;
                     if (findx < 0 || findx >= 200 || findy < 0 || findy >= 200) continue;
                     if (maze[findx][findy] == PointState::PLAIN) {
@@ -68,6 +72,25 @@ void Map::init() {
     cout << thisisOK << "\n";
 }
 
+void cleanGoodsOnMap() {
+//    cerr << "nowGoodsOnMap:" << goodsOnMap.size() << '\n';
+    vector <Goods> tmp;
+    tmp.clear();
+    int n = goodsOnMap.size();
+    for (int i = 0; i < n; i++) {
+        Goods goods = goodsOnMap[i];
+        if (visitGoods[goods.id] || frame >= goods.time + 1000) continue;
+        tmp.emplace_back(goods);
+//        cerr << "endGoodsOnMap:" << goodsOnMap.size() << '\n';
+    }
+    goodsOnMap.clear();
+    n = tmp.size();
+    for (int i = 0; i < n; i++) {
+        Goods goods = tmp[i];
+        goodsOnMap.emplace_back(goods);
+    }
+}
+
 int totGoodsNumber = 0;
 void Map::update() {
     scanf("%d%d", &frame, &totalMoney);
@@ -83,7 +106,9 @@ void Map::update() {
         scanf("%d%d%d", &x, &y, &m);
         cerr << "newGoods Value:<" << m << ">\n";
         newGoods.emplace_back(Point(x, y), m, frame, ++goodsNumber);
+        goodsOnMap.emplace_back(Point(x, y), m, frame, goodsNumber);
     }
+    cleanGoodsOnMap();
     //更新机器人
     for (int i = 0, state, x, y, goods; i < 10; i++) {
         scanf("%d%d%d%d", &goods, &x, &y, &state);
@@ -127,6 +152,8 @@ void Map::pretreatPathToBerth(int berthId){
         Point cur = q.front();
         q.pop();
         for(int i = 0; i <= 3; i++){
+            const int nx[]={0,0,1,-1};
+            const int ny[]={1,-1,0,0};
             int dx = cur.x + nx[i];
             int dy = cur.y + ny[i];
             if(dx < 0||dx >= 200||dy < 0||dy >= 200)continue;
@@ -167,10 +194,10 @@ void Map::pretreatPathToStart(int robId){
             if (maze[dx][dy] == PointState::OCEAN || maze[dx][dy] == PointState::BLOCK)continue;
             if(pathLengthToStart[robId][dx][dy] > pathLengthToStart[robId][cur.x][cur.y] + 1){
                 pathLengthToStart[robId][dx][dy] = pathLengthToStart[robId][cur.x][cur.y] + 1;
-                if (pathLengthToStart[robId][dx][dy] < nearBerthLength[dx][dy]) {
-                    nearBerthLength[dx][dy] = pathLengthToStart[robId][dx][dy];
-                    nearBerthId[dx][dy] = robId;
-                }
+//                if (pathLengthToStart[robId][dx][dy] < nearBerthLength[dx][dy]) {
+//                    nearBerthLength[dx][dy] = pathLengthToStart[robId][dx][dy];
+//                    nearBerthId[dx][dy] = robId;
+//                }
                 q.push((Point{dx,dy}));
             }
         }

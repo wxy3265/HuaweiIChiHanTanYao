@@ -30,4 +30,6 @@ public:
     static void pretreatPathToStart(int robId);
 };
 
+extern bool visitGoods[200007];
+
 #endif //HUAWEIICHIHANTANYAO_MAP_H

@@ -26,5 +26,6 @@ public:
 };
 
 extern vector<Goods> newGoods;
+extern vector<Goods> goodsOnMap;
 
 #endif //HUAWEIICHIHANTANYAO_GOODS_H

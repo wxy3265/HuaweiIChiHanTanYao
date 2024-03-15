@@ -6,3 +6,4 @@
 #include "tanyao.h"
 
 vector<Goods> newGoods;
+vector<Goods> goodsOnMap;

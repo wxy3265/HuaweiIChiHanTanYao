@@ -35,9 +35,4 @@ extern Berth berth[10];
 extern bool visitBerth[10];
 extern bool berthVisitable[12];
 
-extern int pathLength[12][207][207];
-extern int berth_to_berth[12][12];
-extern int nearBerthId[203][203];
-extern int nearBerthLength[203][203];
-
 #endif //HUAWEIICHIHANTANYAO_BERTH_H
