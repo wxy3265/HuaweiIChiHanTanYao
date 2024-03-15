@@ -74,30 +74,29 @@ int main() {
                 visitBerth[ship[i].getFirstTarget().targetId] = true;
             }
         }
-        for (int i = 0; i < 10; i++) {
-            cerr << visitBerth[i] << ' ';
-        }
-        cerr << '\n';
+//        for (int i = 0; i < 10; i++) {
+//            cerr << visitBerth[i] << ' ';
+//        }
+//        cerr << '\n';
         Map::update();
 //        if (cerrFrame)
-        cerr << "frame=" << frame << '\n';
-        int totBerthValue = 0;
-        for (int i = 0; i < 10; i++) {
-            cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue()
-                 << "> numbers:" << berth[i].getGoodsNum()
-                 << " distance:" << berth[i].distance
-                 << " visit:" << visitBerth[i]
-                 << '\n';
-            totBerthValue += berth[i].getTotalValue();
-        }
-        cerr << "totBerthValue: <" << totBerthValue << ">\n";
+//        int totBerthValue = 0;
+//        for (int i = 0; i < 10; i++) {
+//            cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue()
+//                 << "> numbers:" << berth[i].getGoodsNum()
+//                 << " distance:" << berth[i].distance
+//                 << " visit:" << visitBerth[i]
+//                 << '\n';
+//            totBerthValue += berth[i].getTotalValue();
+//        }
+//        cerr << "totBerthValue: <" << totBerthValue << ">\n";
         for (int i = 0; i <= 9; i++) {
             if (berthBanned[i]) {
                 berthBanned[i] = false;
                 for (int j = 0; j <= 9; j++) {
                     if (robotHome[j] == i) {
                         reallocateHome(j);
-                        cerr << "reallocateHome:[" << j << "]\n";
+//                        cerr << "reallocateHome:[" << j << "]\n";
                     }
                 }
             }
@@ -217,10 +216,10 @@ void robotGetMission(int robId) {
     else nowBerthId = robot[robId].getTargetId();
     if (nowBerthId == -1) return;
     int n = goodsOnMap.size();
-    for (int i = 0; i < n; i++) {
-        cerr << goodsOnMap[i].value << ' ';
-    }
-    cerr << '\n';
+//    for (int i = 0; i < n; i++) {
+//        cerr << goodsOnMap[i].value << ' ';
+//    }
+//    cerr << '\n';
     priority_queue <GoodsMission> goodsMission;
 //    cerr << "goodsOnMapSize:" << goodsOnMap.size() << '\n';
     for (int i = 0; i < n; i++) {
@@ -241,7 +240,7 @@ void robotGetMission(int robId) {
     if (goodsMission.empty()) return;
     GoodsMission targetMission = goodsMission.top();
     int targetBerthId = Map::getNearBerthId(targetMission.goods.position);
-    cerr << "chose:" << targetMission.goods.value << '\n';
+//    cerr << "chose:" << targetMission.goods.value << '\n';
     robotSetMission(robId, targetMission.goods, targetBerthId);
 }
 void calcEfficiency(int startBerthId) {

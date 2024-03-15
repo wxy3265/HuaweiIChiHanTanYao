@@ -61,7 +61,7 @@ void Map::init() {
             }
             if (flag) break;
         }
-        cerr << "berth[" << id << "]" << " targetPosition:" << berth[id].targetPosition.x << "," << berth[id].targetPosition.y << '\n';
+//        cerr << "berth[" << id << "]" << " targetPosition:" << berth[id].targetPosition.x << "," << berth[id].targetPosition.y << '\n';
     }
     //初始化船舶ID
     for (int i = 0; i < 5; i++) ship[i].id = i;
@@ -101,10 +101,10 @@ void Map::update() {
     int k;
     scanf("%d", &k);
     totGoodsNumber += k;
-    cerr << "TotGoodsNumber:" << totGoodsNumber << '\n';
+//    cerr << "TotGoodsNumber:" << totGoodsNumber << '\n';
     for (int i = 1, x, y, m; i <= k; i++) {
         scanf("%d%d%d", &x, &y, &m);
-        cerr << "newGoods Value:<" << m << ">\n";
+//        cerr << "newGoods Value:<" << m << ">\n";
         newGoods.emplace_back(Point(x, y), m, frame, ++goodsNumber);
         goodsOnMap.emplace_back(Point(x, y), m, frame, goodsNumber);
     }
@@ -144,8 +144,8 @@ void Map::pretreatPathToBerth(int berthId){
     queue<Point> q;
     Point start = berth[berthId].position;
     q.push(start);
-    for(int i = 0; i <= 200; i++)
-        for(int j = 0; j <=200 ; j++)
+    for(int i = 0; i < 200; i++)
+        for(int j = 0; j < 200 ; j++)
             pathLengthToBerth[berthId][i][j] = 1000000;
     pathLengthToBerth[berthId][start.x][start.y] = 0;
     while(!q.empty()) {
@@ -180,8 +180,8 @@ void Map::pretreatPathToStart(int robId){
     queue<Point> q;
     Point start = robot[robId].position;
     q.push(start);
-    for(int i = 0; i <= 200; i++)
-        for(int j = 0; j <=200 ; j++)
+    for(int i = 0; i < 200; i++)
+        for(int j = 0; j < 200 ; j++)
             pathLengthToStart[robId][i][j] = 1000000;
     pathLengthToStart[robId][start.x][start.y] = 0;
     while(!q.empty()) {
