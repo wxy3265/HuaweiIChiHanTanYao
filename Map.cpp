@@ -8,7 +8,8 @@ static int goodsNumber = 0;
 
 const int nx[]={0,0,1,-1};
 const int ny[]={1,-1,0,0};
-int pathLength[12][207][207];
+int pathLengthToBerth[10][200][200];
+int pathLengthToStart[10][200][200];
 int berth_to_berth[12][12];
 int nearBerthId[203][203];
 int nearBerthLength[203][203];
@@ -102,22 +103,26 @@ void Map::update() {
 }
 
 int Map::getLengthFromBerthToPoint(int berthId, Point end) {
-    return pathLength[berthId][end.x][end.y];
+    return pathLengthToBerth[berthId][end.x][end.y];
+}
+
+int Map::getLengthFromStartToPoint(int robId, Point end) {
+    return pathLengthToStart[robId][end.x][end.y];
 }
 
 int Map::getNearBerthId(Point point) {
     return nearBerthId[point.x][point.y];
 }
 
-void Map::pretreatPath(int berthId){
+void Map::pretreatPathToBerth(int berthId){
 //    if (!open[berthId]) return;
     queue<Point> q;
     Point start = berth[berthId].position;
     q.push(start);
     for(int i = 0; i <= 200; i++)
         for(int j = 0; j <=200 ; j++)
-            pathLength[berthId][i][j] = 1000000;
-    pathLength[berthId][start.x][start.y] = 0;
+            pathLengthToBerth[berthId][i][j] = 1000000;
+    pathLengthToBerth[berthId][start.x][start.y] = 0;
     while(!q.empty()) {
         Point cur = q.front();
         q.pop();
@@ -126,11 +131,45 @@ void Map::pretreatPath(int berthId){
             int dy = cur.y + ny[i];
             if(dx < 0||dx >= 200||dy < 0||dy >= 200)continue;
             if (maze[dx][dy] == PointState::OCEAN || maze[dx][dy] == PointState::BLOCK)continue;
-            if(pathLength[berthId][dx][dy] > pathLength[berthId][cur.x][cur.y] + 1){
-                pathLength[berthId][dx][dy] = pathLength[berthId][cur.x][cur.y] + 1;
-                if (pathLength[berthId][dx][dy] < nearBerthLength[dx][dy]) {
-                    nearBerthLength[dx][dy] = pathLength[berthId][dx][dy];
+            if(pathLengthToBerth[berthId][dx][dy] > pathLengthToBerth[berthId][cur.x][cur.y] + 1){
+                pathLengthToBerth[berthId][dx][dy] = pathLengthToBerth[berthId][cur.x][cur.y] + 1;
+                if (pathLengthToBerth[berthId][dx][dy] < nearBerthLength[dx][dy]) {
+                    nearBerthLength[dx][dy] = pathLengthToBerth[berthId][dx][dy];
                     nearBerthId[dx][dy] = berthId;
+                }
+                q.push((Point{dx,dy}));
+            }
+        }
+    }
+    /*for (int i = 0; i < 200; i++) {
+        for (int j = 0; j < 200; j++) {
+            cerr << nearBerthId[i][j];
+        }
+        cerr << '\n';
+    }*/
+}
+void Map::pretreatPathToStart(int robId){
+//    if (!open[berthId]) return;
+    queue<Point> q;
+    Point start = robot[robId].position;
+    q.push(start);
+    for(int i = 0; i <= 200; i++)
+        for(int j = 0; j <=200 ; j++)
+            pathLengthToStart[robId][i][j] = 1000000;
+    pathLengthToStart[robId][start.x][start.y] = 0;
+    while(!q.empty()) {
+        Point cur = q.front();
+        q.pop();
+        for(int i = 0; i <= 3; i++){
+            int dx = cur.x + nx[i];
+            int dy = cur.y + ny[i];
+            if(dx < 0||dx >= 200||dy < 0||dy >= 200)continue;
+            if (maze[dx][dy] == PointState::OCEAN || maze[dx][dy] == PointState::BLOCK)continue;
+            if(pathLengthToStart[robId][dx][dy] > pathLengthToStart[robId][cur.x][cur.y] + 1){
+                pathLengthToStart[robId][dx][dy] = pathLengthToStart[robId][cur.x][cur.y] + 1;
+                if (pathLengthToStart[robId][dx][dy] < nearBerthLength[dx][dy]) {
+                    nearBerthLength[dx][dy] = pathLengthToStart[robId][dx][dy];
+                    nearBerthId[dx][dy] = robId;
                 }
                 q.push((Point{dx,dy}));
             }

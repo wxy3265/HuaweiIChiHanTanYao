@@ -49,7 +49,8 @@ int main() {
     freopen("newout.txt", "w", stderr);
     Map::init();
     Map::calcDistanceBetweenBerth();
-    for(int i = 0; i <= 9; i++) Map::pretreatPath(i), robotFirstMission[i] = true;
+    for(int i = 0; i <= 9; i++) Map::pretreatPathToBerth(i), robotFirstMission[i] = true;
+    for(int i = 0; i <= 9; i++) Map::pretreatPathToStart(i);
     allocateHome();
 //    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();

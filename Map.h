@@ -22,6 +22,12 @@ public:
     static bool isOpen(int id);
 
     static int getNearBerthId(Point point);
+
+    static void pretreatPathToBerth(int berthId);
+
+    static int getLengthFromStartToPoint(int robId, Point end);
+
+    static void pretreatPathToStart(int robId);
 };
 
 #endif //HUAWEIICHIHANTANYAO_MAP_H
