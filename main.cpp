@@ -52,7 +52,8 @@ int main() {
     Map::calcDistanceBetweenBerth();
     for(int i = 0; i <= 9; i++) Map::pretreatPathToStart(i), robotFirstMission[i] = true;
     for(int i = 0; i <= 9; i++) {
-//        if (berthVisitable[i])
+//        cerr << "visitable:" << berthVisitable[i] << '\n';
+        if (berthVisitable[i])
             Map::pretreatPathToBerth(i);
     }
     allocateHome();

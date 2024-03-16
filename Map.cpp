@@ -120,7 +120,7 @@ void Map::update() {
     //更新船舶
     for (int i = 0, state, id; i < 5; i++) {
         scanf("%d%d", &state, &id);
-        ship[i].update(state);
+        ship[i].update(state, id);
     }
 //    for (int i = 0; i < 10; i++) cerr << "berth:[" << i << "] goodsValue:<" << berth[i].getTotalValue() << ">\n";
     //OK
@@ -218,13 +218,13 @@ bool Map::isOpen(int id) {
     return berthVisitable[id];
 }
 void Map::calcDistanceBetweenBerth(){
-    berthVisitable[0] = true;
+//    berthVisitable[0] = true;
     berthVisitable[1] = true;
-    berthVisitable[2] = true;
+//    berthVisitable[2] = true;
     berthVisitable[3] = true;
-    berthVisitable[4] = true;
+//    berthVisitable[4] = true;
     berthVisitable[5] = true;
-    berthVisitable[6] = true;
+//    berthVisitable[6] = true;
     berthVisitable[7] = true;
     berthVisitable[8] = true;
     berthVisitable[9] = true;
