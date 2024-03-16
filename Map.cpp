@@ -163,6 +163,7 @@ void Map::pretreatPathToBerth(int berthId){
             if(pathLengthToBerth[berthId][dx][dy] > pathLengthToBerth[berthId][cur.x][cur.y] + 1){
                 pathLengthToBerth[berthId][dx][dy] = pathLengthToBerth[berthId][cur.x][cur.y] + 1;
                 if (pathLengthToBerth[berthId][dx][dy] < nearBerthLength[dx][dy]) {
+                    if (!berthVisitable[berthId]) continue;
                     nearBerthLength[dx][dy] = pathLengthToBerth[berthId][dx][dy];
                     nearBerthId[dx][dy] = berthId;
                 }
@@ -218,16 +219,16 @@ bool Map::isOpen(int id) {
     return berthVisitable[id];
 }
 void Map::calcDistanceBetweenBerth(){
-    berthVisitable[0] = true;
-    berthVisitable[1] = true;
+//    berthVisitable[0] = true;
+//    berthVisitable[1] = true;
     berthVisitable[2] = true;
-    berthVisitable[3] = true;
+//    berthVisitable[3] = true;
     berthVisitable[4] = true;
     berthVisitable[5] = true;
     berthVisitable[6] = true;
     berthVisitable[7] = true;
     berthVisitable[8] = true;
-    berthVisitable[9] = true;
+//    berthVisitable[9] = true;
     return;
     int r = 50;
     int contain[12];
