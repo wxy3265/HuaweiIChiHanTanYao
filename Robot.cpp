@@ -42,7 +42,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     } else {
         waitTime = 0;
     }
-    if (waitTime >= 3) {
+    if (waitTime >= 10 && mission != RobotState::MISSION_PULL) {
         if (carrying) totGiveUp += goodsToGet.value;
 //        cerr << "[" << id << "]放弃任务！总价值：<" << totGiveUp << ">\n";
         waitTime = 0;
@@ -67,7 +67,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     }
     maze[position.x][position.y] = PointState::PLAIN;
     if (state == RobotState::MISSION_MOVE) {
-        if (robotPath[id].length > 50000) {
+        if (robotPath[id].length > 500000) {
             if (mission == RobotState::MISSION_GET) {
                 if (PathAlgorithm == 0) robotPath[id] = getPath1(id, goodsToGet.position);
                 else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
@@ -117,9 +117,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         move(position.getDirection(nextPoint));
     } else if (state == RobotState::MISSION_GET) {
         get();
-        if (!carrying) {
-//            return;
-        }
+//        if (!carrying) { return; }
         totGetValue += goodsToGet.value;
         if (cerrTotalGetValue)
             cerr << "totGetValue:" << totGetValue << '\n';
@@ -132,8 +130,8 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     } else if (state == RobotState::MISSION_PULL) {
 //        cerr << id << "Pulled\n";
         pull();
-        berth[targetId].pushGoods(goodsToGet);
 //        if (carrying) return;
+        berth[targetId].pushGoods(goodsToGet);
         mission = state = RobotState::FREE;
     }
 }

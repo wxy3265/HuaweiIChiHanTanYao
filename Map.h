@@ -28,6 +28,8 @@ public:
     static int getLengthFromStartToPoint(int robId, Point end);
 
     static void pretreatPathToStart(int robId);
+
+    static void initNear();
 };
 
 extern bool visitGoods[200007];

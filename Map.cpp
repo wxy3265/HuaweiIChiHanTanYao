@@ -16,12 +16,16 @@ int nearBerthId[203][203];
 int nearBerthLength[203][203];
 bool visitGoods[200007];
 
-void Map::init() {
+void Map::initNear() {
     for (int i = 0; i < 203; i++) {
         for (int j = 0; j < 203; j++) {
             nearBerthLength[i][j] = 1e7;
         }
     }
+}
+
+void Map::init() {
+    initNear();
     //读入地图
     int cnt = 0;
     for (int i = 0; i < 200; i++) {

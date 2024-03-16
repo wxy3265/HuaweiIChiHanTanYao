@@ -33,7 +33,7 @@ bool Berth::empty() {
 int Berth::getGoodsNum() {
     if (empty()) return 0;
 //    cerr << "visitGoods:" << visitGoods << '\n';
-    return (int)(goods.size()) - visitGoods;
+    return (int)(goods.size());
 }
 
 int Berth::getHeadGoodsValue(int k) {

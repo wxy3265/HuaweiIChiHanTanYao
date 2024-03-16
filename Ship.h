@@ -21,9 +21,11 @@ private:
     queue<ShipMission> target;
     vector<Goods> goods;
     int state = ShipState::FREE;
-    int startCompleteTime;
+    int startMissionTime;
     bool firstMove = true;
     void autoSetMission();
+    void back();
+    void fetchGoods();
 public:
     int id;
     void get();
@@ -39,7 +41,7 @@ public:
     void update(int _state);
 };
 
-extern Ship ship[7];
+extern Ship ship[5];
 extern bool berthBanned[10];
 
 #endif //HUAWEIICHIHANTANYAO_SHIP_H
