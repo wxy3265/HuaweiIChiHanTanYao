@@ -59,6 +59,7 @@ int main() {
 //    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();
     while (frame < 15000){
+        cerr << "frame:" << frame << '\n';
         for (int i = 0; i < 10; i++) {
             visitBerth[i] = false;
         }

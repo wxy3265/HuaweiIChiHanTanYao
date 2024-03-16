@@ -121,7 +121,7 @@ void Ship::update(int _state) {
                 return;
             }
         }
-        if (!target.empty()) {
+        if (target.empty()) {
             autoSetMission();
             return;
         }
@@ -149,7 +149,7 @@ void Ship::update(int _state) {
                 mission = ShipState::MISSION_MOVE;
                 get();
             } else {
-                autoSetMission();
+                mission = ShipState::FREE;
             }
             return;
         }
