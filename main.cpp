@@ -59,7 +59,7 @@ int main() {
 //    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();
     while (frame < 15000){
-        cerr << "frame:" << frame << '\n';
+//        cerr << "frame:" << frame << '\n';
         for (int i = 0; i < 10; i++) {
             visitBerth[i] = false;
         }
@@ -69,16 +69,24 @@ int main() {
             }
         }
         Map::update();
-        cerrBerth();
+//        cerrBerth();
 //        if (cerrFrame)
 //        for (int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMissionMini(i);
 //        for (int i = 0; i <= 9; i++) calcEfficiencyMax(i);
 //        while (!newGoods.empty()) newGoods.pop_back();
         checkBerthBanned();
         if (true) {
-            for (int i = 0; i <= 9; i++)
+            for (int i = 0; i <= 9; i++) {
                 if (robot[i].getState() == RobotState::FREE)
                     robotGetMission(i);
+                else if (robot[i].getState() == RobotState::MISSION_MOVE) {
+                    if (robot[i].getMission() == RobotState::MISSION_GET && robot[i].carrying == 1 && robotPath[i].step == 3) {
+                        cerr << "rediretction" << i << "\n";
+                        robot[i].redirection();
+                    }
+                }
+
+            }
         } else {
             for (int i = 0; i <= 9; i++)
                 if (robot[i].getState() == RobotState::FREE)
@@ -180,6 +188,7 @@ void robotGetMission(int robId) {
         if (nowBerthId == -2) distance += Map::getLengthFromStartToPoint(robId, goods.position);
         else distance += Map::getLengthFromBerthToPoint(nowBerthId, goods.position);
 //        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
+        if (visitGoods[goods.id]) continue;
         if (frame + distance + 25 >= goods.time + 1000) continue;
         if (goods.value < 100) continue;
 //        if (distance > 100) continue;

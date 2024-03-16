@@ -14,7 +14,7 @@ public:
     Robot() {}
 
 private:
-    bool carrying;
+//    bool carrying;
     Point nextPoint;
     Goods goodsToGet;
     int mission;
@@ -28,6 +28,7 @@ private:
     int waitTime = 0;
     Point lastPosition;
 public:
+    bool carrying;
     int id;
     Point position;
     int getState();
@@ -36,6 +37,7 @@ public:
     void update(Point _position, bool _enable, bool _carrying);
     int getMission();
     int getTargetId();
+    void redirection();
 };
 
 extern Robot robot[10];

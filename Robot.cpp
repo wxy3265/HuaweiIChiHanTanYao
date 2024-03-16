@@ -18,6 +18,11 @@ void Robot::pull() {
 //    cerr << "pull!\n";
 }
 int Robot::getState() {return state;}
+void Robot::redirection() {
+    this->mission = RobotState::MISSION_PULL;
+    robotPath[this->id] = getPathbyAStar(this->id,  berth[nearBerthId[this->position.x][this->position.y]].position);
+
+}
 void Robot::setMission(Goods _goodsToGet, int _targetId) {
     goodsToGet = _goodsToGet;
     targetId = _targetId;
@@ -42,7 +47,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     } else {
         waitTime = 0;
     }
-    if (waitTime >= 10 && mission != RobotState::MISSION_PULL) {
+    if (waitTime >= 10) {
         if (carrying) totGiveUp += goodsToGet.value;
 //        cerr << "[" << id << "]放弃任务！总价值：<" << totGiveUp << ">\n";
         waitTime = 0;

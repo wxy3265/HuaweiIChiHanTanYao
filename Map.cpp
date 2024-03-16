@@ -12,8 +12,6 @@ int pathLengthToBerth[10][203][203];
 int pathLengthToStart[10][203][203];
 int berth_to_berth[10][10];
 int pathLength[10][203][203];
-int nearBerthId[203][203];
-int nearBerthLength[203][203];
 bool visitGoods[200007];
 
 void Map::initNear() {

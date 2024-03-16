@@ -37,11 +37,11 @@ int Ship::getState() {return state;}
 vector<Goods> Ship::getGoods() {return goods;}
 
 void Ship::autoSetMission() {
-    cerr << "autoSetMission: [" << id << "]\n";
-    for (int i = 0; i < 10; i++) {
-        cerr << visitBerth[i] << ' ';
-    }
-    cerr << '\n';
+//    cerr << "autoSetMission: [" << id << "]\n";
+//    for (int i = 0; i < 10; i++) {
+//        cerr << visitBerth[i] << ' ';
+//    }
+//    cerr << '\n';
     int mmax = 0, maxn = -1;
     bool flag = false;
     for (int i = 0; i < 10; i++) {
