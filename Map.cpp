@@ -120,7 +120,7 @@ void Map::update() {
     //更新船舶
     for (int i = 0, state, id; i < 5; i++) {
         scanf("%d%d", &state, &id);
-        ship[i].update(state, id);
+        ship[i].update(state);
     }
 //    for (int i = 0; i < 10; i++) cerr << "berth:[" << i << "] goodsValue:<" << berth[i].getTotalValue() << ">\n";
     //OK

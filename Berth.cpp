@@ -68,4 +68,4 @@ int Berth::getTotalValue() {
 
 Berth berth[10];
 bool visitBerth[10];
-bool berthVisitable[10];
+bool berthVisitable[12];

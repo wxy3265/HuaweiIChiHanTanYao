@@ -18,9 +18,7 @@ class Ship {
 private:
     int mission = ShipState::FREE;
 //    int targetId;
-    int target = -1;
-    int carryingGoodsNumber = 0;
-    int numToCarry;
+    queue<ShipMission> target;
     vector<Goods> goods;
     int state = ShipState::FREE;
     int startMissionTime;
@@ -40,7 +38,7 @@ public:
     int getState();
     vector<Goods> getGoods();
     ShipMission getFirstTarget();
-    void update(int _state, int targetInput);
+    void update(int _state);
 };
 
 extern Ship ship[5];

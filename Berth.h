@@ -33,6 +33,6 @@ public:
 
 extern Berth berth[10];
 extern bool visitBerth[10];
-extern bool berthVisitable[10];
+extern bool berthVisitable[12];
 
 #endif //HUAWEIICHIHANTANYAO_BERTH_H
