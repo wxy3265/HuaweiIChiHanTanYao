@@ -19,11 +19,12 @@ void Ship::pull() {
 }
 
 void Ship::setMission(ShipMission _target) {
-//    cerr << "Ship[" << id << "] set mission:" << _target.targetId << '\n';
+    cerr << "Ship[" << id << "] set mission:" << _target.targetId << '\n';
     target = _target.targetId;
     visitBerth[_target.targetId] = true;
     startMissionTime = frame;
     mission = ShipState::MISSION_MOVE;
+    get();
 }
 
 void Ship::pushGoods(Goods goods1) {
@@ -34,11 +35,11 @@ int Ship::getState() {return state;}
 vector<Goods> Ship::getGoods() {return goods;}
 
 void Ship::autoSetMission() {
-//    cerr << "autoSetMission: [" << id << "]\n";
-//    for (int i = 0; i < 10; i++) {
-//        cerr << visitBerth[i] << ' ';
-//    }
-//    cerr << '\n';
+    cerr << "autoSetMission: [" << id << "]\n";
+    for (int i = 0; i < 10; i++) {
+        cerr << visitBerth[i] << ' ';
+    }
+    cerr << '\n';
     int mmax = 0, maxn = -1;
     bool flag = false;
     for (int i = 0; i < 10; i++) {
@@ -58,7 +59,8 @@ void Ship::autoSetMission() {
     }
 //    cerr << "cannot find max\n";
     if (maxn != -1) {
-        setMission(ShipMission(maxn, -1));
+        if (maxn == target) mission = ShipState::MISSION_GET;
+        else setMission(ShipMission(maxn, -1));
     }
 }
 
@@ -82,7 +84,7 @@ void Ship::update(int _state, int targetInput) {
         cerr << '\n';
     }
     state = _state;
-    if (frame >= startMissionTime + 10 && targetInput != target) {
+    if (frame >= startMissionTime + 3 && targetInput != target) {
         cerr << "ship [" << id << "]: 不对！这不是我去的地方！\n";
         if (target != -1) get();
         else back();
@@ -95,6 +97,7 @@ void Ship::update(int _state, int targetInput) {
             startMissionTime = frame;
         }
     } else if (mission == ShipState::MISSION_GET) {
+//        if (state == ShipState::PERFORMING) carryingGoodsNumber += berth[target].velocity;
         if (goods.size() >= capacity) {
             cerr << "ship:[" << id << "] 满载而归\n";
             back();
@@ -125,7 +128,7 @@ void Ship::update(int _state, int targetInput) {
                 }
             }
         }*/
-        if (state == ShipState::FREE) {
+        if (berth[target].empty()) {
             mission = ShipState::FREE;
             return;
         }
