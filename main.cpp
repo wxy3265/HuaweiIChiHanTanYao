@@ -78,7 +78,7 @@ int main() {
 //        for (int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMissionMini(i);
 //        for (int i = 0; i <= 9; i++) calcEfficiencyMax(i);
 //        while (!newGoods.empty()) newGoods.pop_back();
-        checkBerthBanned();
+//        checkBerthBanned();
         if (true) {
             for (int i = 0; i <= 9; i++) {
                 if (robot[i].getState() == RobotState::FREE)

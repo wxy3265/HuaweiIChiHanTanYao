@@ -95,7 +95,7 @@ void Ship::update(int _state, int targetInput) {
         return;
     }
     if (mission == ShipState::MISSION_MOVE) {
-        if (state == ShipState::PERFORMING && (frame >= startMissionTime + 500 || frame < 3)) {
+        if (state == ShipState::PERFORMING && (frame >= startMissionTime + 50)) {
             mission = ShipState::MISSION_GET;
             startMissionTime = frame;
         }
@@ -130,13 +130,13 @@ void Ship::update(int _state, int targetInput) {
                 }
             }
         }*/
-        if (berth[target].empty() && (!firstMove || frame > startMissionTime + 1000)) {
+        if (berth[target].empty() && (!firstMove || frame > startMissionTime + 1000 || true)) {
             mission = ShipState::FREE;
             return;
         }
         fetchGoods();
     } else if (mission == ShipState::MISSION_PULL) {
-        if (state == ShipState::PERFORMING && frame >= startMissionTime + 500) {
+        if (state == ShipState::PERFORMING && frame >= startMissionTime + 50) {
 //            while (true) cerr << "empty!";
             mission = ShipState::FREE;
             carryingGoodsNumber = 0;
