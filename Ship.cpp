@@ -61,6 +61,8 @@ void Ship::autoSetMission() {
     if (maxn != -1) {
         if (maxn == target) mission = ShipState::MISSION_GET;
         else setMission(ShipMission(maxn, -1));
+    } else {
+        mission = ShipState::FREE;
     }
 }
 
@@ -105,10 +107,10 @@ void Ship::update(int _state, int targetInput) {
         }
         if (frame + berth[target].distance >= 15000 - deltaFrame) {
             cerr << "ship:[" << id << "] 最终返回\n";
-            back();
+            goods.clear();
             berthVisitable[target] = false;
             berthBanned[target] = true;
-            goods.clear();
+            back();
             return;
         }
         if (frame + berth[target].distance + 500 >= 15000 - deltaFrame) {
