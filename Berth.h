@@ -19,7 +19,7 @@ public:
     Point targetPosition;
     int distance;
     int velocity;
-    int visitGoods = 0;
+    int visitGoodsNumber = 0;
     void pushGoods(Goods gd);
     Goods fetchGoods();
 

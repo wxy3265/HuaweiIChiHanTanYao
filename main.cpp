@@ -156,7 +156,6 @@ void robotGetMissionFromOperation(int robId) {
     }
     if(operation[robotHome[robId]].empty()) return;
     robotSetMission(robId, operation[robotHome[robId]].top().targetGoods, operation[robotHome[robId]].top().targetBerthId);
-    visitGoods[operation[robotHome[robId]].top().targetGoods.id] = true;
     operation[robotHome[robId]].pop();
 }
 void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
@@ -188,7 +187,7 @@ void robotGetMission(int robId) {
         if (nowBerthId == -2) distance += Map::getLengthFromStartToPoint(robId, goods.position);
         else distance += Map::getLengthFromBerthToPoint(nowBerthId, goods.position);
 //        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
-//        if (visitGoods[goods.id]) continue;
+        if (visitGoods[goods.id]) continue;
         if (frame + distance + 25 >= goods.time + 1000) continue;
         if (goods.value < 100) continue;
 //        if (distance > 100) continue;

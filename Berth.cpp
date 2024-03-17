@@ -14,7 +14,7 @@ void Berth::pushGoods(Goods gd) {
 Goods Berth::fetchGoods() {
     Goods goods1 = goods.front();
     goods.pop();
-    if(visitGoods > 0) visitGoods --;
+    if(visitGoodsNumber > 0) visitGoodsNumber --;
     return goods1;
 }
 
@@ -32,7 +32,7 @@ bool Berth::empty() {
 
 int Berth::getGoodsNum() {
     if (empty()) return 0;
-//    cerr << "visitGoods:" << visitGoods << '\n';
+//    cerr << "visitGoodsNumber:" << visitGoodsNumber << '\n';
     return (int)(goods.size());
 }
 
@@ -40,7 +40,7 @@ int Berth::getHeadGoodsValue(int k) {
     queue <Goods> tmp;
     int n = goods.size(), tot = 0;
     for (int i = 1; i <= n && !goods.empty(); i++) {
-        if (i <= k + visitGoods && i > visitGoods) tot += goods.front().value;
+        if (i <= k + visitGoodsNumber && i > visitGoodsNumber) tot += goods.front().value;
         tmp.push(goods.front());
         goods.pop();
     }

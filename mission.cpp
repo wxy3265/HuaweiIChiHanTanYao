@@ -169,14 +169,14 @@ void shipGetMissionMiniPlus(int shipId) {
     if(targetBerth1 != -1){
         if(targetBerth2 == -1){
             ship[shipId].setMission(ShipMission(targetBerth1,-1));
-            berth[targetBerth1].visitGoods += cap1;
-            //visitGoods[targetBerth1] = true;
+            berth[targetBerth1].visitGoodsNumber += cap1;
+            //visitGoodsNumber[targetBerth1] = true;
         }
         else{
             ship[shipId].setMission(ShipMission(targetBerth1,-1));
             ship[shipId].setMission(ShipMission(targetBerth2,-1));
-            berth[targetBerth1].visitGoods += cap1;
-            berth[targetBerth2].visitGoods += cap2;
+            berth[targetBerth1].visitGoodsNumber += cap1;
+            berth[targetBerth2].visitGoodsNumber += cap2;
         }
     }
 }
@@ -226,13 +226,13 @@ void shipGetMissionPlus(int shipId){
     if(targetBerth1 != -1){
         if(targetBerth2 == -1){
             ship[shipId].setMission(ShipMission(targetBerth1,-1));
-            //berth[targetBerth1].visitGoods = min(cap1 + berth[targetBerth1].visitGoods,;
+            //berth[targetBerth1].visitGoodsNumber = min(cap1 + berth[targetBerth1].visitGoodsNumber,;
             visitBerth[targetBerth1] = true;
         } else {
             ship[shipId].setMission(ShipMission(targetBerth1,-1));
             ship[shipId].setMission(ShipMission(targetBerth2,-1));
-            //berth[targetBerth1].visitGoods += cap1;
-            //berth[targetBerth2].visitGoods += cap2;
+            //berth[targetBerth1].visitGoodsNumber += cap1;
+            //berth[targetBerth2].visitGoodsNumber += cap2;
             visitBerth[targetBerth1] = true;
             visitBerth[targetBerth2] = true;
         }

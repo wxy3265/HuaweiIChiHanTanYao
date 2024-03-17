@@ -47,7 +47,7 @@ void Ship::autoSetMission() {
         if (visitBerth[i]) continue;
         if (berth[i].getTotalValue() > mmax) {
             flag = true;
-            if (berth[i].getGoodsNum() + goods.size() >= capacity) continue;
+            if (berth[i].getGoodsNum() + goods.size() >= capacity || frame + berth[i].distance + 500 >= 15000 - deltaFrame) continue;
             mmax = berth[i].getTotalValue();
             maxn = i;
         }
