@@ -230,7 +230,7 @@ void Map::calcDistanceBetweenBerth(){
     berthVisitable[7] = true;
     berthVisitable[8] = true;
     berthVisitable[9] = true;
-//    return;
+    return;
     int r = 50;
     int contain[12];
     bool close[12];
