@@ -44,6 +44,6 @@ public:
 };
 
 extern Ship ship[5];
-extern bool berthBanned[10];
+extern bool berthStateChange;
 
 #endif //HUAWEIICHIHANTANYAO_SHIP_H

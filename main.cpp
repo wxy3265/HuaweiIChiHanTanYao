@@ -44,6 +44,7 @@ void robotGetMission(int robId);
 void robotGetMissionFromOperation(int robId);
 void cerrBerth();
 void checkBerthBanned();
+void initShipMission();
 
 int main() {
 //    PathAlgorithm = 1;
@@ -59,7 +60,7 @@ int main() {
 //    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();
     while (frame < 15000){
-//        cerr << "frame:" << frame << '\n';
+        cerr << "frame:" << frame << '\n';
         for (int i = 0; i < 10; i++) {
             visitBerth[i] = false;
         }
@@ -69,8 +70,8 @@ int main() {
             }
         }
         Map::update();
-//        cerrBerth();
-//        if (cerrFrame)
+        if (frame == 1) initShipMission();
+        cerrBerth();
 //        for (int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMissionMini(i);
 //        for (int i = 0; i <= 9; i++) calcEfficiencyMax(i);
 //        while (!newGoods.empty()) newGoods.pop_back();
@@ -99,6 +100,90 @@ int main() {
     return 0;
 }
 
+void initShipMission() {
+//    for (int i = 0; i < 5; i++) ship[i].setMission(ShipMission{i * 2, -1});
+    ship[0].setMission(ShipMission{0, -1});
+    ship[1].setMission(ShipMission{2, -1});
+    ship[2].setMission(ShipMission{4, -1});
+    ship[3].setMission(ShipMission{6, -1});
+    ship[4].setMission(ShipMission(9, -1));
+}
+
+void robotGetMission(int robId) {
+    if (robotHome[robId] == -1) return;
+    int nowBerthId;
+    if (robotFirstMission[robId]) nowBerthId = -2;
+    else nowBerthId = robot[robId].getTargetId();
+    if (nowBerthId == -1) return;
+    int n = goodsOnMap.size();
+//    for (int i = 0; i < n; i++) {
+//        cerr << goodsOnMap[i].value << ' ';
+//    }
+//    cerr << '\n';
+    priority_queue <GoodsMission> goodsMission;
+//    cerr << "goodsOnMapSize:" << goodsOnMap.size() << '\n';
+    for (int i = 0; i < n; i++) {
+        Goods goods = goodsOnMap[i];
+        GoodsMission goodsMissionNow;
+        int nearBerthId = Map::getNearBerthId(goods.position);
+//        int distance = Map::getLengthFromBerthToPoint(nearBerthId, goods.position);
+        int distance = 0;
+        if (nowBerthId == -2) distance += Map::getLengthFromStartToPoint(robId, goods.position);
+        else distance += Map::getLengthFromBerthToPoint(nowBerthId, goods.position);
+//        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
+        if (visitGoods[goods.id]) continue;
+        if (frame + distance + 25 >= goods.time + 1000) continue;
+        if (goods.value < 100) continue;
+        if (distance > 150) continue;
+        bool existTarget = false;
+        for (int i = 0; i < 5; i++) {
+            if (ship[i].getFirstTarget().targetId == nearBerthId) existTarget = true;
+        }
+        goodsMissionNow.goods = goods;
+        goodsMissionNow.key = -distance;
+//        if (frame + distance + 25 >= goods.time + 900) goodsMissionNow.key += 1000;
+        goodsMission.push(goodsMissionNow);
+    }
+    if (goodsMission.empty()) return;
+    GoodsMission targetMission = goodsMission.top();
+    int targetBerthId = Map::getNearBerthId(targetMission.goods.position);
+//    cerr << "chose:" << targetMission.goods.value << '\n';
+    robotSetMission(robId, targetMission.goods, targetBerthId);
+}
+void cerrBerth() {
+    int totBerthValue = 0;
+    for (int i = 0; i < 10; i++) {
+        if (!berthVisitable[i]) continue;
+        cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue()
+             << "> numbers:" << berth[i].getGoodsNum()
+             << " distance:" << berth[i].distance
+             << " visit:" << visitBerth[i]
+             << '\n';
+        totBerthValue += berth[i].getTotalValue();
+    }
+    cerr << "totBerthValue: <" << totBerthValue << ">\n";
+}
+void checkBerthBanned() {
+    if (berthStateChange) {
+        Map::initNear();
+        for (int j = 0; j <= 9; j++) {
+            bool existTarget = false;
+            for (int i = 0; i < 5; i++) {
+                if (ship[i].getFirstTarget().targetId == j) existTarget = true;
+            }
+            if (!berthVisitable[j]) continue;
+            Map::pretreatPathToBerth(j);
+        }
+    }
+    berthStateChange = false;
+}
+void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
+//    cerr << "robotSetMission tar:" << targetBerthId << '\n';
+    visitGoods[goodsToGet.id] = true;
+    robot[robId].setMission(goodsToGet, targetBerthId);
+    robotFirstMission[robId] = false;
+//    robotHome[robId] = targetBerthId;
+}
 void allocateHome(){
     for(int i = 0; i <= 9; i++) robotHome[i] = berthRobot[i] = -1;
     int cnt = 0;
@@ -158,50 +243,6 @@ void robotGetMissionFromOperation(int robId) {
     robotSetMission(robId, operation[robotHome[robId]].top().targetGoods, operation[robotHome[robId]].top().targetBerthId);
     operation[robotHome[robId]].pop();
 }
-void robotSetMission(int robId, Goods goodsToGet, int targetBerthId) {
-//    cerr << "robotSetMission tar:" << targetBerthId << '\n';
-    visitGoods[goodsToGet.id] = true;
-    robot[robId].setMission(goodsToGet, targetBerthId);
-    robotFirstMission[robId] = false;
-//    robotHome[robId] = targetBerthId;
-}
-void robotGetMission(int robId) {
-    if (robotHome[robId] == -1) return;
-    int nowBerthId;
-    if (robotFirstMission[robId]) nowBerthId = -2;
-    else nowBerthId = robot[robId].getTargetId();
-    if (nowBerthId == -1) return;
-    int n = goodsOnMap.size();
-//    for (int i = 0; i < n; i++) {
-//        cerr << goodsOnMap[i].value << ' ';
-//    }
-//    cerr << '\n';
-    priority_queue <GoodsMission> goodsMission;
-//    cerr << "goodsOnMapSize:" << goodsOnMap.size() << '\n';
-    for (int i = 0; i < n; i++) {
-        Goods goods = goodsOnMap[i];
-        GoodsMission goodsMissionNow;
-        int nearBerthId = Map::getNearBerthId(goods.position);
-//        int distance = Map::getLengthFromBerthToPoint(nearBerthId, goods.position);
-        int distance = 0;
-        if (nowBerthId == -2) distance += Map::getLengthFromStartToPoint(robId, goods.position);
-        else distance += Map::getLengthFromBerthToPoint(nowBerthId, goods.position);
-//        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
-        if (visitGoods[goods.id]) continue;
-        if (frame + distance + 25 >= goods.time + 1000) continue;
-        if (goods.value < 100) continue;
-//        if (distance > 100) continue;
-        goodsMissionNow.goods = goods;
-        goodsMissionNow.key = -distance;
-//        if (frame + distance + 25 >= goods.time + 900) goodsMissionNow.key += 1000;
-        goodsMission.push(goodsMissionNow);
-    }
-    if (goodsMission.empty()) return;
-    GoodsMission targetMission = goodsMission.top();
-    int targetBerthId = Map::getNearBerthId(targetMission.goods.position);
-//    cerr << "chose:" << targetMission.goods.value << '\n';
-    robotSetMission(robId, targetMission.goods, targetBerthId);
-}
 void calcEfficiencyMax(int startBerthId) {
     double deltaLength = 0.56;
     double deltaTime = 0.5;
@@ -220,32 +261,4 @@ void calcEfficiencyMax(int startBerthId) {
         operation[startBerthId].push((Operation){newGood,startBerthId,pathLength1,pathLength1 / 2.0, efficiency1});
     }
 //    checkOperation(startBerthId);
-}
-void cerrBerth() {
-    int totBerthValue = 0;
-    for (int i = 0; i < 10; i++) {
-        cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue()
-             << "> numbers:" << berth[i].getGoodsNum()
-             << " distance:" << berth[i].distance
-             << " visit:" << visitBerth[i]
-             << '\n';
-        totBerthValue += berth[i].getTotalValue();
-    }
-    cerr << "totBerthValue: <" << totBerthValue << ">\n";
-}
-void checkBerthBanned() {
-    for (int i = 0; i <= 9; i++) {
-        if (berthBanned[i]) {
-            Map::initNear();
-            berthBanned[i] = false;
-            for (int j = 0; j <= 9; j++) {
-                if (!berthVisitable[j]) continue;
-                Map::pretreatPathToBerth(j);
-//                    if (robotHome[j] == i) {
-//                        reallocateHome(j);
-//                        cerr << "reallocateHome:[" << j << "]\n";
-//                    }
-            }
-        }
-    }
 }

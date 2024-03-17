@@ -218,6 +218,7 @@ bool berthCmp(Berth x,Berth y){
 bool Map::isOpen(int id) {
     return berthVisitable[id];
 }
+
 void Map::calcDistanceBetweenBerth(){
     berthVisitable[0] = true;
     berthVisitable[1] = true;
@@ -229,7 +230,7 @@ void Map::calcDistanceBetweenBerth(){
     berthVisitable[7] = true;
     berthVisitable[8] = true;
     berthVisitable[9] = true;
-    return;
+//    return;
     int r = 50;
     int contain[12];
     bool close[12];

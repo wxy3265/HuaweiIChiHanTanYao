@@ -56,7 +56,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         return;
     }
     if (cerrRobot) {
-        cerr << "robot[" << id << "] target:" << berth[targetId].targetPosition.x << ',' << berth[targetId].targetPosition.y << " pos:"
+        cerr << "robot[" << id << "] target:[" << targetId << "] " << berth[targetId].targetPosition.x << ',' << berth[targetId].targetPosition.y << " pos:"
              << position.x << ' ' << position.y << " next: " << nextPoint.x << ',' << nextPoint.y
              << " path:" << robotPath[id].step << '/' << robotPath[id].length
              << " gtg:" << goodsToGet.position.x << ',' << goodsToGet.position.y

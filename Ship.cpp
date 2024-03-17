@@ -23,6 +23,7 @@ void Ship::setMission(ShipMission _target) {
     target = _target.targetId;
     visitBerth[_target.targetId] = true;
     startMissionTime = frame;
+    berthStateChange = true;
     mission = ShipState::MISSION_MOVE;
     get();
 }
@@ -67,7 +68,7 @@ void Ship::autoSetMission() {
 }
 
 int shipGetTotal = 0;
-bool berthBanned[10];
+bool berthStateChange = false;
 
 void Ship::update(int _state, int targetInput) {
 //    while (true);
@@ -94,7 +95,7 @@ void Ship::update(int _state, int targetInput) {
         return;
     }
     if (mission == ShipState::MISSION_MOVE) {
-        if (state == ShipState::PERFORMING && frame >= startMissionTime + 500) {
+        if (state == ShipState::PERFORMING && (frame >= startMissionTime + 500 || frame < 3)) {
             mission = ShipState::MISSION_GET;
             startMissionTime = frame;
         }
@@ -107,9 +108,8 @@ void Ship::update(int _state, int targetInput) {
         }
         if (frame + berth[target].distance >= 15000 - deltaFrame) {
             cerr << "ship:[" << id << "] 最终返回\n";
-            goods.clear();
             berthVisitable[target] = false;
-            berthBanned[target] = true;
+            berthStateChange = true;
             back();
             return;
         }
@@ -130,7 +130,7 @@ void Ship::update(int _state, int targetInput) {
                 }
             }
         }*/
-        if (berth[target].empty()) {
+        if (berth[target].empty() && (!firstMove || frame > startMissionTime + 1000)) {
             mission = ShipState::FREE;
             return;
         }
@@ -165,6 +165,8 @@ int Ship::getMission() {
 }
 
 void Ship::back() {
+    firstMove = false;
+    berthStateChange = true;
     pull();
     mission = ShipState::MISSION_PULL;
     startMissionTime = frame;
