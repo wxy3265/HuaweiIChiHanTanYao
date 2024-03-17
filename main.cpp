@@ -190,7 +190,7 @@ void robotGetMission(int robId) {
 //        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
 //        if (visitGoods[goods.id]) continue;
         if (frame + distance + 25 >= goods.time + 1000) continue;
-//        if (goods.value < 100) continue;
+        if (goods.value < 100) continue;
 //        if (distance > 100) continue;
         goodsMissionNow.goods = goods;
         goodsMissionNow.key = -distance;
