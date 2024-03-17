@@ -4,6 +4,8 @@ int robotHome[10];
 int berthRobot[10];
 int setedShipMissionTimes[10];
 bool robotFirstMission[10];
+int nearRobotId[200000];
+int nearRobotDis[200000];
 struct Operation{
     Goods targetGoods;
     int targetBerthId;
@@ -49,6 +51,7 @@ void initShipMission();
 int main() {
 //    PathAlgorithm = 1;
     freopen("out.txt", "w", stderr);
+    memset(nearRobotId, -1, sizeof nearRobotId);
     Map::init();
     Map::calcDistanceBetweenBerth();
     for(int i = 0; i <= 9; i++) Map::pretreatPathToStart(i), robotFirstMission[i] = true;
@@ -108,7 +111,24 @@ void initShipMission() {
     ship[3].setMission(ShipMission{6, -1});
     ship[4].setMission(ShipMission(9, -1));
 }
-
+void getNearRobot(Goods goods){
+    if(nearRobotId[goods.id] >= 0 || nearRobotId[goods.id] == -2)return;
+    int mindis = 100000, nearId = -2, nowId;
+    for(int i = 0; i <= 9; i++){
+        if (robotFirstMission[i])nowId = -2;
+        else nowId = robot[i].getTargetId();
+        if(robotHome[i] == -1||nowId == -1)continue;
+        int dis;
+        if(nowId == -2)dis = Map::getLengthFromStartToPoint(i, goods.position);
+        else dis = Map::getLengthFromBerthToPoint(nowId,goods.position);
+        if(dis < mindis){
+            mindis = dis;
+            nearId = i;
+        }
+    }
+    nearRobotId[goods.id] = nearId;
+    nearRobotDis[goods.id] = mindis;
+}
 void robotGetMission(int robId) {
     if (robotHome[robId] == -1) return;
     int nowBerthId;
@@ -139,8 +159,11 @@ void robotGetMission(int robId) {
         for (int i = 0; i < 5; i++) {
             if (ship[i].getFirstTarget().targetId == nearBerthId) existTarget = true;
         }
+        getNearRobot(goods);
+        int mindis = nearRobotDis[goods.id];
         goodsMissionNow.goods = goods;
-        goodsMissionNow.key = -distance;
+        //goodsMissionNow.key = -distance;
+        goodsMissionNow.key =  100.0 * (goods.value - (distance - mindis) * deltaLength)  / (distance + (goods.time + 1000 - frame) * deltaTime);
 //        if (frame + distance + 25 >= goods.time + 900) goodsMissionNow.key += 1000;
         goodsMission.push(goodsMissionNow);
     }
@@ -244,8 +267,8 @@ void robotGetMissionFromOperation(int robId) {
     operation[robotHome[robId]].pop();
 }
 void calcEfficiencyMax(int startBerthId) {
-    double deltaLength = 0.56;
-    double deltaTime = 0.5;
+    //double deltaLength = 0.56;
+    //double deltaTime = 0.5;
     for(auto & newGood : newGoods) {
         int nearBerthId = Map::getNearBerthId(newGood.position);
         //if(nearBerthId != startBerthId)continue;

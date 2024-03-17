@@ -25,6 +25,8 @@ extern const bool cerrRobot;
 extern const bool cerrTotalGetValue;
 extern const bool cerrShip;
 extern const bool cerrFrame;
+extern const double deltaLength;
+extern const double deltaTime;
 extern int nearBerthId[203][203];
 extern int nearBerthLength[203][203];
 
