@@ -44,13 +44,13 @@ void robotSetMission(int robId, Goods goodsToGet, int targetBerthId);
 void calcEfficiencyMax(int startBerthId);
 void robotGetMission(int robId);
 void robotGetMissionFromOperation(int robId);
-void cerrBerth();
+void cerrBerthFun();
 void checkBerthBanned();
 void initShipMission();
 
 int main() {
 //    PathAlgorithm = 1;
-    freopen("out.txt", "w", stderr);
+    freopen("out3_19.txt", "w", stderr);
     memset(nearRobotId, -1, sizeof nearRobotId);
     Map::init();
     Map::calcDistanceBetweenBerth();
@@ -63,7 +63,7 @@ int main() {
 //    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();
     while (frame < 15000){
-        cerr << "frame:" << frame << '\n';
+        if (cerrSwitch && cerrFrame) cerr << "frame:" << frame << '\n';
         for (int i = 0; i < 10; i++) {
             visitBerth[i] = false;
         }
@@ -74,32 +74,41 @@ int main() {
         }
         Map::update();
         if (frame == 1) initShipMission();
-        cerrBerth();
-//        for (int i = 0; i <= 4; i++) if(ship[i].isFree()) shipGetMissionMini(i);
-//        for (int i = 0; i <= 9; i++) calcEfficiencyMax(i);
-//        while (!newGoods.empty()) newGoods.pop_back();
+        if (cerrSwitch && cerrBerth) {
+            cerrBerthFun();
+        }
 //        checkBerthBanned();
-        if (true) {
+        if (!bindBerth) {
             for (int i = 0; i <= 9; i++) {
                 if (robot[i].getState() == RobotState::FREE)
                     robotGetMission(i);
                 else if (robot[i].getState() == RobotState::MISSION_MOVE) {
                     if (robot[i].getMission() == RobotState::MISSION_GET && robot[i].carrying == 1 && robotPath[i].step == 3) {
-                        cerr << "rediretction" << i << "\n";
+                        if (cerrSwitch) cerr << "rediretction" << i << "\n";
                         robot[i].redirection();
                     }
                 }
 
             }
         } else {
-            for (int i = 0; i <= 9; i++)
+            for (int i = 0; i <= 9; i++) calcEfficiencyMax(i);
+            while (!newGoods.empty()) newGoods.pop_back();
+            for (int i = 0; i <= 9; i++) {
                 if (robot[i].getState() == RobotState::FREE)
                     robotGetMissionFromOperation(i);
+                else if (robot[i].getState() == RobotState::MISSION_MOVE) {
+                    if (robot[i].getMission() == RobotState::MISSION_GET && robot[i].carrying == 1 && robotPath[i].step == 3) {
+                        if (cerrSwitch) cerr << "rediretction" << i << "\n";
+                        robot[i].redirection();
+                    }
+                }
+
+            }
         }
         cout << "OK" << endl;
         cout.flush();
     }
-    cerr << "跳帧数量" << framesum << "\n";
+    if (cerrSwitch) cerr << "跳帧数量" << framesum << "\n";
     return 0;
 }
 
@@ -153,17 +162,16 @@ void robotGetMission(int robId) {
 //        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
         if (visitGoods[goods.id]) continue;
         if (frame + distance + 25 >= goods.time + 1000) continue;
-        if (goods.value < 100) continue;
+//        if (goods.value < 100) continue;
         if (distance > 150) continue;
         bool existTarget = false;
         for (int i = 0; i < 5; i++) {
             if (ship[i].getFirstTarget().targetId == nearBerthId) existTarget = true;
-        }
-        getNearRobot(goods);
+        }        getNearRobot(goods);
         int mindis = nearRobotDis[goods.id];
         goodsMissionNow.goods = goods;
-        //goodsMissionNow.key = -distance;
-        goodsMissionNow.key =  100.0 * (goods.value - (distance - mindis) * deltaLength)  / (distance + (goods.time + 1000 - frame) * deltaTime);
+//        goodsMissionNow.key = -distance;
+        goodsMissionNow.key =  100.0 * (goods.value - (distance - mindis) * deltaLength + existTarget * deltaTarget)  / (distance + (goods.time + 1000 - frame) * deltaTime);
 //        if (frame + distance + 25 >= goods.time + 900) goodsMissionNow.key += 1000;
         goodsMission.push(goodsMissionNow);
     }
@@ -173,7 +181,7 @@ void robotGetMission(int robId) {
 //    cerr << "chose:" << targetMission.goods.value << '\n';
     robotSetMission(robId, targetMission.goods, targetBerthId);
 }
-void cerrBerth() {
+void cerrBerthFun() {
     int totBerthValue = 0;
     for (int i = 0; i < 10; i++) {
         if (!berthVisitable[i]) continue;
@@ -252,7 +260,6 @@ void robotGetMissionFromOperation(int robId) {
 //    cerr << "robGetPlusID:[" << robId << "]" << operation[robotHome[robId]].size() << "\n";
     if (robotHome[robId] == -1) return;
     while(!operation[robotHome[robId]].empty()){
-//        cerr << "OK\n";
         double dis = operation[robotHome[robId]].top().goodsDistance;
         int time = operation[robotHome[robId]].top().targetGoods.time;
         if((frame + dis + 10 < time + 1000)

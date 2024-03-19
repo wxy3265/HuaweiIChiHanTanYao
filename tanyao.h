@@ -21,12 +21,17 @@ extern char maze[300][300];
 extern int frame, totalMoney, lastFrame, framesum;
 extern int capacity;
 extern const int PathAlgorithm; //0为bfs 1为 A*
+extern const bool cerrSwitch;
+extern const bool cerrBerth;
 extern const bool cerrRobot;
 extern const bool cerrTotalGetValue;
 extern const bool cerrShip;
 extern const bool cerrFrame;
 extern const double deltaLength;
 extern const double deltaTime;
+extern const double deltaTarget;
+extern const bool bindBerth;
+extern const bool berthOpen[10];
 extern int nearBerthId[203][203];
 extern int nearBerthLength[203][203];
 

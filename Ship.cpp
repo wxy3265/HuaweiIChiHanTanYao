@@ -9,17 +9,17 @@
 const int deltaFrame = 1;
 
 void Ship::get() {
-//    cerr << "ship! get" << id << ' ' << target.front().targetId << '\n';
+    if (cerrSwitch && cerrShip) cerr << "ship! get" << id << ' ' << target << '\n';
     cout << "ship " << id << ' ' << target << '\n';
 }
 
 void Ship::pull() {
-//    cerr << "ship! pull" << id << '\n';
+    if (cerrSwitch && cerrShip) cerr << "ship! pull" << id << '\n';
     cout << "go " << id << '\n';
 }
 
 void Ship::setMission(ShipMission _target) {
-    cerr << "Ship[" << id << "] set mission:" << _target.targetId << '\n';
+    if (cerrSwitch && cerrShip) cerr << "Ship[" << id << "] set mission:" << target << '\n';
     target = _target.targetId;
     visitBerth[_target.targetId] = true;
     startMissionTime = frame;
@@ -36,11 +36,13 @@ int Ship::getState() {return state;}
 vector<Goods> Ship::getGoods() {return goods;}
 
 void Ship::autoSetMission() {
-    cerr << "autoSetMission: [" << id << "]\n";
-    for (int i = 0; i < 10; i++) {
-        cerr << visitBerth[i] << ' ';
+    if (cerrSwitch && cerrShip) {
+        cerr << "autoSetMission: [" << id << "]\n";
+        for (int i = 0; i < 10; i++) {
+            cerr << visitBerth[i] << ' ';
+        }
+        cerr << '\n';
     }
-    cerr << '\n';
     int mmax = 0, maxn = -1;
     bool flag = false;
     for (int i = 0; i < 10; i++) {
@@ -72,7 +74,7 @@ bool berthStateChange = false;
 
 void Ship::update(int _state, int targetInput) {
 //    while (true);
-    if (cerrShip) {
+    if (cerrShip && cerrSwitch) {
         cerr << "ship:[" << id << "] totValue:<" << totValue() << "> goodsNumber:" << goods.size()
              << " target:" << target << " targetInput:" << targetInput << " nowframe:" << frame
              << " endF:" << startMissionTime << " mission:";
@@ -88,7 +90,7 @@ void Ship::update(int _state, int targetInput) {
     }
     state = _state;
     if (frame >= startMissionTime + 3 && targetInput != target) {
-        cerr << "ship [" << id << "]: 不对！这不是我去的地方！\n";
+        if (cerrShip && cerrSwitch) cerr << "ship [" << id << "]: 不对！这不是我去的地方！\n";
         if (target != -1) get();
         else back();
         startMissionTime = frame;
@@ -102,24 +104,24 @@ void Ship::update(int _state, int targetInput) {
     } else if (mission == ShipState::MISSION_GET) {
 //        if (state == ShipState::PERFORMING) carryingGoodsNumber += berth[target].velocity;
         if (goods.size() >= capacity) {
-            cerr << "ship:[" << id << "] 满载而归\n";
+            if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 满载而归\n";
             back();
             return;
         }
         if (frame + berth[target].distance >= 15000 - deltaFrame) {
-            cerr << "ship:[" << id << "] 最终返回\n";
+            if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 最终返回\n";
             berthVisitable[target] = false;
             berthStateChange = true;
             back();
             return;
         }
         if (frame + berth[target].distance + 500 >= 15000 - deltaFrame) {
-//            cerr << "ship:[" << id << "] 临终等待\n";
+            if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 临终等待\n";
             fetchGoods();
             return;
         }
         /*if (frame + 3500 >= 15000 - deltaFrame - 1) {
-            cerr << "ship:[" << id << "] 最后调度\n";
+            if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 最后调度\n";
             for (int i = 0; i < 10; i++) {
                 if (!visitBerth[i]) {
                     visitBerth[i] = true;
@@ -137,7 +139,6 @@ void Ship::update(int _state, int targetInput) {
         fetchGoods();
     } else if (mission == ShipState::MISSION_PULL) {
         if (state == ShipState::PERFORMING && frame >= startMissionTime + 50) {
-//            while (true) cerr << "empty!";
             mission = ShipState::FREE;
             carryingGoodsNumber = 0;
         }
@@ -178,7 +179,7 @@ void Ship::fetchGoods() {
     for (int i = 1; i <= berth[target].velocity && !berth[target].empty(); i++) {
         goods.push_back(berth[target].fetchGoods());
         shipGetTotal += goods.back().value;
-//            cerr << "ship[" << id << "] fetched goods value<" << goods.back().value << "> tot:" << shipGetTotal << '\n';
+//        if (cerrShip && cerrSwitch) cerr << "ship[" << id << "] fetched goods value<" << goods.back().value << "> tot:" << shipGetTotal << '\n';
     }
 }
 

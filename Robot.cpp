@@ -11,11 +11,11 @@ void Robot::move(int direction) {
 }
 void Robot::get() {
     cout << "get " << id << '\n';
-//    cerr << "get!\n";
+    if (cerrSwitch && cerrRobot) cerr << "robot[" << id << "] get!\n";
 }
 void Robot::pull() {
     cout << "pull " << id << '\n';
-//    cerr << "pull!\n";
+    if (cerrSwitch && cerrRobot) cerr << "robot[" << id << "] pull!\n";
 }
 int Robot::getState() {return state;}
 void Robot::redirection() {
@@ -49,13 +49,13 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     }
     if (waitTime >= 10) {
         if (carrying) totGiveUp += goodsToGet.value;
-//        cerr << "[" << id << "]放弃任务！总价值：<" << totGiveUp << ">\n";
+        if (cerrRobot && cerrSwitch) cerr << "[" << id << "]放弃任务！总价值：<" << totGiveUp << ">\n";
         waitTime = 0;
         state = RobotState::FREE;
         pull();
         return;
     }
-    if (cerrRobot) {
+    if (cerrRobot && cerrSwitch) {
         cerr << "robot[" << id << "] target:[" << targetId << "] " << berth[targetId].targetPosition.x << ',' << berth[targetId].targetPosition.y << " pos:"
              << position.x << ' ' << position.y << " next: " << nextPoint.x << ',' << nextPoint.y
              << " path:" << robotPath[id].step << '/' << robotPath[id].length
@@ -99,7 +99,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
                 if (i == id) continue;
                 if ((nextPoint != Point(-1, -1)) &&
                     (robot[i].position == nextPoint || nextPoint == robot[i].nextPoint)) {
-                    if (cerrRobot)
+                    if (cerrRobot && cerrSwitch)
                         cerr << "阻止了" << id << "移动到" << i << "的位置\n";
                     maze[position.x][position.y] = PointState::BLOCK;
                     if (i < id) {
@@ -124,7 +124,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         get();
 //        if (!carrying) { return; }
         totGetValue += goodsToGet.value;
-        if (cerrTotalGetValue)
+        if (cerrTotalGetValue && cerrSwitch)
             cerr << "totGetValue:" << totGetValue << '\n';
         nextPoint = robotPath[id].getNextPoint();
         state = RobotState::MISSION_MOVE;

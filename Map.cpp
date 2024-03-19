@@ -220,16 +220,16 @@ bool Map::isOpen(int id) {
 }
 
 void Map::calcDistanceBetweenBerth(){
-    berthVisitable[0] = true;
-    berthVisitable[1] = true;
-    berthVisitable[2] = true;
-    berthVisitable[3] = true;
-    berthVisitable[4] = true;
-    berthVisitable[5] = true;
-    berthVisitable[6] = true;
-    berthVisitable[7] = true;
-    berthVisitable[8] = true;
-    berthVisitable[9] = true;
+    if (berthOpen[0]) berthVisitable[0] = true;
+    if (berthOpen[1]) berthVisitable[1] = true;
+    if (berthOpen[2]) berthVisitable[2] = true;
+    if (berthOpen[3]) berthVisitable[3] = true;
+    if (berthOpen[4]) berthVisitable[4] = true;
+    if (berthOpen[5]) berthVisitable[5] = true;
+    if (berthOpen[6]) berthVisitable[6] = true;
+    if (berthOpen[7]) berthVisitable[7] = true;
+    if (berthOpen[8]) berthVisitable[8] = true;
+    if (berthOpen[9]) berthVisitable[9] = true;
     return;
     int r = 50;
     int contain[12];
