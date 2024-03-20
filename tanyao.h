@@ -27,6 +27,7 @@ extern const bool cerrRobot;
 extern const bool cerrTotalGetValue;
 extern const bool cerrShip;
 extern const bool cerrFrame;
+extern const bool avoidCrash;
 extern const double deltaLength;
 extern const double deltaTime;
 extern const double deltaTarget;

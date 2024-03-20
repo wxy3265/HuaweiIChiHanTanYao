@@ -38,6 +38,7 @@ public:
     int getMission();
     int getTargetId();
     void redirection();
+    void moveStep();
 };
 
 extern Robot robot[10];

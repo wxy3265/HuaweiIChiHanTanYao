@@ -8,7 +8,7 @@ int totInValue = 0;
 void Berth::pushGoods(Goods gd) {
     goods.push(gd);
     totInValue += gd.value;
-//    cerr << "totInvalue:" << totInValue << '\n';
+    if (cerrSwitch && cerrTotalGetValue) cerr << "totInvalue:" << totInValue << '\n';
 }
 
 Goods Berth::fetchGoods() {

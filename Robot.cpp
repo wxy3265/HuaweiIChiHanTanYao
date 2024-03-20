@@ -72,54 +72,7 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
     }
     maze[position.x][position.y] = PointState::PLAIN;
     if (state == RobotState::MISSION_MOVE) {
-        if (robotPath[id].length > 500000) {
-            if (mission == RobotState::MISSION_GET) {
-                if (PathAlgorithm == 0) robotPath[id] = getPath1(id, goodsToGet.position);
-                else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
-                else robotPath[id] = getPath1(id, goodsToGet.position);
-            }
-            if (mission == RobotState::MISSION_PULL) {
-                if (PathAlgorithm == 0) robotPath[id] = getPath1(id, berth[targetId].targetPosition);
-                else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].targetPosition);
-                else robotPath[id] = getPath1(id, berth[targetId].targetPosition);
-            }
-            return;
-        }
-        if (position == nextPoint || nextPoint == Point(-1, -1)) {
-            nextPoint = robotPath[id].getNextPoint();
-//            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
-        }
-        if (nextPoint == Point(-1, -1) || robotPath[id].length == robotPath[id].step) {
-//              || (mission == RobotState::MISSION_PULL && maze[position.x][position.y] == 'B')) {
-            state = mission;
-            return;
-        }
-        if (true) {
-            for (int i = 0; i < 10; i++) {
-                if (i == id) continue;
-                if ((nextPoint != Point(-1, -1)) &&
-                    (robot[i].position == nextPoint || nextPoint == robot[i].nextPoint)) {
-                    if (cerrRobot && cerrSwitch)
-                        cerr << "阻止了" << id << "移动到" << i << "的位置\n";
-                    maze[position.x][position.y] = PointState::BLOCK;
-                    if (i < id) {
-                        if (mission == RobotState::MISSION_GET) {
-                            if (PathAlgorithm == 0) robotPath[id] = getPath1(id, goodsToGet.position);
-                            else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
-                            else robotPath[id] = getPath1(id, goodsToGet.position);
-                        }
-                        if (mission == RobotState::MISSION_PULL) {
-                            if (PathAlgorithm == 0) robotPath[id] = getPath1(id, berth[targetId].targetPosition);
-                            else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].targetPosition);
-                            else robotPath[id] = getPath1(id, berth[targetId].targetPosition);
-                        }
-                        nextPoint = robotPath[id].getNextPoint();
-                    }
-                    return;
-                }
-            }
-        }
-        move(position.getDirection(nextPoint));
+        moveStep();
     } else if (state == RobotState::MISSION_GET) {
         get();
 //        if (!carrying) { return; }
@@ -132,12 +85,14 @@ void Robot::update(Point _position, bool _enable, bool _carrying) {
         if (PathAlgorithm == 0) robotPath[id] = getPath1(id, berth[targetId].targetPosition);
         else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].targetPosition);
         else robotPath[id] = getPath1(id, berth[targetId].targetPosition);
+        moveStep();
     } else if (state == RobotState::MISSION_PULL) {
 //        cerr << id << "Pulled\n";
         pull();
 //        if (carrying) return;
         berth[targetId].pushGoods(goodsToGet);
         mission = state = RobotState::FREE;
+        moveStep();
     }
 }
 
@@ -151,6 +106,57 @@ Goods Robot::getGoodsToGet() {
 
 int Robot::getTargetId() {
     return targetId;
+}
+
+void Robot::moveStep() {
+    if (robotPath[id].length > 500000) {
+        if (mission == RobotState::MISSION_GET) {
+            if (PathAlgorithm == 0) robotPath[id] = getPath1(id, goodsToGet.position);
+            else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
+            else robotPath[id] = getPath1(id, goodsToGet.position);
+        }
+        if (mission == RobotState::MISSION_PULL) {
+            if (PathAlgorithm == 0) robotPath[id] = getPath1(id, berth[targetId].targetPosition);
+            else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].targetPosition);
+            else robotPath[id] = getPath1(id, berth[targetId].targetPosition);
+        }
+        return;
+    }
+    if (position == nextPoint || nextPoint == Point(-1, -1)) {
+        nextPoint = robotPath[id].getNextPoint();
+//            cerr << "getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
+    }
+    if (nextPoint == Point(-1, -1) || robotPath[id].length == robotPath[id].step) {
+//              || (mission == RobotState::MISSION_PULL && maze[position.x][position.y] == 'B')) {
+        state = mission;
+        return;
+    }
+    if (avoidCrash) {
+        for (int i = 0; i < 10; i++) {
+            if (i == id) continue;
+            if ((nextPoint != Point(-1, -1)) &&
+                (robot[i].position == nextPoint || nextPoint == robot[i].nextPoint)) {
+                if (cerrRobot && cerrSwitch)
+                    cerr << "阻止了" << id << "移动到" << i << "的位置\n";
+                maze[position.x][position.y] = PointState::BLOCK;
+                if (i < id) {
+                    if (mission == RobotState::MISSION_GET) {
+                        if (PathAlgorithm == 0) robotPath[id] = getPath1(id, goodsToGet.position);
+                        else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, goodsToGet.position);
+                        else robotPath[id] = getPath1(id, goodsToGet.position);
+                    }
+                    if (mission == RobotState::MISSION_PULL) {
+                        if (PathAlgorithm == 0) robotPath[id] = getPath1(id, berth[targetId].targetPosition);
+                        else if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].targetPosition);
+                        else robotPath[id] = getPath1(id, berth[targetId].targetPosition);
+                    }
+                    nextPoint = robotPath[id].getNextPoint();
+                }
+                return;
+            }
+        }
+    }
+    move(position.getDirection(nextPoint));
 }
 
 Robot robot[10];

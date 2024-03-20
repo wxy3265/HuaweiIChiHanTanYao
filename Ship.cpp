@@ -6,7 +6,7 @@
 #include "Ship.h"
 
 //船只指令等待时间的帧数偏移量
-const int deltaFrame = 1;
+const int deltaFrame = 10;
 
 void Ship::get() {
     if (cerrSwitch && cerrShip) cerr << "ship! get" << id << ' ' << target << '\n';
@@ -132,7 +132,7 @@ void Ship::update(int _state, int targetInput) {
                 }
             }
         }*/
-        if (berth[target].empty() && (!firstMove || frame > startMissionTime + 1000 || true)) {
+        if (berth[target].empty() && (!firstMove || frame > startMissionTime + 50 || false)) {
             mission = ShipState::FREE;
             return;
         }

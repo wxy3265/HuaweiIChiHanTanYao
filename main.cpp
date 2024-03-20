@@ -50,9 +50,10 @@ void initShipMission();
 
 int main() {
 //    PathAlgorithm = 1;
-    freopen("out3_19.txt", "w", stderr);
+    freopen("out3_20.txt", "w", stderr);
     memset(nearRobotId, -1, sizeof nearRobotId);
     Map::init();
+    if (cerrSwitch) cerr << "capacity:" << capacity << '\n';
     Map::calcDistanceBetweenBerth();
     for(int i = 0; i <= 9; i++) Map::pretreatPathToStart(i), robotFirstMission[i] = true;
     for(int i = 0; i <= 9; i++) {
@@ -62,6 +63,7 @@ int main() {
     allocateHome();
 //    for (int i = 0; i < 10; i++) cerr << i << "'s home:" << robotHome[i] << '\n';
     cout.flush();
+    initShipMission();
     while (frame < 15000){
         if (cerrSwitch && cerrFrame) cerr << "frame:" << frame << '\n';
         for (int i = 0; i < 10; i++) {
@@ -73,7 +75,7 @@ int main() {
             }
         }
         Map::update();
-        if (frame == 1) initShipMission();
+//        if (frame == 1) initShipMission();
         if (cerrSwitch && cerrBerth) {
             cerrBerthFun();
         }
@@ -115,10 +117,10 @@ int main() {
 void initShipMission() {
 //    for (int i = 0; i < 5; i++) ship[i].setMission(ShipMission{i * 2, -1});
     ship[0].setMission(ShipMission{0, -1});
-    ship[1].setMission(ShipMission{2, -1});
+    ship[1].setMission(ShipMission{1, -1});
     ship[2].setMission(ShipMission{4, -1});
-    ship[3].setMission(ShipMission{6, -1});
-    ship[4].setMission(ShipMission(9, -1));
+    ship[3].setMission(ShipMission{5, -1});
+    ship[4].setMission(ShipMission(6, -1));
 }
 void getNearRobot(Goods goods){
     if(nearRobotId[goods.id] >= 0 || nearRobotId[goods.id] == -2)return;
@@ -171,7 +173,8 @@ void robotGetMission(int robId) {
         int mindis = nearRobotDis[goods.id];
         goodsMissionNow.goods = goods;
 //        goodsMissionNow.key = -distance;
-        goodsMissionNow.key =  100.0 * (goods.value - (distance - mindis) * deltaLength + existTarget * deltaTarget)  / (distance + (goods.time + 1000 - frame) * deltaTime);
+        goodsMissionNow.key =  100.0 * (goods.value - (distance - mindis) * deltaLength + existTarget * deltaTarget + berth[nearBerthId].getGoodsNum() * 0)  /
+                                (distance + (goods.time + 1000 - frame) * deltaTime);
 //        if (frame + distance + 25 >= goods.time + 900) goodsMissionNow.key += 1000;
         goodsMission.push(goodsMissionNow);
     }
@@ -270,12 +273,13 @@ void robotGetMissionFromOperation(int robId) {
         operation[robotHome[robId]].pop();
     }
     if(operation[robotHome[robId]].empty()) return;
-    robotSetMission(robId, operation[robotHome[robId]].top().targetGoods, operation[robotHome[robId]].top().targetBerthId);
+    robotSetMission(robId, operation[robotHome[robId]].top().targetGoods,
+                    operation[robotHome[robId]].top().targetBerthId);
     operation[robotHome[robId]].pop();
 }
 void calcEfficiencyMax(int startBerthId) {
-    //double deltaLength = 0.56;
-    //double deltaTime = 0.5;
+//    double deltaLength = 0.56;
+//    double deltaTime = 0.5;
     for(auto & newGood : newGoods) {
         int nearBerthId = Map::getNearBerthId(newGood.position);
         //if(nearBerthId != startBerthId)continue;
@@ -283,12 +287,14 @@ void calcEfficiencyMax(int startBerthId) {
         double pathLength1 = Map::getLengthFromBerthToPoint(startBerthId, newGood.position) * 2;
         double goodsTime = newGood.time;
         double efficiency = 100.0 * newGood.value / pathLength;
-        double efficiency1 = 100.0 * (newGood.value - (pathLength1 - pathLength) * deltaLength)  / (pathLength1 + (goodsTime + 1000 - frame) * deltaTime);
+        double efficiency1 = 100.0 * (newGood.value - (pathLength1 - pathLength) * deltaLength)  /
+                             (pathLength1 + (goodsTime + 1000 - frame) * deltaTime);
 //        if (newGood.value < 150) return;
         //operation[nearBerthId].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
         //if(nearBerthId != startBerthId)
 //        if ((startBerthId == 6 || startBerthId == 8 || startBerthId == 4 || startBerthId == 7) && (newGood.position.x <= 100 || newGood.position.y <= 100)) continue;
-        operation[startBerthId].push((Operation){newGood,startBerthId,pathLength1,pathLength1 / 2.0, efficiency1});
+        operation[startBerthId].push((Operation){newGood,startBerthId,pathLength1,
+                                                 pathLength1 / 2.0, efficiency1});
     }
 //    checkOperation(startBerthId);
 }
