@@ -9,6 +9,7 @@
 const int deltaFrame = 10;
 
 void Ship::get() {
+    firstMove = false;
     if (cerrSwitch && cerrShip) cerr << "ship! get" << id << ' ' << target << '\n';
     cout << "ship " << id << ' ' << target << '\n';
 }
@@ -21,6 +22,7 @@ void Ship::pull() {
 void Ship::setMission(ShipMission _target) {
     if (cerrSwitch && cerrShip) cerr << "Ship[" << id << "] set mission:" << target << '\n';
     target = _target.targetId;
+    mostVistedBerth++;
     visitBerth[_target.targetId] = true;
     startMissionTime = frame;
     berthStateChange = true;
@@ -50,7 +52,8 @@ void Ship::autoSetMission() {
         if (visitBerth[i]) continue;
         if (berth[i].getTotalValue() > mmax) {
             flag = true;
-            if (berth[i].getGoodsNum() + goods.size() >= capacity || frame + berth[i].distance + 500 >= 15000 - deltaFrame) continue;
+            if (berth[i].getGoodsNum() + goods.size() >= capacity + 100000|| frame + berth[i].distance + 500 >= 15000 - deltaFrame) continue;
+            if(goods.size() == 0 && frame + berth[i].distance * 2 >= 15000)continue;
             mmax = berth[i].getTotalValue();
             maxn = i;
         }
@@ -96,6 +99,13 @@ void Ship::update(int _state, int targetInput) {
         startMissionTime = frame;
         return;
     }
+    if (frame + berth[target].distance >= 15000 - deltaFrame && mission != ShipState::MISSION_PULL) {
+        if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 最终返回\n";
+        berthVisitable[target] = false;
+        berthStateChange = true;
+        back();
+        return;
+    }
     if (mission == ShipState::MISSION_MOVE) {
         if (state == ShipState::PERFORMING && (frame >= startMissionTime + 50)) {
             mission = ShipState::MISSION_GET;
@@ -105,13 +115,6 @@ void Ship::update(int _state, int targetInput) {
 //        if (state == ShipState::PERFORMING) carryingGoodsNumber += berth[target].velocity;
         if (goods.size() >= capacity) {
             if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 满载而归\n";
-            back();
-            return;
-        }
-        if (frame + berth[target].distance >= 15000 - deltaFrame) {
-            if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 最终返回\n";
-            berthVisitable[target] = false;
-            berthStateChange = true;
             back();
             return;
         }
@@ -143,6 +146,10 @@ void Ship::update(int _state, int targetInput) {
             carryingGoodsNumber = 0;
         }
     } else if (mission == ShipState::FREE) {
+        if (mostVistedBerth >= mostBerthNumber) {
+            back();
+            return;
+        }
         autoSetMission();
     }
 }
@@ -166,7 +173,7 @@ int Ship::getMission() {
 }
 
 void Ship::back() {
-    firstMove = false;
+    mostVistedBerth = 0;
     berthStateChange = true;
     pull();
     mission = ShipState::MISSION_PULL;

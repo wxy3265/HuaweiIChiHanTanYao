@@ -208,10 +208,10 @@ Path getPath1(int robId, Point target) {
         for (int i = 0; i < 10; i++) {
             if (i != robId) {
                 if (robotPath[i].length > 50000) continue;
-//                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
+                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
                 Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
 //                Point robotThisPoint2 = robotPath[i].getPointbyTime(nextframe + 1);
-//                if (robotThisPoint0 != Point(-1, -1)) thismap[robotThisPoint0.x][robotThisPoint0.y] = PointState::BLOCK;
+                if (robotThisPoint0 != Point(-1, -1)) thismap[robotThisPoint0.x][robotThisPoint0.y] = PointState::BLOCK;
                 if (robotThisPoint1 != Point(-1, -1)) thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
 //                if (robotThisPoint2 != Point(-1, -1)) thismap[robotThisPoint2.x][robotThisPoint2.y] = PointState::BLOCK;
             }

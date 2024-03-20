@@ -30,6 +30,7 @@ private:
     void fetchGoods();
 public:
     int id;
+    int mostVistedBerth;
     void get();
     void pull();
     int totValue();

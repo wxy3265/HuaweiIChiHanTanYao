@@ -231,7 +231,7 @@ void Map::calcDistanceBetweenBerth(){
     if (berthOpen[8]) berthVisitable[8] = true;
     if (berthOpen[9]) berthVisitable[9] = true;
     return;
-    int r = 50;
+    int r = 20;
     int contain[12];
     bool close[12];
     memset(contain, 0, sizeof contain);

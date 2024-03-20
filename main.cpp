@@ -50,7 +50,7 @@ void initShipMission();
 
 int main() {
 //    PathAlgorithm = 1;
-    freopen("out3_20.txt", "w", stderr);
+    freopen("out3_19.txt", "w", stderr);
     memset(nearRobotId, -1, sizeof nearRobotId);
     Map::init();
     if (cerrSwitch) cerr << "capacity:" << capacity << '\n';
@@ -156,6 +156,11 @@ void robotGetMission(int robId) {
     for (int i = 0; i < n; i++) {
         Goods goods = goodsOnMap[i];
         GoodsMission goodsMissionNow;
+////        if ((robId == 2 || robId == 3 || robId == 4) && (goods.position.x <= 100 || goods.position.y <= 101)) continue;
+//        if ((robId >= 0 && robId <= 3) && (goods.position.x > 100 || goods.position.y > 100)) continue;
+//        if ((robId >= 4 && robId <= 6) && (goods.position.x > 100 || goods.position.y <= 101)) continue;
+//        if ((robId >= 7) && (goods.position.x < 100 || goods.position.y > 100)) continue;
+
         int nearBerthId = Map::getNearBerthId(goods.position);
 //        int distance = Map::getLengthFromBerthToPoint(nearBerthId, goods.position);
         int distance = 0;
@@ -164,7 +169,7 @@ void robotGetMission(int robId) {
 //        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
         if (visitGoods[goods.id]) continue;
         if (frame + distance + 25 >= goods.time + 1000) continue;
-//        if (goods.value < 100) continue;
+        if (goods.value < 100) continue;
         if (distance > 150) continue;
         bool existTarget = false;
         for (int i = 0; i < 5; i++) {

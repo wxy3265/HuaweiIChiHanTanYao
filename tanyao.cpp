@@ -13,7 +13,9 @@ const bool cerrTotalGetValue = true; //总获取金额调试信息
 const bool cerrShip = true; //船舶调试信息
 const bool cerrFrame = true; //帧标记调试信息
 const bool avoidCrash = true;
+
 const int PathAlgorithm = 1; //0为BFS 1为A*
+const int mostBerthNumber = 2;//可以连续到达的港口数量
 const bool bindBerth = true; //机器人与港口绑定为true
 const double deltaLength = 2;
 const double deltaTime = 0;
