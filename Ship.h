@@ -23,11 +23,14 @@ private:
     int numToCarry;
     vector<Goods> goods;
     int state = ShipState::FREE;
+    int finalStage = 1;
+    int firstFinalTarget, secondFinalTarget;
     int startMissionTime;
     bool firstMove = true;
     void autoSetMission();
     void back();
     void fetchGoods();
+    void finalWork();
 public:
     int id;
     int mostVistedBerth;

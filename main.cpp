@@ -23,7 +23,7 @@ struct Distance_to_berth{
     int berthId;
     int robotId;
     int distance;
-}to_berth_distance[107];
+}toBerthDistance[107];
 
 struct GoodsMission {
     Goods goods;
@@ -65,6 +65,8 @@ int main() {
     cout.flush();
     initShipMission();
     while (frame < 15000){
+        if (frame >= 0) mostBerthNumber = 10000;
+        if (frame >= 10000) mostBerthNumber = 4;
         if (cerrSwitch && cerrFrame) cerr << "frame:" << frame << '\n';
         for (int i = 0; i < 10; i++) {
             visitBerth[i] = false;
@@ -210,7 +212,7 @@ void robotGetMission(int robId) {
         else distance += Map::getLengthFromBerthToPoint(nowBerthId, goods.position);
 //        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
         if (visitGoods[goods.id]) continue;
-        if (frame + distance + 25 >= goods.time + 1000) continue;
+        if (frame + distance + 20 >= goods.time + 1000) continue;
         if (goods.value < 100) continue;
         if (distance > 150) continue;
         bool existTarget = false;
@@ -255,7 +257,7 @@ void checkBerthBanned() {
             if (!berthVisitable[j]) continue;
             Map::pretreatPathToBerth(j);
         }
-        for (int i = 0; i < 9; i++) reallocateHome(i);
+        for (int i = 0; i < 10; i++) reallocateHome(i);
     }
     berthStateChange = false;
 }
@@ -271,27 +273,27 @@ void allocateHome(){
     int cnt = 0;
     for(int i = 0; i <= 9; i++){
         for(int j = 0; j <= 9; j++){
-            to_berth_distance[++cnt].robotId = i;
-            to_berth_distance[cnt].berthId = j;
-            //to_berth_distance[cnt].distance = Path(robot[i].position, berth[j].position, -1).length;
-            to_berth_distance[cnt].distance = Map::getLengthFromBerthToPoint(j, robot[i].position);
+            toBerthDistance[++cnt].robotId = i;
+            toBerthDistance[cnt].berthId = j;
+            //toBerthDistance[cnt].distance = Path(robot[i].position, berth[j].position, -1).length;
+            toBerthDistance[cnt].distance = Map::getLengthFromBerthToPoint(j, robot[i].position);
         }
     }
-    sort(to_berth_distance + 1,to_berth_distance + cnt + 1,cmp);
+    sort(toBerthDistance + 1, toBerthDistance + cnt + 1, cmp);
 
     for(int i = 1; i <= cnt; i++){
-        if(to_berth_distance[i].distance > 100000)continue;
-        if(!Map::isOpen(to_berth_distance[i].berthId))continue;
-        if(robotHome[to_berth_distance[i].robotId] != -1)continue;
-        if(berthRobot[to_berth_distance[i].berthId] != -1)continue;
-        robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
-        berthRobot[to_berth_distance[i].berthId] = to_berth_distance[i].robotId;
+        if(toBerthDistance[i].distance > 100000)continue;
+        if(!Map::isOpen(toBerthDistance[i].berthId))continue;
+        if(robotHome[toBerthDistance[i].robotId] != -1)continue;
+        if(berthRobot[toBerthDistance[i].berthId] != -1)continue;
+        robotHome[toBerthDistance[i].robotId] = toBerthDistance[i].berthId;
+        berthRobot[toBerthDistance[i].berthId] = toBerthDistance[i].robotId;
     }
     for(int i = 1; i <= cnt; i++){
-        if(to_berth_distance[i].distance > 100000)continue;
-        if(!Map::isOpen(to_berth_distance[i].berthId))continue;
-        if(robotHome[to_berth_distance[i].robotId] != -1)continue;
-        robotHome[to_berth_distance[i].robotId] = to_berth_distance[i].berthId;
+        if(toBerthDistance[i].distance > 100000)continue;
+        if(!Map::isOpen(toBerthDistance[i].berthId))continue;
+        if(robotHome[toBerthDistance[i].robotId] != -1)continue;
+        robotHome[toBerthDistance[i].robotId] = toBerthDistance[i].berthId;
     }
 }
 void reallocateHome(int robId) {
