@@ -75,11 +75,52 @@ int main() {
             }
         }
         Map::update();
-//        if (frame == 1) initShipMission();
+//        if (frame >= 12500) {
+//            berthOpenforShip[0] = true;
+//            berthOpenforShip[1] = false;
+//            berthOpenforShip[2] = true;
+//            berthOpenforShip[3] = true;
+//            berthOpenforShip[4] = false;
+//            berthOpenforShip[5] = false;
+//            berthOpenforShip[6] = true;
+//            berthOpenforShip[7] = true;
+//            berthOpenforShip[8] = false;
+//            berthOpenforShip[9] = false;
+////            berthOpenforShip[0] = {true, false, true, true, false, false, true, true, false, false}
+////            for (int i = 0; i < 9; i++) berthOpenforShip[i] = false;
+////            for (int i = 0; i < 5; i++) {
+////                int targetId = ship[i].getFirstTarget().targetId;
+////                if (targetId == -1) continue;
+////                berthOpenforShip[targetId] = true;
+////            }
+//        }
+//        if (frame >= 10000) {
+//            berthVisitable[0] = true;
+//            berthVisitable[1] = false;
+//            berthVisitable[2] = true;
+//            berthVisitable[3] = true;
+//            berthVisitable[4] = false;
+//            berthVisitable[5] = false;
+//            berthVisitable[6] = true;
+//            berthVisitable[7] = true;
+//            berthVisitable[8] = false;
+//            berthVisitable[9] = false;
+//            Map::initNear();
+//            for (int j = 0; j <= 9; j++) {
+//                bool existTarget = false;
+//                for (int i = 0; i < 5; i++) {
+//                    if (ship[i].getFirstTarget().targetId == j) existTarget = true;
+//                }
+//                if (!berthVisitable[j]) continue;
+//                Map::pretreatPathToBerth(j);
+//            }
+//            for (int i = 0; i < 9; i++) reallocateHome(i);
+//        }
+        if (frame == 1) initShipMission();
         if (cerrSwitch && cerrBerth) {
             cerrBerthFun();
         }
-//        checkBerthBanned();
+        checkBerthBanned();
         if (!bindBerth) {
             for (int i = 0; i <= 9; i++) {
                 if (robot[i].getState() == RobotState::FREE)
@@ -162,6 +203,7 @@ void robotGetMission(int robId) {
 //        if ((robId >= 7) && (goods.position.x < 100 || goods.position.y > 100)) continue;
 
         int nearBerthId = Map::getNearBerthId(goods.position);
+        if (nearBerthId == -1) continue;
 //        int distance = Map::getLengthFromBerthToPoint(nearBerthId, goods.position);
         int distance = 0;
         if (nowBerthId == -2) distance += Map::getLengthFromStartToPoint(robId, goods.position);
@@ -213,6 +255,7 @@ void checkBerthBanned() {
             if (!berthVisitable[j]) continue;
             Map::pretreatPathToBerth(j);
         }
+        for (int i = 0; i < 9; i++) reallocateHome(i);
     }
     berthStateChange = false;
 }
@@ -287,6 +330,7 @@ void calcEfficiencyMax(int startBerthId) {
 //    double deltaTime = 0.5;
     for(auto & newGood : newGoods) {
         int nearBerthId = Map::getNearBerthId(newGood.position);
+        if (nearBerthId == -1) continue;
         //if(nearBerthId != startBerthId)continue;
         double pathLength = Map::getLengthFromBerthToPoint(nearBerthId, newGood.position) * 2;
         double pathLength1 = Map::getLengthFromBerthToPoint(startBerthId, newGood.position) * 2;
@@ -294,8 +338,9 @@ void calcEfficiencyMax(int startBerthId) {
         double efficiency = 100.0 * newGood.value / pathLength;
         double efficiency1 = 100.0 * (newGood.value - (pathLength1 - pathLength) * deltaLength)  /
                              (pathLength1 + (goodsTime + 1000 - frame) * deltaTime);
-//        if (newGood.value < 150) return;
-        //operation[nearBerthId].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
+//        if (newGood.value < 100) continue;
+//        if (pathLength1 >= 150) continue;
+        //operation[nearBerthIds].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
         //if(nearBerthId != startBerthId)
 //        if ((startBerthId == 6 || startBerthId == 8 || startBerthId == 4 || startBerthId == 7) && (newGood.position.x <= 100 || newGood.position.y <= 100)) continue;
         operation[startBerthId].push((Operation){newGood,startBerthId,pathLength1,

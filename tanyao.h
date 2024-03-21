@@ -33,7 +33,8 @@ extern const double deltaLength;
 extern const double deltaTime;
 extern const double deltaTarget;
 extern const bool bindBerth;
-extern const bool berthOpen[10];
+extern bool berthOpen[10];
+extern bool berthOpenforShip[10];
 extern int nearBerthId[203][203];
 extern int nearBerthLength[203][203];
 

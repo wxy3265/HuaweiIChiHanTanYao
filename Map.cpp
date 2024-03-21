@@ -18,6 +18,7 @@ void Map::initNear() {
     for (int i = 0; i < 203; i++) {
         for (int j = 0; j < 203; j++) {
             nearBerthLength[i][j] = 1e7;
+            nearBerthId[i][j] = -1;
         }
     }
 }
