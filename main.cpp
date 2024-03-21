@@ -67,7 +67,7 @@ int main() {
     while (frame < 15000){
         if (frame >= 0) mostBerthNumber = 10000;
         if (frame >= 10000) mostBerthNumber = 4;
-        if (cerrSwitch && cerrFrame) cerr << "frame:" << frame << '\n';
+//        if (cerrSwitch && cerrFrame) cerr << "frame:" << frame << '\n';
         for (int i = 0; i < 10; i++) {
             visitBerth[i] = false;
         }
@@ -236,7 +236,7 @@ void robotGetMission(int robId) {
 void cerrBerthFun() {
     int totBerthValue = 0;
     for (int i = 0; i < 10; i++) {
-        if (!berthVisitable[i]) continue;
+//        if (!berthVisitable[i]) continue;
         cerr << "berth:[" << i << "] value:<" << berth[i].getTotalValue()
              << "> numbers:" << berth[i].getGoodsNum()
              << " distance:" << berth[i].distance
@@ -340,8 +340,9 @@ void calcEfficiencyMax(int startBerthId) {
         double efficiency = 100.0 * newGood.value / pathLength;
         double efficiency1 = 100.0 * (newGood.value - (pathLength1 - pathLength) * deltaLength)  /
                              (pathLength1 + (goodsTime + 1000 - frame) * deltaTime);
-//        if (newGood.value < 100) continue;
-//        if (pathLength1 >= 150) continue;
+//        efficiency1 = 100.0 / pathLength1;
+        if (newGood.value < 100) continue;
+        if (pathLength1 >= 150) continue;
         //operation[nearBerthIds].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
         //if(nearBerthId != startBerthId)
 //        if ((startBerthId == 6 || startBerthId == 8 || startBerthId == 4 || startBerthId == 7) && (newGood.position.x <= 100 || newGood.position.y <= 100)) continue;

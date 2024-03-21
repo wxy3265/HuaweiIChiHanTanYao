@@ -99,6 +99,7 @@ void Ship::update(int _state, int targetInput) {
         else if (state == 2) cerr << "waiting";
         else if (state == 1) cerr << "working";
         cerr << " finalStage:" << finalStage;
+        cerr << " finalMode:" << finalMode;
         cerr << '\n';
     }
     if (frame == 1) {
@@ -113,12 +114,34 @@ void Ship::update(int _state, int targetInput) {
         return;
     }
     int nowRestTime;
-    if (target == -1) nowRestTime = 0;
+    if (target == -1) nowRestTime = lastBerthDistance - (frame - startMissionTime);
     else nowRestTime = berth[target].distance;
     const int finalFrame = nowRestTime + berth[firstFinalTarget].distance + 50 + 500 +
                            50 + berth[secondFinalTarget].distance;
-    if (frame >= 15000 - finalFrame - deltaFrame || finalStage > 1) {
-        finalWork();
+    const int strictFinalFrame = nowRestTime + berth[firstFinalTarget].distance + 50 + berth[firstFinalTarget].distance +
+                                 berth[secondFinalTarget].distance + 50 + berth[secondFinalTarget].distance;
+    const int crazyFinalFrame = nowRestTime + berth[firstFinalTarget].distance + 50 + berth[firstFinalTarget].distance +
+                                berth[secondFinalTarget].distance + 50 + berth[secondFinalTarget].distance +
+                                berth[secondFinalTarget].distance + 50 + berth[secondFinalTarget].distance;
+    if (finalMode == 0 && frame >= 15000 - crazyFinalFrame - deltaFrame && (id == 100)) {
+//        finalMode = 3;
+    }
+    if (finalMode == 0 && frame == 15000 - strictFinalFrame - deltaFrame && berth[firstFinalTarget].getGoodsNum() >= capacity) {
+//        finalMode = 2;
+    }
+    if (finalMode == 0 && frame >= 15000 - finalFrame - deltaFrame) {
+        finalMode = 1;
+    }
+    if (finalMode == 1) {
+        finalWork1();
+        return;
+    }
+    if (finalMode == 2){
+        finalWork2();
+        return;
+    }
+    if (finalMode == 3) {
+        finalWork3();
         return;
     }
     if (frame + berth[target].distance >= 15000 - deltaFrame && mission != ShipState::MISSION_PULL) {
@@ -200,10 +223,12 @@ int Ship::getMission() {
 }
 
 void Ship::back() {
-    if (frame + berth[target].distance + 500 >= 15000) {
-        berthStateChange = true;
-        berthOpenforShip[target] = false;
-    }
+//    if (frame + berth[target].distance + 500 >= 15000) {
+//        berthStateChange = true;
+//        berthOpenforShip[target] = false;
+//    }
+    if (target == -1) return;
+    lastBerthDistance = berth[target].distance;
     mostVistedBerth = 0;
     berthStateChange = true;
     pull();
@@ -213,6 +238,7 @@ void Ship::back() {
 }
 
 void Ship::fetchGoods() {
+    if (goods.size() >= capacity) return;
     for (int i = 1; i <= berth[target].velocity && !berth[target].empty(); i++) {
         goods.push_back(berth[target].fetchGoods());
         shipGetTotal += goods.back().value;
@@ -220,7 +246,8 @@ void Ship::fetchGoods() {
     }
 }
 
-void Ship::finalWork() {
+void Ship::finalWork1() {
+    berthOpenforShip[firstFinalTarget] = berthOpenforShip[secondFinalTarget] = false;
     if (finalStage == 1) { // start
         if (cerrSwitch && cerrShip) cerr << "于是，ship[" << id << "] 的小连招开始了！\n";
         back();
@@ -238,11 +265,12 @@ void Ship::finalWork() {
             finalStage = 4;
         }
     } else if (finalStage == 4) { // get from first target
-        /*if (goods.size() >= capacity) {
+        if (goods.size() >= capacity) {
             if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 满载而归\n";
             back();
+            finalStage = 5;
             return;
-        }*/
+        }
         if (berth[target].empty() && (!firstMove || frame > startMissionTime + 50 || false)) {
             berthVisitable[target] = false;
             if (cerrSwitch && cerrShip) cerr << "关掉了[" << target << "]港口\n";
@@ -259,9 +287,157 @@ void Ship::finalWork() {
             finalStage = 6;
         }
     } else if (finalStage == 6) { // final waiting
+        fetchGoods();
         if (frame + berth[secondFinalTarget].distance + deltaFrame >= 15000) {
             back();
             finalStage = 7;
+        }
+    }
+}
+
+void Ship::finalWork2() {
+    berthOpenforShip[firstFinalTarget] = berthOpenforShip[secondFinalTarget] = false;
+    if (finalStage == 1) { // start
+        if (cerrSwitch && cerrShip) cerr << "于是，ship[" << id << "] 的第二个小连招开始了！\n";
+        back();
+        finalStage = 2;
+    } else if (finalStage == 2) { // moving to sell
+        if (state == ShipState::PERFORMING && frame >= startMissionTime + 5) {
+            setMission(ShipMission(firstFinalTarget, -1));
+            carryingGoodsNumber = 0;
+            finalStage = 3;
+        }
+    } else if (finalStage == 3) { // move to first target
+        if (state == ShipState::PERFORMING && (frame >= startMissionTime + 50)) {
+            mission = ShipState::MISSION_GET;
+            startMissionTime = frame;
+            finalStage = 4;
+        }
+    } else if (finalStage == 4) { // get from first target
+        if (goods.size() >= capacity) {
+            if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 满载而归\n";
+            back();
+            finalStage = 5;
+            return;
+        }
+        const int restFrame = berth[target].distance + berth[secondFinalTarget].distance * 2 +
+                              berth[secondFinalTarget].getGoodsNum() / berth[secondFinalTarget].velocity;
+        if (berth[target].empty() && (!firstMove || frame > startMissionTime + 50 || true) || frame + restFrame >= 15000 - deltaFrame) {
+            berthVisitable[target] = false;
+            if (cerrSwitch && cerrShip) cerr << "关掉了[" << target << "]港口 restFrame:" << restFrame << '\n';
+            finalStage = 5;
+            berthStateChange = true;
+            back();
+            return;
+        }
+        fetchGoods();
+    } else if (finalStage == 5) { // sell the goods from first target
+        if (state == ShipState::PERFORMING && frame >= startMissionTime + 50) {
+            setMission(ShipMission(secondFinalTarget, -1));
+            carryingGoodsNumber = 0;
+            goods.clear();
+            finalStage = 6;
+        }
+    } else if (finalStage == 6) { // move to second target
+        if (state == ShipState::PERFORMING && (frame >= startMissionTime + 50)) {
+            mission = ShipState::MISSION_GET;
+            startMissionTime = frame;
+            finalStage = 7;
+        }
+    } else if (finalStage == 7) { // final waiting
+        fetchGoods();
+        if (frame + berth[secondFinalTarget].distance + deltaFrame >= 15000) {
+            back();
+            finalStage = 8;
+        }
+    }
+}
+
+void Ship::finalWork3() {
+    berthOpenforShip[firstFinalTarget] = berthOpenforShip[secondFinalTarget] = false;
+    if (finalStage == 1) { // start
+        if (cerrSwitch && cerrShip) cerr << "于是，ship[" << id << "] 的第二个小连招开始了！\n";
+        back();
+        finalStage = 2;
+    } else if (finalStage == 2) { // moving to sell
+        if (state == ShipState::PERFORMING && frame >= startMissionTime + 5) {
+            setMission(ShipMission(firstFinalTarget, -1));
+            carryingGoodsNumber = 0;
+            finalStage = 3;
+        }
+    } else if (finalStage == 3) { // move to first target
+        if (state == ShipState::PERFORMING && (frame >= startMissionTime + 50)) {
+            mission = ShipState::MISSION_GET;
+            startMissionTime = frame;
+            finalStage = 4;
+        }
+    } else if (finalStage == 4) { // get from first target
+        if (goods.size() >= capacity) {
+            if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 满载而归\n";
+            back();
+            finalStage = 5;
+            return;
+        }
+        const int restFrame = berth[target].distance + berth[secondFinalTarget].distance * 2 +
+                              berth[secondFinalTarget].getGoodsNum() / berth[secondFinalTarget].velocity;
+        if (berth[target].empty() && (!firstMove || frame > startMissionTime + 50 || true) || frame + restFrame >= 15000 - deltaFrame) {
+            berthVisitable[target] = false;
+            if (cerrSwitch && cerrShip) cerr << "关掉了[" << target << "]港口 restFrame:" << restFrame << '\n';
+            finalStage = 5;
+            berthStateChange = true;
+            back();
+            return;
+        }
+        fetchGoods();
+    } else if (finalStage == 5) { // sell the goods from first target
+        if (state == ShipState::PERFORMING && frame >= startMissionTime + 50) {
+            setMission(ShipMission(secondFinalTarget, -1));
+            carryingGoodsNumber = 0;
+            goods.clear();
+            finalStage = 6;
+        }
+    } else if (finalStage == 6) { // move to second target
+        if (state == ShipState::PERFORMING && (frame >= startMissionTime + 50)) {
+            mission = ShipState::MISSION_GET;
+            startMissionTime = frame;
+            finalStage = 7;
+        }
+    } else if (finalStage == 7) {
+        if (goods.size() >= capacity) {
+            if (cerrShip && cerrSwitch) cerr << "ship:[" << id << "] 满载而归\n";
+            back();
+            finalStage = 8;
+            return;
+        }
+        const int restFrame = berth[target].distance + berth[secondFinalTarget].distance * 2 +
+                              berth[secondFinalTarget].getGoodsNum() / berth[secondFinalTarget].velocity;
+        if (berth[target].empty() && (!firstMove || frame > startMissionTime + 50 || true) || frame + restFrame >= 15000 - deltaFrame) {
+            berthVisitable[target] = false;
+            if (cerrSwitch && cerrShip) cerr << "关掉了[" << target << "]港口 restFrame:" << restFrame << '\n';
+            finalStage = 8;
+            berthStateChange = true;
+            back();
+            return;
+        }
+        fetchGoods();
+    } else if (finalStage == 8) { // sell the goods from second target
+        if (state == ShipState::PERFORMING && frame >= startMissionTime + 50) {
+            setMission(ShipMission(secondFinalTarget, -1));
+            carryingGoodsNumber = 0;
+            goods.clear();
+            finalStage = 9;
+        }
+    } else if (finalStage == 9) { // move to second target
+        if (state == ShipState::PERFORMING && (frame >= startMissionTime + 50)) {
+            mission = ShipState::MISSION_GET;
+            startMissionTime = frame;
+            finalStage = 10;
+        }
+    } else if (finalStage == 10) { // final waiting
+        fetchGoods();
+        if (frame + berth[secondFinalTarget].distance + deltaFrame >= 15000) {
+            back();
+            finalStage = 11;
         }
     }
 }

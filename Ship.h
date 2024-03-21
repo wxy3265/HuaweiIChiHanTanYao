@@ -24,13 +24,17 @@ private:
     vector<Goods> goods;
     int state = ShipState::FREE;
     int finalStage = 1;
+    int finalMode = 0;
+    int lastBerthDistance = 0;
     int firstFinalTarget, secondFinalTarget;
     int startMissionTime;
     bool firstMove = true;
     void autoSetMission();
     void back();
     void fetchGoods();
-    void finalWork();
+    void finalWork1();
+    void finalWork2();
+    void finalWork3();
 public:
     int id;
     int mostVistedBerth;
