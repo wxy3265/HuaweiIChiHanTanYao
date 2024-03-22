@@ -241,6 +241,7 @@ void cerrBerthFun() {
              << "> numbers:" << berth[i].getGoodsNum()
              << " distance:" << berth[i].distance
              << " visit:" << visitBerth[i]
+             << " visitable:" << berthVisitable[i]
              << '\n';
         totBerthValue += berth[i].getTotalValue();
     }
@@ -317,7 +318,7 @@ void robotGetMissionFromOperation(int robId) {
         int time = operation[robotHome[robId]].top().targetGoods.time;
         if((frame + dis + 10 < time + 1000)
            && !visitGoods[operation[robotHome[robId]].top().targetGoods.id]
-           && operation[robotHome[robId]].top().goodsDistance <= 100) {
+           && operation[robotHome[robId]].top().goodsDistance <= 100000) {
             break;
         }
         operation[robotHome[robId]].pop();

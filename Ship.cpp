@@ -38,6 +38,7 @@ int Ship::getState() {return state;}
 vector<Goods> Ship::getGoods() {return goods;}
 
 void Ship::autoSetMission() {
+//    if (frame > 14500) return;
     if (cerrSwitch && cerrShip) {
         cerr << "autoSetMission: [" << id << "]\n";
         for (int i = 0; i < 10; i++) {
@@ -130,7 +131,7 @@ void Ship::update(int _state, int targetInput) {
 //        finalMode = 2;
     }
     if (finalMode == 0 && frame >= 15000 - finalFrame - deltaFrame) {
-        finalMode = 1;
+//        finalMode = 1;
     }
     if (finalMode == 1) {
         finalWork1();
@@ -185,6 +186,10 @@ void Ship::update(int _state, int targetInput) {
             }
         }*/
         if (berth[target].empty() && (!firstMove || frame > startMissionTime + 50 || false)) {
+            if (frame >= 12000) {
+                berthStateChange = true;
+                berthVisitable[target] = false;
+            }
             mission = ShipState::FREE;
             return;
         }
