@@ -159,8 +159,8 @@ int main() {
 
 void initShipMission() {
 //    for (int i = 0; i < 5; i++) ship[i].setMission(ShipMission{i * 2, -1});
-    ship[0].setMission(ShipMission{0, -1});
-    ship[1].setMission(ShipMission{1, -1});
+    ship[0].setMission(ShipMission{2, -1});
+    ship[1].setMission(ShipMission{7, -1});
     ship[2].setMission(ShipMission{4, -1});
     ship[3].setMission(ShipMission{5, -1});
     ship[4].setMission(ShipMission(6, -1));
@@ -200,10 +200,11 @@ void robotGetMission(int robId) {
         Goods goods = goodsOnMap[i];
         GoodsMission goodsMissionNow;
 ////        if ((robId == 2 || robId == 3 || robId == 4) && (goods.position.x <= 100 || goods.position.y <= 101)) continue;
-//        if ((robId >= 0 && robId <= 3) && (goods.position.x > 100 || goods.position.y > 100)) continue;
-//        if ((robId >= 4 && robId <= 6) && (goods.position.x > 100 || goods.position.y <= 101)) continue;
-//        if ((robId >= 7) && (goods.position.x < 100 || goods.position.y > 100)) continue;
-
+//        if ((robId >= 0 && robId <= 1) && (goods.position.x <= 6 || goods.position.x >= 52 || goods.position.y <= 3 || goods.position.y >= 94)) continue;
+//        if ((robId >= 2 && robId <= 3) && (goods.position.x <= 6 || goods.position.x >= 52 || goods.position.y <= 109 || goods.position.y >= 199)) continue;
+//        if ((robId >= 4 && robId <= 6) && (goods.position.x < 77 || goods.position.x > 124 || goods.position.y < 56 || goods.position.y > 146)) continue;
+//        if ((robId >= 7 && robId <= 8) && (goods.position.x <= 127)) continue;
+//        if ((robId == 9) && ) continue;
         int nearBerthId = Map::getNearBerthId(goods.position);
         if (nearBerthId == -1) continue;
 //        int distance = Map::getLengthFromBerthToPoint(nearBerthId, goods.position);
@@ -213,8 +214,8 @@ void robotGetMission(int robId) {
 //        if (frame >= 1000 && frame + distance <= goods.time + 500) continue;
         if (visitGoods[goods.id]) continue;
         if (frame + distance + 20 >= goods.time + 1000) continue;
-        if (goods.value < 100) continue;
-        if (distance > 150) continue;
+//        if (goods.value < 100) continue;
+//        if (distance > 150) continue;
         bool existTarget = false;
         for (int i = 0; i < 5; i++) {
             if (ship[i].getFirstTarget().targetId == nearBerthId) existTarget = true;
@@ -316,9 +317,9 @@ void robotGetMissionFromOperation(int robId) {
     while(!operation[robotHome[robId]].empty()){
         double dis = operation[robotHome[robId]].top().goodsDistance;
         int time = operation[robotHome[robId]].top().targetGoods.time;
-        if((frame + dis + 10 < time + 1000)
+        if((frame + dis + 20 < time + 1000)
            && !visitGoods[operation[robotHome[robId]].top().targetGoods.id]
-           && operation[robotHome[robId]].top().goodsDistance <= 100000) {
+           && operation[robotHome[robId]].top().goodsDistance <= 150) {
             break;
         }
         operation[robotHome[robId]].pop();
@@ -338,12 +339,12 @@ void calcEfficiencyMax(int startBerthId) {
         double pathLength = Map::getLengthFromBerthToPoint(nearBerthId, newGood.position) * 2;
         double pathLength1 = Map::getLengthFromBerthToPoint(startBerthId, newGood.position) * 2;
         double goodsTime = newGood.time;
-        double efficiency = 100.0 * newGood.value / pathLength;
+        double efficiency = 100.0 * newGood.value / pathLength1;
         double efficiency1 = 100.0 * (newGood.value - (pathLength1 - pathLength) * deltaLength)  /
                              (pathLength1 + (goodsTime + 1000 - frame) * deltaTime);
 //        efficiency1 = 100.0 / pathLength1;
-        if (newGood.value < 100) continue;
-        if (pathLength1 >= 150) continue;
+//        if (newGood.value < 100) continue;
+//        if (pathLength1 >= 150) continue;
         //operation[nearBerthIds].push((Operation){newGood, nearBerthId, pathLength, pathLength / 2.0, efficiency});
         //if(nearBerthId != startBerthId)
 //        if ((startBerthId == 6 || startBerthId == 8 || startBerthId == 4 || startBerthId == 7) && (newGood.position.x <= 100 || newGood.position.y <= 100)) continue;
