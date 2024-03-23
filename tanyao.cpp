@@ -6,7 +6,7 @@
 char maze[300][300];
 int frame, totalMoney, lastFrame, framesum;
 int capacity;
-const bool cerrSwitch = true; //调试信息总开关
+const bool cerrSwitch = false; //调试信息总开关
 const bool cerrBerth = true; //港口调试信息
 const bool cerrRobot = true; //机器人调试信息
 const bool cerrTotalGetValue = true; //总获取金额调试信息

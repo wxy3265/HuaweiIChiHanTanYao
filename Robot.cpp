@@ -38,7 +38,7 @@ void Robot::updateState(Point _position, bool _enable, bool _carrying) {
     }
 }
 void Robot::update() {
-    cerr << "robot[" << id << "] update\n";
+//    cerr << "robot[" << id << "] update\n";
     if (position == lastPosition && state == RobotState::MISSION_MOVE) {
         waitTime++;
     } else {
@@ -67,7 +67,7 @@ void Robot::update() {
 //        cerr << id << "Pulled\n";
         pull();
         berth[targetId].pushGoods(goodsToGet);
-//        mission = state = RobotState::FREE;
+        mission = state = RobotState::FREE;
         robotGetMission();
 //        moveStep();
     }
@@ -89,7 +89,7 @@ void Robot::moveStep() {
         nextPoint = robotPath[id].getNextPoint();
         if (cerrSwitch && cerrRobot) cerr << "robot[" << id << "] getNextPoint" << nextPoint.x << ',' << nextPoint.y << '\n';
     }
-    if ((mission == RobotState::MISSION_GET && goodsToGet.position == position) || (mission == RobotState::MISSION_PULL && berth[targetId].position == position)) {
+    if ((mission == RobotState::MISSION_GET && goodsToGet.position == position) || (mission == RobotState::MISSION_PULL && berth[targetId].targetPosition == position)) {
 //              || (mission == RobotState::MISSION_PULL && maze[position.x][position.y] == 'B')) {
         state = mission;
         return;
@@ -139,7 +139,7 @@ void Robot::getNearRobot(Goods goods){
     nearRobotDis[goods.id] = mindis;
 }
 void Robot::robotGetMission() {
-    if (nowFrameUse && frame <= 100) return;
+    if (nowFrameUse && frame <= 1000) return;
     nowFrameUse = true;
     const int nx[]={0,0,1,-1};
     const int ny[]={1,-1,0,0};
@@ -257,8 +257,7 @@ void Robot::robotGetMission() {
     }
 }
 void Robot::findBerth() {
-    cerr << "find start!\n";
-    if (nowFrameUse && frame <= 100) return;
+//    cerr << "find start!\n";
     nowFrameUse = true;
     const int nx[]={0,0,1,-1};
     const int ny[]={1,-1,0,0};
@@ -282,6 +281,7 @@ void Robot::findBerth() {
     }
     while(!q.empty()) {
         Point cur = q.front();
+//        cerr << "cur:" << cur.x << ' ' << cur.y << '\n';
         q.pop();
         int nextframe = step[cur.x][cur.y] + 1;
         for (int i = 0; i < 10; i++) {
@@ -336,32 +336,32 @@ void Robot::findBerth() {
 //        }
 //    }
     if (flag && targetId != -1) {
-//        int dx = berth[targetId].position.x, dy = berth[targetId].position.y;
-//        int length = 0;
-//        stack<Point> repath;
-//        vector<Point> points;
+        int dx = berth[targetId].targetPosition.x, dy = berth[targetId].targetPosition.y;
+        int length = 0;
+        stack<Point> repath;
+        vector<Point> points;
 //        cerr << "这是" << id << "的路径:" << "\n";
 //        cerr << dx << " " << dy << " " << targetId << "\n" ;
 //        cerr << "length:" << step[dx][dy] << "\n";
-//        while (dx != robot[id].position.x || dy != robot[id].position.y) {
-//            repath.push((Point){dx, dy});
-////            cerr << dx << "," << dy << "  ";
-//            int lastx = dx, lasty = dy;
-//            dx -= nx[stepnum[lastx][lasty]];
-//            dy -= ny[stepnum[lastx][lasty]];
-//            length++;
-//        }
+        while (dx != robot[id].position.x || dy != robot[id].position.y) {
+            repath.push((Point){dx, dy});
+//            cerr << dx << "," << dy << "  ";
+            int lastx = dx, lasty = dy;
+            dx -= nx[stepnum[lastx][lasty]];
+            dy -= ny[stepnum[lastx][lasty]];
+            length++;
+        }
 //        cerr << "\n";
-//        repath.push((Point){dx, dy});
-//        length++;
-//        while (!repath.empty()) {
-//            points.push_back(repath.top());
-////        cerr << "repath top:" << repath.top().x << ',' << repath.top().y << '\n';
-//            repath.pop();
-//        }
-//        robotPath[id] = ((Path){points, length});
-        if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].position);
-        else robotPath[id] = getPath1(id, berth[targetId].position);
+        repath.push((Point){dx, dy});
+        length++;
+        while (!repath.empty()) {
+            points.push_back(repath.top());
+//        cerr << "repath top:" << repath.top().x << ',' << repath.top().y << '\n';
+            repath.pop();
+        }
+        robotPath[id] = ((Path){points, length});
+//        if (PathAlgorithm == 1) robotPath[id] = getPathbyAStar(id, berth[targetId].position);
+//        else robotPath[id] = getPath1(id, berth[targetId].position);
         mission = RobotState::MISSION_PULL;
         state = RobotState::MISSION_MOVE;
     }
