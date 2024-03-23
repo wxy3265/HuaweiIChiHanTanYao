@@ -214,7 +214,7 @@ void robotGetMission(int robId) {
         if (visitGoods[goods.id]) continue;
         if (frame + distance + 20 >= goods.time + 1000) continue;
         if (goods.value < 100) continue;
-        if (distance > 150) continue;
+//        if (distance > 150) continue;
         bool existTarget = false;
         for (int i = 0; i < 5; i++) {
             if (ship[i].getFirstTarget().targetId == nearBerthId) existTarget = true;

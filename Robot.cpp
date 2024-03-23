@@ -306,7 +306,7 @@ Path getPathbyAStar(int robId, Point target) {
 //                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
                 Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
 //                if (robotThisPoint0 != Point(-1, -1)) thismap[robotThisPoint0.x][robotThisPoint0.y] = PointState::BLOCK;
-                if (robotThisPoint1 != Point(-1, -1)) thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
+//                if (robotThisPoint1 != Point(-1, -1)) thismap[robotThisPoint1.x][robotThisPoint1.y] = PointState::BLOCK;
             }
 
         for (int i = 0; i < 4; i++) {
@@ -328,9 +328,9 @@ Path getPathbyAStar(int robId, Point target) {
             if (i != robId) {
                 if (robotPath[i].length > 50000) continue;
 //                Point robotThisPoint0 = robotPath[i].getPointbyTime(nextframe - 1);
-                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
+//                Point robotThisPoint1 = robotPath[i].getPointbyTime(nextframe);
 //                if (robotThisPoint0.x != -1 && robotThisPoint0.y != -1) thismap[robotThisPoint0.x][robotThisPoint0.y] = maze[robotThisPoint0.x][robotThisPoint0.y];
-                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1) thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
+//                if (robotThisPoint1.x != -1 && robotThisPoint1.y != -1) thismap[robotThisPoint1.x][robotThisPoint1.y] = maze[robotThisPoint1.x][robotThisPoint1.y];
             }
         }
         /*
