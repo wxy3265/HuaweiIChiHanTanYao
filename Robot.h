@@ -13,6 +13,7 @@ public:
     explicit Robot(const Berth &target);
     Robot() {}
 
+    bool crashed;
 private:
 //    bool carrying;
     Point nextPoint;
@@ -21,7 +22,7 @@ private:
     int targetId;
     int state = RobotState::FREE;
     bool enable;
-    bool crashed;
+
     void move(int direction);
     void get();
     void pull();
@@ -55,4 +56,5 @@ struct GoodsMission {
         return key < x.key;
     }
 };
+extern bool nowFrameUse;
 #endif //HUAWEIICHIHANTANYAO_ROBOT_H
