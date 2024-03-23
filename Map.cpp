@@ -8,11 +8,6 @@ static int goodsNumber = 0;
 
 const int nx[]={0,0,1,-1};
 const int ny[]={1,-1,0,0};
-int pathLengthToBerth[10][203][203];
-int pathLengthToStart[10][203][203];
-int berth_to_berth[10][10];
-int pathLength[10][203][203];
-bool visitGoods[200007];
 
 void Map::initNear() {
     for (int i = 0; i < 203; i++) {
@@ -76,22 +71,24 @@ void Map::init() {
 }
 
 void cleanGoodsOnMap() {
-//    cerr << "nowGoodsOnMap:" << goodsOnMap.size() << '\n';
+    cerr << "nowGoodsOnMap:" << goodsOnMap.size() << '\n';
     vector <Goods> tmp;
     tmp.clear();
     int n = goodsOnMap.size();
     for (int i = 0; i < n; i++) {
         Goods goods = goodsOnMap[i];
         if (visitGoods[goods.id] || frame >= goods.time + 1000) continue;
-        tmp.emplace_back(goods);
+        tmp.push_back(goods);
 //        cerr << "endGoodsOnMap:" << goodsOnMap.size() << '\n';
     }
+    cerr << "tmpSize:" << tmp.size() << '\n';
     goodsOnMap.clear();
     n = tmp.size();
     for (int i = 0; i < n; i++) {
         Goods goods = tmp[i];
-        goodsOnMap.emplace_back(goods);
+        goodsOnMap.push_back(goods);
     }
+    return;
 }
 
 int totGoodsNumber = 0;
@@ -108,6 +105,7 @@ void Map::update() {
     for (int i = 1, x, y, m; i <= k; i++) {
         scanf("%d%d%d", &x, &y, &m);
 //        cerr << "newGoods Value:<" << m << ">\n";
+        if (m < 100) continue;
         newGoods.emplace_back(Point(x, y), m, frame, ++goodsNumber);
         goodsOnMap.emplace_back(Point(x, y), m, frame, goodsNumber);
     }
@@ -115,7 +113,7 @@ void Map::update() {
     //更新机器人
     for (int i = 0, state, x, y, goods; i < 10; i++) {
         scanf("%d%d%d%d", &goods, &x, &y, &state);
-        robot[i].update(Point(x, y), state, goods);
+        robot[i].updateState(Point(x, y), state, goods);
     }
 //    cerr << "机器人更新完毕\n";
     //更新船舶

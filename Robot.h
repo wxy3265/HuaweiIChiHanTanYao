@@ -33,16 +33,26 @@ public:
     Point position;
     int getState();
     Goods getGoodsToGet();
-    void setMission(Goods _goodsToGet, int _targetId);
-    void update(Point _position, bool _enable, bool _carrying);
+    void setMission(Goods _goodsToGet);
+    void update();
     int getMission();
     int getTargetId();
     void redirection();
+    void getNearRobot(Goods goods);
+    void robotGetMission();
     void moveStep();
+    void findBerth();
+    void updateState(Point _position, bool _enable, bool _carrying);
 };
 
 extern Robot robot[10];
 Path getPath1(int robId, Point target);
 Path getPathbyAStar(int robId, Point target);
-
+struct GoodsMission {
+    Goods goods;
+    double key;
+    bool operator < (const GoodsMission &x) const{
+        return key < x.key;
+    }
+};
 #endif //HUAWEIICHIHANTANYAO_ROBOT_H
