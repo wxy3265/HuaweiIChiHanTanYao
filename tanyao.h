@@ -20,7 +20,8 @@
 extern char maze[300][300];
 extern int frame, totalMoney, lastFrame, framesum;
 extern int capacity;
-extern const int PathAlgorithm; //0为bfs 1为 A*
+extern int mapNUM;
+extern int PathAlgorithm; //0为bfs 1为 A*
 extern int mostBerthNumber;
 extern const bool cerrSwitch;
 extern const bool cerrBerth;
@@ -28,7 +29,7 @@ extern const bool cerrRobot;
 extern const bool cerrTotalGetValue;
 extern const bool cerrShip;
 extern const bool cerrFrame;
-extern const bool avoidCrash;
+extern bool avoidCrash;
 extern const double deltaLength;
 extern const double deltaTime;
 extern const double deltaTarget;
@@ -48,7 +49,8 @@ extern int pathLengthToStart[10][203][203];
 extern int berth_to_berth[10][10];
 extern int pathLength[10][203][203];
 extern bool visitGoods[200007];
-
+extern int maxofGoods;
+extern int mapNUM;
 using namespace std;
 
 #endif //HUAWEIICHIHANTANYAO_TANYAO_H

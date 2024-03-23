@@ -21,6 +21,7 @@ void Map::initNear() {
 void Map::init() {
     initNear();
     //读入地图
+    int blockSum = 0;
     int cnt = 0;
     for (int i = 0; i < 200; i++) {
         for (int j = 0; j < 200; j++){
@@ -31,7 +32,16 @@ void Map::init() {
                 robot[cnt].position.y = j;
                 cnt++;
             }
+            if (maze[i][j] == PointState::BLOCK) blockSum++;
         }
+    }
+//    cerr << "block:" << blockSum << "\n";
+    if (blockSum >= 100) { mapNUM = 1;
+        PathAlgorithm = 0;
+        avoidCrash = true;
+    } else { mapNUM = 2;
+        PathAlgorithm = 1;
+        avoidCrash = true;
     }
     //读入泊位信息
     for (int i = 0, id, x, y, time, vel; i <= 9; i++) {
@@ -71,7 +81,7 @@ void Map::init() {
 }
 
 void cleanGoodsOnMap() {
-    cerr << "nowGoodsOnMap:" << goodsOnMap.size() << '\n';
+//    cerr << "nowGoodsOnMap:" << goodsOnMap.size() << '\n';
     vector <Goods> tmp;
     tmp.clear();
     int n = goodsOnMap.size();
@@ -81,7 +91,7 @@ void cleanGoodsOnMap() {
         tmp.push_back(goods);
 //        cerr << "endGoodsOnMap:" << goodsOnMap.size() << '\n';
     }
-    cerr << "tmpSize:" << tmp.size() << '\n';
+//    cerr << "tmpSize:" << tmp.size() << '\n';
     goodsOnMap.clear();
     n = tmp.size();
     for (int i = 0; i < n; i++) {

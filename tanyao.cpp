@@ -6,15 +6,16 @@
 char maze[300][300];
 int frame, totalMoney, lastFrame, framesum;
 int capacity;
-const bool cerrSwitch = true; //调试信息总开关
+const bool cerrSwitch = false; //调试信息总开关
 const bool cerrBerth = true; //港口调试信息
-const bool cerrRobot = true; //机器人调试信息
+const bool cerrRobot = false; //机器人调试信息
 const bool cerrTotalGetValue = true; //总获取金额调试信息
 const bool cerrShip = false; //船舶调试信息
-const bool cerrFrame = true; //帧标记调试信息
-const bool avoidCrash = false;
-const int PathAlgorithm = 0; //0为BFS 1为A*
+const bool cerrFrame = false; //帧标记调试信息
+bool avoidCrash = false;
+int PathAlgorithm = 0; //0为BFS 1为A*
 int mostBerthNumber = 100000;//可以连续到达的港口数量
+int mapNUM = 0;
 const bool bindBerth = false; //机器人与港口绑定为true
 const double deltaLength = 2.5;
 const double deltaTime = 0;
