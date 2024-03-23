@@ -37,6 +37,17 @@ extern bool berthOpen[10];
 extern bool berthOpenforShip[10];
 extern int nearBerthId[203][203];
 extern int nearBerthLength[203][203];
+extern int robotHome[10];
+extern bool robotFirstMission[10];
+extern int berthRobot[10];
+extern int setedShipMissionTimes[10];
+extern int nearRobotId[200000];
+extern int nearRobotDis[200000];
+extern int pathLengthToBerth[10][203][203];
+extern int pathLengthToStart[10][203][203];
+extern int berth_to_berth[10][10];
+extern int pathLength[10][203][203];
+extern bool visitGoods[200007];
 
 using namespace std;
 

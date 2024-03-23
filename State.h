@@ -45,6 +45,7 @@ public:
     static const char BLOCK = '#';
     static const char ROBOT = 'A';
     static const char BERTH = 'B';
+    static const char TARGET = 'T';
 };
 
 class GoodsState {
