@@ -159,8 +159,8 @@ int main() {
 
 void initShipMission() {
 //    for (int i = 0; i < 5; i++) ship[i].setMission(ShipMission{i * 2, -1});
-    ship[0].setMission(ShipMission{2, -1});
-    ship[1].setMission(ShipMission{7, -1});
+    ship[0].setMission(ShipMission{0, -1});
+    ship[1].setMission(ShipMission{1, -1});
     ship[2].setMission(ShipMission{4, -1});
     ship[3].setMission(ShipMission{5, -1});
     ship[4].setMission(ShipMission(6, -1));
